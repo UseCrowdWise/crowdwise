@@ -20,7 +20,8 @@
     "start": "react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch": "./scripts/watch.js"
   },
   "eslintConfig": {
     "extends": ["react-app", "react-app/jest"]
@@ -36,6 +37,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.5",
-    "tailwindcss": "^3.0.13"
+    "tailwindcss": "^3.0.13",
+    "webpack-extension-reloader": "^1.1.4"
   }
 }
