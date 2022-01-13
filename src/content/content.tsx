@@ -1,22 +1,25 @@
 import React, { CSSProperties, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import './content.css'
+import { testFunction } from './test_import'
 
 function Welcome(props: any) {
-    return <h1>Hello,dasdasd{props.name}</h1>;
+    return <h1>Hello from extension!</h1>;
 }
 
 
-// Create CSS Grid/Flex at the root
+
+/**
+ * MAIN ENTRY POINT BELOW.
+ * Inserts the root component into the current page.
+ * This is where the frontend design starts.
+ * */
+
+
+// Create CSS Grid/Flex to become the new root ele,ent
 const wrapperDiv = document.createElement("div");
 wrapperDiv.id = "content-script-wrapper"
 wrapperDiv.className = 'static'
-
-// // Create the wrapper for the existing content
-// const mainContentWrapperDiv = document.createElement("div");
-// mainContentWrapperDiv.id = "main-content-wrapper"
-// mainContentWrapperDiv.className = "col-span-3"
-// wrapperDiv.appendChild(mainContentWrapperDiv);
 
 // Move the body's children into this wrapper
 while (document.body.firstChild) {
@@ -32,3 +35,5 @@ contentDiv.id = "content-script-div";
 contentDiv.className = "fixed bottom-0 right-0";
 wrapperDiv.appendChild(contentDiv)
 ReactDOM.render(<Welcome/>, contentDiv);
+
+testFunction();
