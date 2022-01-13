@@ -18,8 +18,9 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 
 ## Resources to create this
 
-- https://thacoon.com/posts/create-react-app-browser-extension-with-tailwind/ -- to create the base repo, except didn't use craco (tailwind works with CRA without craco now)
-- https://gist.github.com/mmazzarolo/0bec410e071a39d54d780abfcf3b72e7 -- for live reloading of extension
+- https://thacoon.com/posts/create-react-app-browser-extension-with-tailwind/ -- to create the base repo, we followed all instructions including craco setup.
+- Multiple outputs (very necessary) here: https://blog.logrocket.com/creating-chrome-extension-react-typescript/ -- still working this out
+- We stopping following this: https://gist.github.com/mmazzarolo/0bec410e071a39d54d780abfcf3b72e7 -- for live reloading of extension
 
 ## Understanding extensions
 

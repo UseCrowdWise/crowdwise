@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-// A script for developing a browser extension with live-reloading
-// using Create React App (no need to eject).
-// Run it instead of the "start" script of your app for a nice
-// development environment.
-// P.S.: Install webpack-extension-reloader before running it.
+// Based on: https://mmazzarolo.com/blog/2019-10-19-browser-extension-development/
+// Updated for: https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 
 // Force a "development" environment in watch mode
 process.env.BABEL_ENV = "development";
@@ -13,20 +10,21 @@ process.env.NODE_ENV = "development";
 const fs = require("fs-extra");
 const paths = require("react-scripts/config/paths");
 const webpack = require("webpack");
-const configFactory = require("react-scripts/config/webpack.config");
 const colors = require("colors/safe");
 const ExtensionReloader = require("webpack-extension-reloader");
 
-// Create the Webpack config usings the same settings used by the "start" script
-// of create-react-app.
-const config = configFactory("development");
+// use Craco to create the Webpack development config
+const { createWebpackDevConfig } = require("@craco/craco");
+const cracoConfig = require("../craco.config.js");
+const config = createWebpackDevConfig(cracoConfig);
 
-// Removed because this line failed
 // The classic webpack-dev-server can't be used to develop browser extensions,
 // so we remove the "webpackHotDevClient" from the config "entry" point.
-// config.entry = config.entry.filter(function (entry) {
-//   return !entry.includes("webpackHotDevClient");
-// });
+config.entry = !Array.isArray(config.entry)
+  ? config.entry
+  : config.entry.filter(function (entry) {
+      return !entry.includes("webpackHotDevClient");
+    });
 
 // Edit the Webpack config by setting the output directory to "./build".
 config.output.path = paths.appBuild;
