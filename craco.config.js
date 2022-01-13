@@ -20,6 +20,8 @@ module.exports = {
         optimization: {
           ...webpackConfig.optimization,
           runtimeChunk: false,
+          // Crucial so that we can refer to the CSS files by a deterministic name in the manifest
+          chunkIds: "deterministic",
         },
       };
     },

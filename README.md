@@ -7,7 +7,12 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 ## Running this project
 
 - `npm build` to create the extension in the `build/` folder (final production output).
-- `npm run watch` does `npm build` but also live-reloads as we change files, good for development
+
+## Structure
+
+- `src/background/background.ts` is the entry point to the script that runs in the background
+- `src/content/content.tsx` is executed (with DOM access) in every matching URL (currently all URLs)
+- `src/index.html` is the popup
 
 ## Possible features
 
