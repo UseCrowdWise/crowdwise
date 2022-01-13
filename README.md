@@ -7,12 +7,14 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 ## Running this project
 
 - `npm build` to create the extension in the `build/` folder (final production output).
+- For chrome: go to `chrome://extensions/` and `Load unpacked`, point it to the `build/` folder.
+- For firefix: go to `about:debugging#/runtime/this-firefox` and `Load temporary extension`, point it to the `manifest.json`.
 
 ## Structure
 
-- `src/background/background.ts` is the entry point to the script that runs in the background
-- `src/content/content.tsx` is executed (with DOM access) in every matching URL (currently all URLs)
-- `src/index.html` is the popup
+- `src/background/background.ts` is the entry point to the script that runs in the background.
+- `src/content/content.tsx` is executed (with DOM access) in every matching URL (currently all URLs).
+- `src/index.html` is the popup when the extension icon is clicked.
 
 ## Possible features
 

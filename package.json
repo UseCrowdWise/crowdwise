@@ -19,23 +19,17 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "INLINE_RUNTIME_CHUNK=false craco build",
+    "build": "INLINE_RUNTIME_CHUNK=false craco build && npm run rename",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "watch": "./scripts/watch.js"
+    "watch": "./scripts/watch.js",
+    "rename": "renamer --find '/content.*.css/' --replace 'content.css' 'build/static/css/*'"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": ["react-app", "react-app/jest"]
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -45,6 +39,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.5",
+    "renamer": "^4.0.0",
     "tailwindcss": "^3.0.13",
     "webpack-extension-reloader": "^1.1.4"
   }
