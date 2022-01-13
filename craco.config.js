@@ -1,3 +1,4 @@
+// Idea from https://blog.logrocket.com/creating-chrome-extension-react-typescript/
 module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
@@ -10,6 +11,7 @@ module.exports = {
             paths.appIndexJs,
           ].filter(Boolean),
           content: "./src/content/content.tsx",
+          background: "./src/background/background.ts",
         },
         output: {
           ...webpackConfig.output,

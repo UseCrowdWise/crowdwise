@@ -5,8 +5,8 @@ function Welcome(props: any) {
     return <h1>Hello,dasdasd{props.name}</h1>;
 }
 
-let container = document.createElement('div');
-container.setAttribute("id", "app-wrapper");
-document.body.appendChild(container);
 
-ReactDOM.render(<Welcome/>, container);
+const contentDiv = document.createElement("div");
+contentDiv.setAttribute("id", "content-script-div");
+document.body.appendChild(contentDiv)
+ReactDOM.render(<Welcome/>, contentDiv);

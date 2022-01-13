@@ -13,6 +13,9 @@
     "default_popup": "index.html",
     "default_title": "Your Extension Name"
   },
+  "background": {
+    "scripts": ["./static/js/background.js"]
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
