@@ -31,6 +31,8 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 
 1. Search hacker news and reddit every time we visit a new page (cache previously-visited pages for n hours or something)
 
+- Update when URL changes: https://stackoverflow.com/questions/34957319/how-to-listen-for-url-change-with-chrome-extension
+
 ### Possible features
 
 - Search through all comments and show the user the most discussed / highly rated ones
