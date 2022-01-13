@@ -19,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "css": ["./static/css/content.a6b04180.css"],
+      "css": ["./static/css/content.f3161dbd.css"],
       "js": ["./static/js/content.js"]
     }
   ],
