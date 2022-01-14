@@ -30,8 +30,9 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 ### Feature build order
 
 1. Search hacker news and reddit every time we visit a new page (cache previously-visited pages for n hours or something)
-
-- Update when URL changes: https://stackoverflow.com/questions/34957319/how-to-listen-for-url-change-with-chrome-extension
+2. Cache
+3. Rate limit
+4. Blacklist
 
 ### Possible features
 
@@ -44,6 +45,7 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 
 ### Resources used
 
+- https://github.com/benwinding/newsit/
 - https://thacoon.com/posts/create-react-app-browser-extension-with-tailwind/ -- to create the base repo, we followed all instructions including craco setup.
 - Multiple outputs (very necessary) here: https://blog.logrocket.com/creating-chrome-extension-react-typescript/ -- still working this out
 - We stopping following this: https://gist.github.com/mmazzarolo/0bec410e071a39d54d780abfcf3b72e7 -- for live reloading of extension
