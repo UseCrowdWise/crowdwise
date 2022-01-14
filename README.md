@@ -9,13 +9,13 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 ### Running this project
 
 - `npm install`
-- `npm build` to create the extension in the `build/` folder (final production output).
+- `npm run build` to create the extension in the `build/` folder (final production output).
 - For chrome: go to `chrome://extensions/` and `Load unpacked`, point it to the `build/` folder.
 - For firefox: go to `about:debugging#/runtime/this-firefox` and `Load temporary extension`, point it to the `manifest.json`.
 
 ### Reloading extension after changes
 
-- `npm build`
+- `npm run build`
 - For chrome: Go to the extensions page and press the reload button
 - Open a new tab and go to some webpage
 

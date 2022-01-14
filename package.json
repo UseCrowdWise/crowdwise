@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "INLINE_RUNTIME_CHUNK=false craco build && npm run rename",
+    "build": "npx prettier --write . && INLINE_RUNTIME_CHUNK=false craco build && npm run rename",
     "test": "craco test",
     "eject": "react-scripts eject",
     "watch": "./scripts/watch.js",
