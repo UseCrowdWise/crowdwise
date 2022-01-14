@@ -4,6 +4,7 @@
 import { cleanUrl } from "tracking-params";
 
 import * as hackernews from "./hackernews";
+import * as reddit from "./reddit";
 
 // All providers must return a list of resultitems
 export interface ResultItem {
@@ -28,13 +29,16 @@ async function fetchDataFromProviders(rawUrl: string) {
   const cleanedUrl = cleanUrl(rawUrl);
   console.log(`Dirty URL: ${rawUrl}\nCleaned URL: ${cleanedUrl}`);
 
-  // URLencode the string so that the providers can search for it
-  const encodedUrl = encodeURIComponent(cleanedUrl);
-
   // Call each provider in turn
-  const hnresults = await hackernews.getResults(encodedUrl);
+  const hnResults = await hackernews.getResults(cleanedUrl);
   console.log("HN results:");
-  console.log(hnresults);
+  console.log(hnResults);
+
+  const redditResults = await reddit.getResults(cleanedUrl);
+  console.log("Reddit results:");
+  console.log(redditResults);
+
+  return [hnResults, redditResults];
 }
 
 export { fetchDataFromProviders };

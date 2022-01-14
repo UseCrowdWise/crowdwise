@@ -1,7 +1,6 @@
 import React, { CSSProperties, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./content.css";
-import { fetchDataFromProviders } from "../providers/providers";
 
 function ContentScriptMain() {
   const [currentUrl, setCurrentUrl] = useState(window.location.href);
@@ -14,9 +13,10 @@ function ContentScriptMain() {
     // Function to initiate the call to provider APIs (HN, reddit, etc)
     const getConversationData = async () => {
       const windowUrl = window.location.href;
-      const data = await fetchDataFromProviders(windowUrl);
-      console.log("Printing provider data...");
-      console.log(data);
+      chrome.runtime.sendMessage({ windowUrl: windowUrl }, function (response) {
+        console.log("Printing provider data...");
+        console.log(response);
+      });
     };
     // Actually run the async function
     getConversationData().catch(console.error);

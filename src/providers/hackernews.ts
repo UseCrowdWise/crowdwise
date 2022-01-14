@@ -19,7 +19,7 @@ interface HnJsonResult {
 }
 
 // Main function to get all relevant results from HN
-export async function getResults(encodedUrl: string): Promise<ResultItem[]> {
+export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   // const searchUrl = await getTabUrl(tabId);
   // const searchUrlStripped = stripUrl(searchUrl);
   // const blocked = await alist.IsUrlBlackListed(searchUrlStripped);
@@ -29,6 +29,7 @@ export async function getResults(encodedUrl: string): Promise<ResultItem[]> {
   //     text: "-",
   //   };
   // }
+  const encodedUrl = encodeURIComponent(cleanedUrl);
   const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url`;
   const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
   const res: HnJsonResult = await callApi(requestUrl, true);
@@ -42,7 +43,6 @@ export async function getResults(encodedUrl: string): Promise<ResultItem[]> {
   console.log("Hacker News returned results:", {
     response: res,
     resultsTranslated: itemsAll,
-    resultsButton: itemsAll,
   });
   return itemsAll;
 }
