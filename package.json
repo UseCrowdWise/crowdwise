@@ -25,7 +25,7 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "watch": "./scripts/watch.js",
-    "rename": "renamer --find '/content.*.css/' --replace 'content.css' 'build/static/css/*'"
+    "rename": "renamer --find '/content.*.css$/' --replace 'content.css' 'build/static/css/*'"
   },
   "eslintConfig": {
     "extends": [
