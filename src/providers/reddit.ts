@@ -1,3 +1,4 @@
+// Some code used from https://github.com/benwinding/newsit/
 import { ResultItem } from "./providers";
 import { callApi } from "../utils/api";
 

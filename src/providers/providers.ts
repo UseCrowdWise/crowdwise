@@ -5,6 +5,7 @@ import { cleanUrl } from "tracking-params";
 
 import * as hackernews from "./hackernews";
 import * as reddit from "./reddit";
+import { isBlacklisted } from "./blacklist";
 
 // All providers must return a list of resultitems
 export interface ResultItem {
@@ -17,17 +18,35 @@ export interface ResultItem {
   comments_count: number;
   comments_link: string;
 }
+export enum ProviderResultType {
+  Ok = "OK",
+  Blacklisted = "BLACKLISTED",
+}
+export interface ProviderResult {
+  resultType: ProviderResultType;
+  result: ResultItem[][]; // Array of ResultItem[], one from each provider
+}
 
 /**
  * Main entry point for content script to get provider data.
  * Parses the raw window location URL and collates conversation data across multiple providers.
  * */
-async function fetchDataFromProviders(rawUrl: string) {
+export async function fetchDataFromProviders(
+  rawUrl: string
+): Promise<ProviderResult> {
   console.log("Starting to fetch provider data.");
 
   // Remove tracking params that are definitely not relevant to the site URL
   const cleanedUrl = cleanUrl(rawUrl);
   console.log(`Dirty URL: ${rawUrl}\nCleaned URL: ${cleanedUrl}`);
+
+  // Return early if this URL is blacklisted
+  if (isBlacklisted(cleanedUrl)) {
+    console.log(`URL ${cleanedUrl} is blacklisted!`);
+    return { resultType: ProviderResultType.Blacklisted, result: [] };
+  }
+
+  console.log(`URL ${cleanedUrl} is NOT blacklisted!`);
 
   // Call each provider in turn
   const hnResults = await hackernews.getResults(cleanedUrl);
@@ -38,7 +57,8 @@ async function fetchDataFromProviders(rawUrl: string) {
   console.log("Reddit results:");
   console.log(redditResults);
 
-  return [hnResults, redditResults];
+  return {
+    resultType: ProviderResultType.Ok,
+    result: [hnResults, redditResults],
+  };
 }
-
-export { fetchDataFromProviders };

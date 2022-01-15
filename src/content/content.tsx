@@ -2,6 +2,16 @@ import React, { CSSProperties, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./content.css";
 
+/**
+ * CONTENT SCRIPT.
+ *
+ * One instance of this script runs on each tab.
+ * Calls the background script every time its URL changes.
+ * Or re-calls the background script when it tells the content script that the URL has changed w/o a full page reload.
+ *
+ * Primarily responsible for displaying the results on the screen and handling user interaction.
+ *  * */
+
 function ContentScriptMain() {
   const [currentUrl, setCurrentUrl] = useState(window.location.href);
 
@@ -10,7 +20,7 @@ function ContentScriptMain() {
     // Starting useEffect call from content script
     console.log("Starting call to providers");
 
-    // Function to initiate the call to provider APIs (HN, reddit, etc)
+    // Initiate the call to background script to get data from providers
     const getConversationData = async () => {
       const windowUrl = window.location.href;
       chrome.runtime.sendMessage({ windowUrl: windowUrl }, function (response) {
@@ -22,7 +32,7 @@ function ContentScriptMain() {
     getConversationData().catch(console.error);
   }, [currentUrl]);
 
-  // For new messages from chrome background script
+  // Registers callback to handle new messages from chrome background script
   useEffect(() => {
     console.log("Content script: installing onMessage listener.");
     // Wait for messages from background.js
@@ -45,7 +55,7 @@ function ContentScriptMain() {
 }
 
 /**
- * MAIN ENTRY POINT BELOW.
+ * MAIN ENTRY POINT TO DOM BELOW.
  * Inserts the root component into the current page.
  * This is where the frontend design starts.
  * */

@@ -1,7 +1,20 @@
 import { fetchDataFromProviders } from "../providers/providers";
 
-console.log("Background script initialized!");
+/**
+ * BACKGROUND SCRIPT.
+ *
+ * A single instance of this script runs when the browser is active.
+ * Receives messages from content scripts and actually makes the requests to provider APIs.
+ *
+ * Background script is the bottleneck because it doesn't have to deal with CORS issues.
+ * See: https://www.chromium.org/Home/chromium-security/extension-content-script-fetches
+ * */
 
+/**
+ * Respond every time a tab is updated in some way.
+ * Specifically used to tell content scripts that the URL has changed without a full page reload.
+ * For instance, routing within a single-page app.
+ * */
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // If a tab's URL is updated, send a message to that tab so the content script can update.
   if (changeInfo.url) {
@@ -17,7 +30,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   }
 });
 
-// Handle messages from chrome tabs
+/**
+ * Handle messages from chrome tabs.
+ * */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   handleOnMessage(request, sender).then(sendResponse);
 });
@@ -31,6 +46,7 @@ async function handleOnMessage(request: any, sender: any) {
   );
   // Received from a tab (content script)
   if (sender.tab) {
+    // Ask providers for any relevant posts/comments
     const data = await fetchDataFromProviders(request.windowUrl);
     console.log("Printing provider data...");
     console.log(data);
@@ -39,4 +55,5 @@ async function handleOnMessage(request: any, sender: any) {
   return {};
 }
 
-export {};
+// After all listeners are registered
+console.log("Background script initialized!");
