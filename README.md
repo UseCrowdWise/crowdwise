@@ -19,11 +19,26 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 - For chrome: Go to the extensions page and press the reload button
 - Open a new tab and go to some webpage
 
+## How it works
+
 ### Structure
 
 - `src/background/background.ts` is the entry point to the script that runs in the background.
 - `src/content/content.tsx` is executed (with DOM access) in every matching URL (currently all URLs).
 - `src/index.html` is the popup when the extension icon is clicked.
+
+### Flow
+
+1. User opens a new tab and navigates to a http or https page (content script realizes this on its own) / navigates to a new url within the tab (background script spots this and tells content script).
+1. Content script sends a message to background script asking it to process the URL of the page its on.
+1. Background scripts calls provider manager to call all providers and ask for relevant submissions.
+1. Provider cleans URL and passes it (for now) into Hacker News and Reddit providers, these return a common data structure `ResultItem[]`.
+1. These results are passed from the background script to the content script
+1. TODO: content script displays this on the screen
+
+### Design choices
+
+- **Why does the background script do the work instead of parallelizing across content scripts?**: Because of CORS issues, only background scripts can successfully make the API calls (specifically to old.reddit.com).
 
 ## Features
 
@@ -48,7 +63,7 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 - https://github.com/benwinding/newsit/
 - https://thacoon.com/posts/create-react-app-browser-extension-with-tailwind/ -- to create the base repo, we followed all instructions including craco setup.
 - Multiple outputs (very necessary) here: https://blog.logrocket.com/creating-chrome-extension-react-typescript/ -- still working this out
-- We stopping following this: https://gist.github.com/mmazzarolo/0bec410e071a39d54d780abfcf3b72e7 -- for live reloading of extension
+- We stopped following this: https://gist.github.com/mmazzarolo/0bec410e071a39d54d780abfcf3b72e7 -- for live reloading of extension -- this doesn't work with out current setup.
 
 ### Understanding extensions
 
