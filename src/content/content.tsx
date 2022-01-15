@@ -63,7 +63,7 @@ function ContentScriptMain() {
 // Create CSS Grid/Flex to become the new root ele,ent
 const wrapperDiv = document.createElement("div");
 wrapperDiv.id = "content-script-wrapper";
-wrapperDiv.className = "static";
+// wrapperDiv.className = "static";
 
 // Move the body's children into this wrapper
 while (document.body.firstChild) {
