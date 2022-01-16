@@ -61,23 +61,23 @@ function ContentScriptMain() {
  * */
 
 // Create CSS Grid/Flex to become the new root ele,ent
-const wrapperDiv = document.createElement("div");
-wrapperDiv.id = "content-script-wrapper";
-// wrapperDiv.className = "static";
+// const wrapperDiv = document.createElement("div");
+// wrapperDiv.id = "content-script-wrapper";
+// // wrapperDiv.className = "static";
 
-// Move the body's children into this wrapper
-while (document.body.firstChild) {
-  wrapperDiv.appendChild(document.body.firstChild);
-}
+// // Move the body's children into this wrapper
+// while (document.body.firstChild) {
+//   wrapperDiv.appendChild(document.body.firstChild);
+// }
 
-// Make the wrapper div the new body
-document.body.appendChild(wrapperDiv);
+// // Make the wrapper div the new body
+// document.body.appendChild(wrapperDiv);
 
 // Now append the content as a 1/4th grid col
 const contentDiv = document.createElement("div");
 contentDiv.id = "content-script-div";
-contentDiv.className = "fixed bottom-0 right-0";
-wrapperDiv.appendChild(contentDiv);
+contentDiv.className = "fixed bottom-0 right-0 z-[2000000000]";
+document.body.appendChild(contentDiv);
 ReactDOM.render(<ContentScriptMain />, contentDiv);
 
 console.log("Rendered content script.");

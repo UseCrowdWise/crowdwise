@@ -29,7 +29,7 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 
 ### Flow
 
-1. User opens a new tab and navigates to a http or https page (content script realizes this on its own) / navigates to a new url within the tab (background script spots this and tells content script).
+1. User opens a new tab and navigates to a http or https page (content script realizes this on its own) / navigates to a new url within the tab (background script spots this and tells content script)
 1. Content script sends a message to background script asking it to process the URL of the page its on.
 1. Background scripts calls provider manager to call all providers and ask for relevant submissions.
 1. Provider cleans URL and passes it (for now) into Hacker News and Reddit providers, these return a common data structure `ResultItem[]`.
@@ -44,10 +44,21 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 
 ### Feature build order
 
+#### Non UI code
+
 1. Search hacker news and reddit every time we visit a new page (cache previously-visited pages for n hours or something)
 2. Cache
 3. Rate limit
 4. Blacklist
+
+#### UI code
+
+1. Floating action button with highest possible z-order, see if we can just insert that one div with the button w/o wrapper divs
+1. A popup from the fab that says how many articles were found - shrinks after a short while
+
+#### Known bugs
+
+- Youtube renders only half the page and breaks sometimes - somehow extension is interfering with layout
 
 ### Possible features
 
