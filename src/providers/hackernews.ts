@@ -3,6 +3,8 @@ import fromNow from "fromnow";
 import { ResultItem } from "./providers";
 import { callApi } from "../utils/api";
 
+import { log } from "../utils/log";
+
 interface HnHit {
   url: string;
   created_at: string;
@@ -34,13 +36,13 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
   const res: HnJsonResult = await callApi(requestUrl, true);
   if (res.nbHits === 0) {
-    console.log("Hacker News API: No urls found");
+    log.debug("Hacker News API: No urls found");
     return [];
   }
   const itemsAll = res.hits.map(translateHnToItem);
   // Checks that the right URL is submitted
   // const itemsResults = processResults(itemsAll, searchUrlStripped);
-  console.log("Hacker News returned results:", {
+  log.debug("Hacker News returned results:", {
     response: res,
     resultsTranslated: itemsAll,
   });

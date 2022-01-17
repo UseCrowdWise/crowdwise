@@ -7,6 +7,8 @@ import * as hackernews from "./hackernews";
 import * as reddit from "./reddit";
 import { isBlacklisted } from "./blacklist";
 
+import { log } from "../utils/log";
+
 // All providers must return a list of resultitems
 export interface ResultItem {
   raw_html?: string;
@@ -34,28 +36,28 @@ export interface ProviderResult {
 export async function fetchDataFromProviders(
   rawUrl: string
 ): Promise<ProviderResult> {
-  console.log("Starting to fetch provider data.");
+  log.debug("Starting to fetch provider data.");
 
   // Remove tracking params that are definitely not relevant to the site URL
   const cleanedUrl = cleanUrl(rawUrl);
-  console.log(`Dirty URL: ${rawUrl}\nCleaned URL: ${cleanedUrl}`);
+  log.debug(`Dirty URL: ${rawUrl}\nCleaned URL: ${cleanedUrl}`);
 
   // Return early if this URL is blacklisted
   if (isBlacklisted(cleanedUrl)) {
-    console.log(`URL ${cleanedUrl} is blacklisted!`);
+    log.warn(`URL ${cleanedUrl} is blacklisted!`);
     return { resultType: ProviderResultType.Blacklisted, result: [] };
   }
 
-  console.log(`URL ${cleanedUrl} is NOT blacklisted!`);
+  log.debug(`URL ${cleanedUrl} is NOT blacklisted!`);
 
   // Call each provider in turn
   const hnResults = await hackernews.getResults(cleanedUrl);
-  console.log("HN results:");
-  console.log(hnResults);
+  log.debug("HN results:");
+  log.debug(hnResults);
 
   const redditResults = await reddit.getResults(cleanedUrl);
-  console.log("Reddit results:");
-  console.log(redditResults);
+  log.debug("Reddit results:");
+  log.debug(redditResults);
 
   return {
     resultType: ProviderResultType.Ok,

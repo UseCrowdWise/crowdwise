@@ -1,5 +1,5 @@
 import { fetchDataFromProviders } from "../providers/providers";
-
+import { log } from "../utils/log";
 /**
  * BACKGROUND SCRIPT.
  *
@@ -18,7 +18,7 @@ import { fetchDataFromProviders } from "../providers/providers";
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // If a tab's URL is updated, send a message to that tab so the content script can update.
   if (changeInfo.url) {
-    console.log(
+    log.debug(
       `Background script: Url updated: tabId: ${tabId}, changeInfo: ${JSON.stringify(
         changeInfo
       )}, tab: ${JSON.stringify(tab)}`
@@ -38,8 +38,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 async function handleOnMessage(request: any, sender: any) {
-  console.log("Background script received message...");
-  console.log(
+  log.debug("Background script received message...");
+  log.debug(
     sender.tab
       ? "from a content script at tab URL:" + sender.tab.url
       : "from the extension"
@@ -48,12 +48,12 @@ async function handleOnMessage(request: any, sender: any) {
   if (sender.tab) {
     // Ask providers for any relevant posts/comments
     const data = await fetchDataFromProviders(request.windowUrl);
-    console.log("Printing provider data...");
-    console.log(data);
+    log.debug("Printing provider data...");
+    log.debug(data);
     return data;
   }
   return {};
 }
 
 // After all listeners are registered
-console.log("Background script initialized!");
+log.debug("Background script initialized!");

@@ -2,6 +2,8 @@
 import { ResultItem } from "./providers";
 import { callApi } from "../utils/api";
 
+import { log } from "../utils/log";
+
 // Main function to get all relevant results from Reddit
 export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   // const searchUrl = await getTabUrl(tabId);
@@ -20,12 +22,12 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   const results = html.querySelectorAll(".search-result-link");
   if (results.length === 0) {
     html.remove();
-    console.log("Reddit API: No urls matches found");
+    log.debug("Reddit API: No urls matches found");
     return [];
   }
   const itemsAll = Array.from(results).map(translateRedditToItem);
   // const itemsResults = processResults(itemsAll, searchUrl);
-  console.log("Reddit API: parsing api", {
+  log.debug("Reddit API: parsing api", {
     response: data,
     html,
     resultsHtml: results,
