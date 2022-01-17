@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import "./content.css";
 
 import { log } from "../utils/log";
+
+import ContentButton from "./ContentButton";
+
 /**
  * CONTENT SCRIPT.
  *
@@ -52,7 +55,7 @@ function ContentScriptMain() {
     });
   }, []);
 
-  return <h1>Hello from extension!</h1>;
+  return <ContentButton />;
 }
 
 /**
@@ -61,28 +64,43 @@ function ContentScriptMain() {
  * This is where the frontend design starts.
  * */
 
-// Create CSS Grid/Flex to become the new root ele,ent
-// const wrapperDiv = document.createElement("div");
-// wrapperDiv.id = "content-script-wrapper";
-// // wrapperDiv.className = "static";
+window.addEventListener("load", () => {
+  // Creates the root element for the shadow DOM to attach to
+  // Unset all styles so that the current page's styles won't make this div appear
+  const contentDiv = document.createElement("div");
+  contentDiv.id = "content-script-div";
+  contentDiv.setAttribute("style", "all:unset;"); // Avoid grabbing existing styles
+  document.body.appendChild(contentDiv);
 
-// // Move the body's children into this wrapper
-// while (document.body.firstChild) {
-//   wrapperDiv.appendChild(document.body.firstChild);
-// }
+  // Create the shadow dom in the unstyled div we created
+  const shadow = contentDiv.attachShadow({ mode: "open" });
+  // I have no idea what this part is for, but one of the many guides had this
+  shadow.innerHTML = `
 
-// // Make the wrapper div the new body
-// document.body.appendChild(wrapperDiv);
+  <style>
+  :host {
+    all: initial;
+  }
+  </style>
+  `;
 
-// Now append the content as a 1/4th grid col
-const contentDiv = document.createElement("div");
-contentDiv.id = "content-script-div";
-contentDiv.className = "fixed bottom-0 right-0 z-[2000000000]";
-document.body.appendChild(contentDiv);
-ReactDOM.render(<ContentScriptMain />, contentDiv);
+  // CRUCIAL: this adds the content.css into the shadow dom itself as a stylesheet
+  // Needs the manifest.json to have the content.css as a web accessible resource
+  const linkElem = document.createElement("link");
+  linkElem.setAttribute("rel", "stylesheet");
+  linkElem.setAttribute(
+    "href",
+    chrome.runtime.getURL("static/css/content.css")
+  );
+  shadow.appendChild(linkElem);
 
-log.debug("Rendered content script.");
+  // Finally we can add in the actual react root element
+  const injectDOM = document.createElement("div");
+  shadow.appendChild(injectDOM);
+  ReactDOM.render(<ContentScriptMain />, injectDOM);
 
+  log.debug("Rendered content script.");
+});
 /**
  * END OF MAIN ENTRY POINT
  * * */
