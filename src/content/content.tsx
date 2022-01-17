@@ -5,6 +5,7 @@ import "./content.css";
 import { log } from "../utils/log";
 
 import ContentButton from "./ContentButton";
+import { ProviderResult, ProviderResultType } from "../providers/providers";
 
 /**
  * CONTENT SCRIPT.
@@ -17,45 +18,52 @@ import ContentButton from "./ContentButton";
  *  * */
 
 function ContentScriptMain() {
-  const [currentUrl, setCurrentUrl] = useState(window.location.href);
+  // const [currentUrl, setCurrentUrl] = useState(window.location.href);
+  const [providerData, setProviderData] = useState<ProviderResult>({
+    resultType: ProviderResultType.Ok,
+    result: [],
+  });
 
-  // Runs everytime the current url changes
-  useEffect(() => {
+  // Execute only when the extension button is clicked
+  function onClicked() {
     // Starting useEffect call from content script
     log.debug("Starting call to providers");
 
     // Initiate the call to background script to get data from providers
     const getConversationData = async () => {
-      const windowUrl = window.location.href;
-      chrome.runtime.sendMessage({ windowUrl: windowUrl }, function (response) {
-        log.debug("Printing provider data...");
-        log.debug(response);
-      });
+      chrome.runtime.sendMessage(
+        { windowUrl: window.location.href },
+        function (response: ProviderResult) {
+          log.debug("Printing provider data from background script...");
+          log.debug(response);
+          setProviderData(response);
+        }
+      );
     };
     // Actually run the async function
     getConversationData().catch(console.error);
-  }, [currentUrl]);
+  }
 
   // Registers callback to handle new messages from chrome background script
-  useEffect(() => {
-    log.debug("Content script: installing onMessage listener.");
-    // Wait for messages from background.js
-    chrome.runtime.onMessage.addListener(function (
-      request,
-      sender,
-      sendResponse
-    ) {
-      log.debug("Received message");
-      // If our tab changed URL, update the current URL state
-      // TODO: make this send/receive part of another file to avoid magic strings
-      if (request.message === "tabUrlChanged") {
-        log.debug(`New Url!: ${request.url}`);
-        setCurrentUrl(request.url);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   log.debug("Content script: installing onMessage listener.");
+  //   // Wait for messages from background.js
+  //   chrome.runtime.onMessage.addListener(function (
+  //     request,
+  //     sender,
+  //     sendResponse
+  //   ) {
+  //     log.debug("Received message");
+  //     // If our tab changed URL, update the current URL state
+  //     // TODO: make this send/receive part of another file to avoid magic strings
+  //     if (request.message === "tabUrlChanged") {
+  //       log.debug(`New Url!: ${request.url}`);
+  //       setCurrentUrl(request.url);
+  //     }
+  //   });
+  // }, []);
 
-  return <ContentButton />;
+  return <ContentButton onClicked={onClicked} providerData={providerData} />;
 }
 
 /**

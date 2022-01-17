@@ -34,7 +34,12 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
  * Handle messages from chrome tabs.
  * */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  handleOnMessage(request, sender).then(sendResponse);
+  handleOnMessage(request, sender).then((data) => {
+    log.debug("Sending response data to content script: ");
+    log.debug(data);
+    sendResponse(data);
+  });
+  return true;
 });
 
 async function handleOnMessage(request: any, sender: any) {
@@ -48,7 +53,7 @@ async function handleOnMessage(request: any, sender: any) {
   if (sender.tab) {
     // Ask providers for any relevant posts/comments
     const data = await fetchDataFromProviders(request.windowUrl);
-    log.debug("Printing provider data...");
+    log.debug("Background script: printing provider data...");
     log.debug(data);
     return data;
   }

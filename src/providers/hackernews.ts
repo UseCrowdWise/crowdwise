@@ -40,6 +40,8 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
     log.debug("Hacker News API: No urls found");
     return [];
   }
+  log.debug("HN Results Pre-translation:");
+  log.debug(res.hits);
   const itemsAll = res.hits.map(translateHnToItem);
   // Checks that the right URL is submitted
   // const itemsResults = processResults(itemsAll, searchUrlStripped);
