@@ -1,7 +1,6 @@
 // Some code used from https://github.com/benwinding/newsit/
 import { ResultItem } from "./providers";
-import { callApi } from "../utils/api";
-
+import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 
 // Main function to get all relevant results from Reddit
@@ -16,7 +15,7 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   // }
   const queryString = "sort=top&q=" + encodeURIComponent("url:" + cleanedUrl);
   const requestUrl = "https://old.reddit.com/search?" + queryString;
-  const data = await callApi(requestUrl, false);
+  const data = await cachedApiCall(requestUrl, false, { minutes: 5 });
   const html = document.createElement("html");
   html.innerHTML = data;
   const results = html.querySelectorAll(".search-result-link");

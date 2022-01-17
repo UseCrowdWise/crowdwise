@@ -1,8 +1,7 @@
 // Some code used from https://github.com/benwinding/newsit/
 import fromNow from "fromnow";
 import { ResultItem } from "./providers";
-import { callApi } from "../utils/api";
-
+import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 
 interface HnHit {
@@ -34,7 +33,9 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   const encodedUrl = encodeURIComponent(cleanedUrl);
   const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url`;
   const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
-  const res: HnJsonResult = await callApi(requestUrl, true);
+  const res: HnJsonResult = await cachedApiCall(requestUrl, true, {
+    minutes: 5,
+  });
   if (res.nbHits === 0) {
     log.debug("Hacker News API: No urls found");
     return [];
