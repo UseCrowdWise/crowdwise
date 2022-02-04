@@ -20,13 +20,16 @@ export interface ResultItem {
   comments_count: number;
   comments_link: string;
 }
+
 export enum ProviderResultType {
   Ok = "OK",
   Blacklisted = "BLACKLISTED",
 }
-export interface ProviderResult {
+
+export interface ProviderResults {
   resultType: ProviderResultType;
-  result: ResultItem[][]; // Array of ResultItem[], one from each provider
+  hackerNews: ResultItem[];
+  reddit: ResultItem[];
 }
 
 /**
@@ -35,7 +38,7 @@ export interface ProviderResult {
  * */
 export async function fetchDataFromProviders(
   rawUrl: string
-): Promise<ProviderResult> {
+): Promise<ProviderResults> {
   log.debug("Starting to fetch provider data.");
 
   // Remove tracking params that are definitely not relevant to the site URL
@@ -45,7 +48,11 @@ export async function fetchDataFromProviders(
   // Return early if this URL is blacklisted
   if (isBlacklisted(cleanedUrl)) {
     log.warn(`URL ${cleanedUrl} is blacklisted!`);
-    return { resultType: ProviderResultType.Blacklisted, result: [] };
+    return {
+      resultType: ProviderResultType.Blacklisted,
+      hackerNews: [],
+      reddit: [],
+    };
   }
 
   log.debug(`URL ${cleanedUrl} is NOT blacklisted!`);
@@ -61,6 +68,7 @@ export async function fetchDataFromProviders(
 
   return {
     resultType: ProviderResultType.Ok,
-    result: [hnResults, redditResults],
+    hackerNews: hnResults,
+    reddit: redditResults,
   };
 }

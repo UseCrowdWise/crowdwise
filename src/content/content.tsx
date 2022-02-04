@@ -5,7 +5,7 @@ import "./content.css";
 import { log } from "../utils/log";
 
 import ContentButton from "./ContentButton";
-import { ProviderResult, ProviderResultType } from "../providers/providers";
+import { ProviderResults, ProviderResultType } from "../providers/providers";
 
 /**
  * CONTENT SCRIPT.
@@ -19,9 +19,10 @@ import { ProviderResult, ProviderResultType } from "../providers/providers";
 
 function ContentScriptMain() {
   // const [currentUrl, setCurrentUrl] = useState(window.location.href);
-  const [providerData, setProviderData] = useState<ProviderResult>({
+  const [providerData, setProviderData] = useState<ProviderResults>({
     resultType: ProviderResultType.Ok,
-    result: [],
+    hackerNews: [],
+    reddit: [],
   });
 
   // Execute only when the extension button is clicked
@@ -33,7 +34,7 @@ function ContentScriptMain() {
     const getConversationData = async () => {
       chrome.runtime.sendMessage(
         { windowUrl: window.location.href },
-        function (response: ProviderResult) {
+        function (response: ProviderResults) {
           log.debug("Printing provider data from background script...");
           log.debug(response);
           setProviderData(response);

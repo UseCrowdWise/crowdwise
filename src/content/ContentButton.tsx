@@ -1,15 +1,16 @@
-import React, { CSSProperties, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
 import "./content.css";
-import { ProviderResult, ProviderResultType } from "../providers/providers";
+import { ProviderResults } from "../providers/providers";
 
 interface Props {
   onClicked: () => void;
-  providerData: ProviderResult;
+  providerData: ProviderResults;
 }
 
 export default function ContentButton(props: Props) {
-  const numResults = props.providerData.result.flat().length;
+  const { providerData } = props;
+  const numResults =
+    providerData.hackerNews.length + providerData.reddit.length;
   const hasResults = numResults > 0;
   return (
     <button

@@ -19,6 +19,11 @@ For instance, if a user browses abc.xyz/article-name, they might see related dis
 - For chrome: Go to the extensions page and press the reload button
 - Open a new tab and go to some webpage
 
+### To enable hot reloading when iterating on UI
+
+- Comment out the entire `craco.config.js` to prevent some errors when running frontend server later
+- `npm run start`
+
 ## How it works
 
 ### Structure
