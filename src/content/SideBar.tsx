@@ -32,13 +32,27 @@ const SideBar = (props: Props) => {
       <div className="text-left p-3 space-y-3 scrollbar scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-slate-100 grow">
         <p className="text-lg text-blue-700">Backlinks</p>
         <div className="space-y-2">
-          <p className="my-1 font-medium">Hacker News</p>
+          <div className="align-bottom space-x-2 flex flex-row">
+            <img
+              alt="Hacker News Icon"
+              className="my-auto h-4 w-4"
+              src="/assets/hackernews_icon.png"
+            />
+            <p className="my-1 text-slate-500">Hacker News</p>
+          </div>
           {providerData.hackerNews.map((result, index) => (
             <ResultCard key={index} result={result} />
           ))}
         </div>
         <div className="space-y-2">
-          <p className="my-1 font-medium">Reddit</p>
+          <div className="align-bottom space-x-2 flex flex-row">
+            <img
+              alt="Reddit Icon"
+              className="my-auto h-5 w-5"
+              src="/assets/reddit_icon.png"
+            />
+            <p className="my-1 text-slate-500">Reddit</p>
+          </div>
           {providerData.reddit.map((result, index) => (
             <ResultCard key={index} result={result} />
           ))}

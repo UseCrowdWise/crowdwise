@@ -1,5 +1,6 @@
 import React from "react";
 import { ResultItem } from "../providers/providers";
+import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
 
 interface Props {
   result: ResultItem;
@@ -9,17 +10,19 @@ const ResultCard = (props: Props) => {
   const { result } = props;
   return (
     <div className="p-2 space-y-1 flex flex-col bg-white border border-slate-300 rounded">
-      <div className="hover:underline text-sm text-blue-800">
-        <a href={result.submitted_url}>{result.submitted_title}</a>
+      <div className="hover:underline text-md font-medium text-blue-800">
+        <a href={result.comments_link}>{result.submitted_title}</a>
       </div>
-      <div className="text-xs space-x-2 flex flex-row">
-        <div>
-          <strong>{result.submitted_upvotes}</strong> points
+      <div className="text-xs space-x-3 flex flex-row">
+        <div className="flex flex-row space-x-1">
+          <strong className="text-slate-500">{result.submitted_upvotes}</strong>
+          <ThumbUpIcon className="h-3 w-3 text-slate-300 mt-0.5" />
         </div>
-        <div>
-          <strong>{result.comments_count}</strong> comments
+        <div className="flex flex-row space-x-1">
+          <strong className="text-slate-500">{result.comments_count}</strong>
+          <ChatIcon className="h-3 w-3 text-slate-300 mt-0.5" />
         </div>
-        <div>{result.submitted_date}</div>
+        <div className="text-slate-600">{result.submitted_date}</div>
       </div>
     </div>
   );

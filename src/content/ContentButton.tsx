@@ -50,14 +50,14 @@ export const ContentButtonWithSideBar = (props: Props) => {
   const { providerData, onClicked } = props;
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
 
-  const openSidebar = () => {
-    setIsSideBarOpen(true);
+  const toggleSideBar = () => {
+    setIsSideBarOpen((open) => !open);
     onClicked();
   };
   const closeSidebar = () => setIsSideBarOpen(false);
 
   // Trigger button on certain hotkeys
-  useHotkeys("cmd+j", openSidebar);
+  useHotkeys("cmd+j", toggleSideBar);
   useHotkeys("esc", closeSidebar);
 
   return (
@@ -65,7 +65,7 @@ export const ContentButtonWithSideBar = (props: Props) => {
       {isSideBarOpen ? (
         <SideBar onClose={closeSidebar} providerData={providerData} />
       ) : (
-        <ContentButton onClicked={openSidebar} providerData={providerData} />
+        <ContentButton onClicked={toggleSideBar} providerData={providerData} />
       )}
     </div>
   );
