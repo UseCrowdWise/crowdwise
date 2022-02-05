@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import ContentButton from "./content/ContentButton";
+import { ContentButtonWithSideBar } from "./content/ContentButton";
 import { ProviderResultType } from "./providers/providers";
-import SideBar from "./content/SideBar";
 
 const mockProviderData = {
   resultType: ProviderResultType.Ok,
@@ -92,7 +91,6 @@ const mockProviderData = {
 };
 
 function App() {
-  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
   return (
     <div className="App">
       <header className="App-header">
@@ -109,17 +107,10 @@ function App() {
           Learn React
         </a>
       </header>
-      {isSideBarOpen ? (
-        <SideBar
-          onClose={() => setIsSideBarOpen(false)}
-          providerData={mockProviderData}
-        />
-      ) : (
-        <ContentButton
-          onClicked={() => setIsSideBarOpen(true)}
-          providerData={mockProviderData}
-        />
-      )}
+      <ContentButtonWithSideBar
+        onClicked={() => {}}
+        providerData={mockProviderData}
+      />
     </div>
   );
 }

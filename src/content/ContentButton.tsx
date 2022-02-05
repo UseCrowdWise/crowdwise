@@ -1,27 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import "./content.css";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ProviderResults } from "../providers/providers";
 import { AcademicCapIcon } from "@heroicons/react/solid";
+import SideBar from "./SideBar";
 
 interface Props {
   onClicked: () => void;
   providerData: ProviderResults;
 }
 
-export default function ContentButton(props: Props) {
+export const ContentButton = (props: Props) => {
   const { providerData, onClicked } = props;
   const numResults =
     providerData.hackerNews.length + providerData.reddit.length;
   const hasResults = numResults > 0;
 
-  // Trigger button on certain hotkeys
-  useHotkeys("cmd+j", () => onClicked());
-
   return (
     <div className="fixed bottom-0 right-0 z-[2000000000]">
       <button
-        data-tooltip-target="tooltip-default"
+        data-tooltip-target="tooltip"
         className="rounded-full text-lg w-12 h-12 mr-6 mb-5 bg-blue-700 text-white hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
         onClick={onClicked}
       >
@@ -37,7 +35,7 @@ export default function ContentButton(props: Props) {
         </div>
       </button>
       <div
-        id="tooltip-default"
+        id="tooltip"
         role="tooltip"
         className="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700"
       >
@@ -46,4 +44,26 @@ export default function ContentButton(props: Props) {
       </div>
     </div>
   );
-}
+};
+
+export const ContentButtonWithSideBar = (props: Props) => {
+  const { providerData } = props;
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
+
+  const openSidebar = () => setIsSideBarOpen(true);
+  const closeSidebar = () => setIsSideBarOpen(false);
+
+  // Trigger button on certain hotkeys
+  useHotkeys("cmd+j", openSidebar);
+  useHotkeys("esc", closeSidebar);
+
+  return (
+    <div>
+      {isSideBarOpen ? (
+        <SideBar onClose={closeSidebar} providerData={providerData} />
+      ) : (
+        <ContentButton onClicked={openSidebar} providerData={providerData} />
+      )}
+    </div>
+  );
+};

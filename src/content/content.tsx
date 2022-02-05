@@ -4,7 +4,7 @@ import "./content.css";
 
 import { log } from "../utils/log";
 
-import ContentButton from "./ContentButton";
+import { ContentButtonWithSideBar } from "./ContentButton";
 import { ProviderResults, ProviderResultType } from "../providers/providers";
 
 /**
@@ -34,7 +34,7 @@ function ContentScriptMain() {
     const getConversationData = async () => {
       chrome.runtime.sendMessage(
         { windowUrl: window.location.href },
-        function (response: ProviderResults) {
+        (response: ProviderResults) => {
           log.debug("Printing provider data from background script...");
           log.debug(response);
           setProviderData(response);
@@ -64,7 +64,12 @@ function ContentScriptMain() {
   //   });
   // }, []);
 
-  return <ContentButton onClicked={onClicked} providerData={providerData} />;
+  return (
+    <ContentButtonWithSideBar
+      onClicked={onClicked}
+      providerData={providerData}
+    />
+  );
 }
 
 /**

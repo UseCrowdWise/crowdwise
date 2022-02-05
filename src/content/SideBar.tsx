@@ -7,7 +7,6 @@ import {
 } from "@heroicons/react/outline";
 
 import ResultCard from "./ResultCard";
-import { useHotkeys } from "react-hotkeys-hook";
 
 interface Props {
   providerData: ProviderResults;
@@ -16,10 +15,6 @@ interface Props {
 
 function SideBar(props: Props) {
   const { providerData, onClose } = props;
-
-  // Close sidebar on esc key press
-  useHotkeys("esc", () => onClose());
-
   return (
     <div className="h-full w-96 fixed bottom-0 right-0 z-[2000000000] overflow-y-auto bg-slate-100 flex flex-col">
       <div className="px-2 space-x-2 items-center text-sm h-10 shrink-0 bg-white border border-slate-300 flex flex-row">
