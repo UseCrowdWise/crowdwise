@@ -5,6 +5,8 @@ import {
   CogIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/outline";
+import hackerNewsLogo from "../assets/hackernews_icon.png";
+import redditLogo from "../assets/reddit_icon.png";
 
 import ResultCard from "./ResultCard";
 
@@ -36,7 +38,7 @@ const SideBar = (props: Props) => {
             <img
               alt="Hacker News Icon"
               className="my-auto h-4 w-4"
-              src="/assets/hackernews_icon.png"
+              src={chrome.runtime.getURL(hackerNewsLogo)}
             />
             <p className="my-1 text-slate-500">Hacker News</p>
           </div>
@@ -49,7 +51,7 @@ const SideBar = (props: Props) => {
             <img
               alt="Reddit Icon"
               className="my-auto h-5 w-5"
-              src="/assets/reddit_icon.png"
+              src={chrome.runtime.getURL(redditLogo)}
             />
             <p className="my-1 text-slate-500">Reddit</p>
           </div>

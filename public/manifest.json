@@ -24,5 +24,9 @@
     }
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["img/*.png", "static/css/content.css"]
+  "web_accessible_resources": [
+    "static/media/*.png",
+    "img/*.png",
+    "static/css/content.css"
+  ]
 }
