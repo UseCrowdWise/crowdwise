@@ -3,7 +3,15 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require("flowbite/plugin")],
+  plugins: [
+    // For tooltips
+    require("flowbite/plugin"),
+    // For styling scroll bars
+    require("tailwind-scrollbar"),
+  ],
+  variants: {
+    scrollbar: ["rounded"],
+  },
   corePlugins: {
     preflight: true,
   },
