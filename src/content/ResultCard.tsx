@@ -9,7 +9,7 @@ interface Props {
 const ResultCard = (props: Props) => {
   const { result } = props;
   return (
-    <div className="p-2 space-y-1 flex flex-col bg-white border border-slate-300 rounded">
+    <div className="p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded">
       <div className="hover:underline text-md font-medium text-blue-800">
         <a href={result.comments_link}>{result.submitted_title}</a>
       </div>
@@ -23,6 +23,8 @@ const ResultCard = (props: Props) => {
           <ChatIcon className="h-3 w-3 text-slate-300 mt-0.5" />
         </div>
         <div className="text-slate-600">{result.submitted_date}</div>
+        <div className="grow" />
+        <div className="text-[10px] text-slate-600">{result.submitted_by}</div>
       </div>
     </div>
   );
