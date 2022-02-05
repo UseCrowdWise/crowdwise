@@ -5,7 +5,7 @@ interface Props {
   result: ResultItem;
 }
 
-function ResultCard(props: Props) {
+const ResultCard = (props: Props) => {
   const { result } = props;
   return (
     <div className="p-2 space-y-1 flex flex-col bg-white border border-slate-300 rounded">
@@ -23,6 +23,6 @@ function ResultCard(props: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default ResultCard;

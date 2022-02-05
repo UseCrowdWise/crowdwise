@@ -47,10 +47,13 @@ export const ContentButton = (props: Props) => {
 };
 
 export const ContentButtonWithSideBar = (props: Props) => {
-  const { providerData } = props;
+  const { providerData, onClicked } = props;
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
 
-  const openSidebar = () => setIsSideBarOpen(true);
+  const openSidebar = () => {
+    setIsSideBarOpen(true);
+    onClicked();
+  };
   const closeSidebar = () => setIsSideBarOpen(false);
 
   // Trigger button on certain hotkeys

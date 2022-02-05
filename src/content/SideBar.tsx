@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
 }
 
-function SideBar(props: Props) {
+const SideBar = (props: Props) => {
   const { providerData, onClose } = props;
   return (
     <div className="h-full w-96 fixed bottom-0 right-0 z-[2000000000] overflow-y-auto bg-slate-100 flex flex-col">
@@ -46,6 +46,6 @@ function SideBar(props: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default SideBar;

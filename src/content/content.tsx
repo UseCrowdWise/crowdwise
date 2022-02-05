@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./content.css";
 
@@ -17,7 +17,7 @@ import { ProviderResults, ProviderResultType } from "../providers/providers";
  * Primarily responsible for displaying the results on the screen and handling user interaction.
  *  * */
 
-function ContentScriptMain() {
+const ContentScriptMain = () => {
   // const [currentUrl, setCurrentUrl] = useState(window.location.href);
   const [providerData, setProviderData] = useState<ProviderResults>({
     resultType: ProviderResultType.Ok,
@@ -26,7 +26,7 @@ function ContentScriptMain() {
   });
 
   // Execute only when the extension button is clicked
-  function onClicked() {
+  const onClicked = () => {
     // Starting useEffect call from content script
     log.debug("Starting call to providers");
 
@@ -43,7 +43,7 @@ function ContentScriptMain() {
     };
     // Actually run the async function
     getConversationData().catch(console.error);
-  }
+  };
 
   // Registers callback to handle new messages from chrome background script
   // useEffect(() => {
@@ -70,7 +70,7 @@ function ContentScriptMain() {
       providerData={providerData}
     />
   );
-}
+};
 
 /**
  * MAIN ENTRY POINT TO DOM BELOW.
