@@ -1,11 +1,9 @@
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./node_modules/flowbite/**/*.js"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
   },
   plugins: [
-    // For tooltips
-    require("flowbite/plugin"),
     // For styling scroll bars
     require("tailwind-scrollbar"),
   ],

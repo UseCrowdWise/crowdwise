@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "version": "0.0.1",
-  "short_name": "Your Extension Name",
-  "name": "Your Extension Name",
+  "short_name": "Page Context",
+  "name": "Page Context",
   "icons": {
     "16": "favicon.ico",
     "48": "logo192.png",
@@ -11,7 +11,7 @@
   "permissions": ["storage", "tabs", "alarms", "activeTab", "<all_urls>"],
   "browser_action": {
     "default_popup": "index.html",
-    "default_title": "Your Extension Name"
+    "default_title": "Page Context"
   },
   "background": {
     "scripts": ["./static/js/background.js"]
