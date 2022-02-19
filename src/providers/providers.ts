@@ -1,13 +1,13 @@
 // Some code used from https://github.com/benwinding/newsit/
 
 // Fetches data from multiple providers given a base URL
-import { cleanUrl } from "tracking-params";
+// import { cleanUrl } from 'tracking-params';
 
-import * as hackernews from "./hackernews";
-import * as reddit from "./reddit";
-import { isBlacklisted } from "./blacklist";
+import * as hackernews from './hackernews';
+import * as reddit from './reddit';
+import { isBlacklisted } from './blacklist';
 
-import { log } from "../utils/log";
+import { log } from '../utils/log';
 
 // All providers must return a list of resultitems
 export interface ResultItem {
@@ -22,8 +22,8 @@ export interface ResultItem {
 }
 
 export enum ProviderResultType {
-  Ok = "OK",
-  Blacklisted = "BLACKLISTED",
+  Ok = 'OK',
+  Blacklisted = 'BLACKLISTED',
 }
 
 export interface ProviderResults {
@@ -39,10 +39,10 @@ export interface ProviderResults {
 export async function fetchDataFromProviders(
   rawUrl: string
 ): Promise<ProviderResults> {
-  log.debug("Starting to fetch provider data.");
+  log.debug('Starting to fetch provider data.');
 
   // Remove tracking params that are definitely not relevant to the site URL
-  const cleanedUrl = cleanUrl(rawUrl);
+  const cleanedUrl = rawUrl; // cleanUrl(rawUrl);
   log.debug(`Dirty URL: ${rawUrl}\nCleaned URL: ${cleanedUrl}`);
 
   // Return early if this URL is blacklisted
@@ -59,11 +59,11 @@ export async function fetchDataFromProviders(
 
   // Call each provider in turn
   const hnResults = await hackernews.getResults(cleanedUrl);
-  log.debug("HN results:");
+  log.debug('HN results:');
   log.debug(hnResults);
 
   const redditResults = await reddit.getResults(cleanedUrl);
-  log.debug("Reddit results:");
+  log.debug('Reddit results:');
   log.debug(redditResults);
 
   return {

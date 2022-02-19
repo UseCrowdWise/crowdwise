@@ -1,14 +1,14 @@
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {},
   },
   plugins: [
     // For styling scroll bars
-    require("tailwind-scrollbar"),
+    require('tailwind-scrollbar'),
   ],
   variants: {
-    scrollbar: ["rounded"],
+    scrollbar: ['rounded'],
   },
   corePlugins: {
     preflight: true,

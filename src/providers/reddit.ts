@@ -1,7 +1,9 @@
 // Some code used from https://github.com/benwinding/newsit/
-import { ResultItem } from "./providers";
-import { cachedApiCall } from "../utils/cache";
-import { log } from "../utils/log";
+import { ResultItem } from './providers';
+import { cachedApiCall } from '../utils/cache';
+import { log } from '../utils/log';
+
+const cheerio = require('cheerio');
 
 // Main function to get all relevant results from Reddit
 export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
@@ -13,63 +15,46 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   //     text: "-",
   //   };
   // }
-  const queryString = "sort=top&q=" + encodeURIComponent("url:" + cleanedUrl);
-  const requestUrl = "https://old.reddit.com/search?" + queryString;
+  const queryString = 'sort=top&q=' + encodeURIComponent('url:' + cleanedUrl);
+  const requestUrl = 'https://old.reddit.com/search?' + queryString;
   const data = await cachedApiCall(requestUrl, false, { minutes: 5 });
-  const html = document.createElement("html");
-  html.innerHTML = data;
-  const results = html.querySelectorAll(".search-result-link");
-  if (results.length === 0) {
-    html.remove();
-    log.debug("Reddit API: No urls matches found");
+
+  const $ = cheerio.load(data);
+  const itemsAll = $('.search-result')
+    .map((i: number, el: Element) => translateRedditToItem($(el).html()))
+    .toArray();
+
+  if (itemsAll.length === 0) {
+    log.debug('Reddit API: No urls matches found');
     return [];
   }
-  const itemsAll = Array.from(results).map(translateRedditToItem);
-  // const itemsResults = processResults(itemsAll, searchUrl);
-  log.debug("Reddit API: parsing api", {
-    response: data,
-    html,
-    resultsHtml: results,
-    resultsTranslated: itemsAll,
-  });
-  html.remove();
+
   return itemsAll;
 }
 
-function translateRedditToItem(el: Element): ResultItem {
-  const url = querySafe<HTMLAnchorElement>(el, ".search-link", "href");
-  const commentsText = querySafe<HTMLAnchorElement>(
-    el,
-    ".search-comments",
-    "text"
-  );
-  const commentsLink = querySafe<HTMLAnchorElement>(
-    el,
-    ".search-comments",
-    "href"
-  );
-  const postTitle = querySafe<HTMLAnchorElement>(el, ".search-title", "text");
-  const postDate = querySafe<HTMLAnchorElement>(
-    el,
-    ".search-time time",
-    "innerText"
-  );
-  const postPointsText = querySafe<HTMLAnchorElement>(
-    el,
-    ".search-score",
-    "innerText"
-  );
-  const postAuthor = querySafe<HTMLAnchorElement>(
-    el,
-    ".search-author a",
-    "text"
-  );
+function translateRedditToItem(html: string): ResultItem {
+  const $ = cheerio.load(html);
+
+  const url = $('.search-link').attr('href');
+  const commentsText = $('.search-comments').text();
+  const commentsLink = $('.search-comments').attr('href');
+  const postTitle = $('.search-title').text();
+  const postDate = $('.search-time time').text();
+  const postPointsText = $('.search-score').text();
+  const postAuthor = $('.author').text();
+  const postAuthorLink = $('.author').attr('href');
+  const subreddit = $('.search-subreddit-link').text();
+  const subredditLink = $('.search-subreddit-link').attr('href');
+
   const commentsCount = parseInt(
-    commentsText?.replace(",", "")?.split(" ")?.shift() || "0"
+    commentsText?.replace(',', '')?.split(' ')?.shift() || '0'
   );
-  const postPoints = parseInt(postPointsText.split(" ").shift() || "0");
+  const postPoints = parseInt(
+    postPointsText?.replace(',', '')?.split(' ')?.shift() || '0'
+  );
+
   const r: ResultItem = {
-    raw_html: el.innerHTML,
+    raw_html: html,
     submitted_url: url,
     submitted_title: postTitle,
     submitted_date: postDate,
@@ -79,14 +64,4 @@ function translateRedditToItem(el: Element): ResultItem {
     comments_link: commentsLink,
   };
   return r;
-}
-
-function querySafe<T extends Element>(
-  el: Element,
-  search: string,
-  attr: keyof T
-): string {
-  const res = el.querySelector(search) as T;
-  const attrVal = res ? res[attr] : "";
-  return attrVal + "";
 }
