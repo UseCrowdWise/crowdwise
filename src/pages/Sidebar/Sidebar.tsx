@@ -38,7 +38,13 @@ const Sidebar = () => {
     });
   }, [setProviderData]);
 
-  const onClose = () => {};
+  const onClose = () => {
+    // Send a message to the extension (alternative: use redux?) to close
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      if (tabs[0].id) {
+        chrome.tabs.sendMessage(tabs[0].id, {closeSideBar: true})
+      }
+    });};
   const onCardClick = () => {};
   const setClickedUrl = () => {};
 
