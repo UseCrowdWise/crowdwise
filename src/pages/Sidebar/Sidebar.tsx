@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   ChevronRightIcon,
   CogIcon,
   QuestionMarkCircleIcon,
-} from '@heroicons/react/outline';
+} from "@heroicons/react/outline";
 
-import './Sidebar.css';
-import { ProviderResults, ProviderResultType } from '../../providers/providers';
-import { log } from '../../utils/log';
-import ResultCard from '../../containers/ResultCard';
+import "./Sidebar.css";
+import { ProviderResults, ProviderResultType } from "../../providers/providers";
+import { log } from "../../utils/log";
+import ResultCard from "../../containers/ResultCard";
+import { useHotkeys } from "react-hotkeys-hook";
+import { sendMessageToActiveTab } from "../../utils/tabs";
+import {
+  HOTKEYS_CLOSE_SIDEBAR,
+  HOTKEYS_TOGGLE_SIDEBAR,
+} from "../../shared/constants";
 
 const Sidebar = () => {
-  console.log('============ IM in Sidebar ============');
+  console.log("============ IM in Sidebar ============");
   const [providerData, setProviderData] = useState<ProviderResults>({
     resultType: ProviderResultType.Ok,
     hackerNews: [],
@@ -19,18 +25,18 @@ const Sidebar = () => {
   });
 
   useEffect(() => {
-    log.debug('Sending message about the window URL');
+    log.debug("Sending message about the window URL");
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       // since only one tab should be active and in the current window at once
       // the return variable should only have one entry
       const activeTab = tabs[0];
       const activeTabUrl = activeTab.url; // or do whatever you need
 
-      log.debug('Active url', activeTabUrl);
+      log.debug("Active url", activeTabUrl);
       chrome.runtime.sendMessage(
         { windowUrl: activeTabUrl },
         (response: ProviderResults) => {
-          log.debug('Printing provider data from background script...');
+          log.debug("Printing provider data from background script...");
           log.debug(response);
           setProviderData(response);
         }
@@ -38,15 +44,17 @@ const Sidebar = () => {
     });
   }, [setProviderData]);
 
-  const onClose = () => {
-    // Send a message to the extension (alternative: use redux?) to close
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      if (tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, {closeSideBar: true})
-      }
-    });};
   const onCardClick = () => {};
   const setClickedUrl = () => {};
+
+  // Send a message to the extension (alternative: use redux?) to close
+  const closeSideBar = () => sendMessageToActiveTab({ closeSideBar: true });
+  const toggleSideBar = () => sendMessageToActiveTab({ toggleSideBar: true });
+
+  // Hotkeys to control the sidebar visibility.
+  // Note: The SideBar is reimplementing the same hotkey shortcuts because it will be within an iFrame
+  useHotkeys(HOTKEYS_TOGGLE_SIDEBAR, toggleSideBar);
+  useHotkeys(HOTKEYS_CLOSE_SIDEBAR, closeSideBar);
 
   return (
     <div className="h-full w-full flex flex-row">
@@ -58,7 +66,7 @@ const Sidebar = () => {
       {/*)}*/}
       <div className="h-screen w-full bg-slate-100 flex flex-col">
         <div className="px-2 space-x-2 items-center text-sm h-10 shrink-0 bg-white border border-slate-300 flex flex-row">
-          <div className="cursor-pointer" onClick={onClose}>
+          <div className="cursor-pointer" onClick={closeSideBar}>
             <ChevronRightIcon className="h-4 w-4 text-slate-500" />
           </div>
           <div className="grow" />

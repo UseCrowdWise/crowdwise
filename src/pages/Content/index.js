@@ -1,10 +1,11 @@
 import { printLine } from "./modules/print";
 import ReactDOM from "react-dom";
-import { APP_NAME_SHORT } from "../../shared/constants";
-import cx from "classnames";
 import React, { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-// import './helpers/SidebarHelper';
+import {
+  HOTKEYS_CLOSE_SIDEBAR,
+  HOTKEYS_TOGGLE_SIDEBAR,
+} from "../../shared/constants";
 
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
@@ -26,17 +27,22 @@ sidebarRoot.setAttribute("id", "vt-sidebar-root");
 const App = () => {
   const [shouldShowSideBar, setShouldShowSideBar] = useState(true);
 
-  // Close the side bar based on incoming message from further down in the component (close arrow)
+  const toggleSideBar = () => setShouldShowSideBar((show) => !show);
+  const closeSideBar = () => setShouldShowSideBar(false);
+
+  // Toggle the side bar based on incoming message from further down in the component (close arrow)
   const handleMessage = (request, sender, sendResponse) => {
-    console.log(
-      sender.tab
-        ? "from a content script:" + sender.tab.url
-        : "from the extension"
-    );
-    if (request.closeSideBar === true) {
-      setShouldShowSideBar((show) => !show);
+    if (request.toggleSideBar === true) {
+      toggleSideBar();
+    } else if (request.closeSideBar === true) {
+      closeSideBar();
     }
   };
+
+  // Hotkeys to control the sidebar visibility.
+  // Note: The SideBar also needs to implement the same hotkey shortcuts because it will be within an iFrame
+  useHotkeys(HOTKEYS_TOGGLE_SIDEBAR, toggleSideBar);
+  useHotkeys(HOTKEYS_CLOSE_SIDEBAR, closeSideBar);
 
   useEffect(() => {
     // Add listener when component mounts
