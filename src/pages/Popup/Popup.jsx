@@ -1,7 +1,6 @@
-import React from 'react';
-import logo from '../../assets/img/logo.svg';
-import Greetings from '../../containers/Greetings/Greetings';
-import './Popup.css';
+import React from "react";
+import logo from "../../assets/img/logo.svg";
+import "./Popup.css";
 
 const Popup = () => {
   return (
@@ -19,8 +18,9 @@ const Popup = () => {
         >
           Learn React!
         </a>
-        <h6 className="text-red-500">The color of this paragraph is defined using Tailwind.</h6>
-        <Greetings />
+        <h6 className="text-red-500">
+          The color of this paragraph is defined using Tailwind.
+        </h6>
       </header>
     </div>
   );

@@ -78,7 +78,7 @@ const App = () => {
             height: "100px",
             backgroundColor: "red",
           }}
-          onClick={() => setShouldShowSideBar((show) => !show)}
+          onClick={toggleSideBar}
         />
       )}
     </div>
