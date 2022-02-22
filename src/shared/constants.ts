@@ -6,3 +6,6 @@ export const SIDEBAR_CONTAINER_ID = `${APP_NAME_SHORT}-sidebar-container`;
 // https://github.com/JohannesKlauss/react-hotkeys-hook
 export const HOTKEYS_TOGGLE_SIDEBAR = "ctrl+/, command+/";
 export const HOTKEYS_CLOSE_SIDEBAR = "esc";
+
+// Chrome storage keys
+export const KEY_SIDEBAR_WIDTH = "sidebar-width";

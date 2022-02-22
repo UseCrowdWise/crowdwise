@@ -5,7 +5,10 @@ import { useHotkeys } from "react-hotkeys-hook";
 import {
   HOTKEYS_CLOSE_SIDEBAR,
   HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_SIDEBAR_WIDTH,
 } from "../../shared/constants";
+import { log } from "../../utils/log";
+import { useChromeStorage } from "../../shared/useChromeStorage";
 
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
@@ -25,7 +28,13 @@ sidebarRoot.setAttribute("id", "vt-sidebar-root");
 // First react component that is rendered onto vt-sidebar-root
 // This had to be a class so we can mount and unmount chrome listeners
 const App = () => {
+  log.debug("App re-render");
+
   const [shouldShowSideBar, setShouldShowSideBar] = useState(true);
+  const [sideBarWidth, setSideBarWidth] = useChromeStorage(
+    KEY_SIDEBAR_WIDTH,
+    24
+  );
 
   const toggleSideBar = () => setShouldShowSideBar((show) => !show);
   const closeSideBar = () => setShouldShowSideBar(false);
@@ -57,7 +66,7 @@ const App = () => {
       <iframe
         title="sidebar-iframe"
         style={{
-          width: shouldShowSideBar ? "auto" : "0",
+          width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
           height: "100vh",
           border: "none",
           borderSizing: "border-box",
@@ -71,12 +80,12 @@ const App = () => {
         <div
           style={{
             position: "fixed",
-            bottom: "10px",
-            right: "10px",
+            bottom: "16px",
+            right: "16px",
             borderRadius: "100%",
-            width: "100px",
-            height: "100px",
-            backgroundColor: "red",
+            width: "64px",
+            height: "64px",
+            backgroundColor: "blue",
           }}
           onClick={toggleSideBar}
         />

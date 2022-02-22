@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import { Popover, Transition } from "@headlessui/react";
 import {
   ChevronRightIcon,
   CogIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/outline";
 
-import "./Sidebar.css";
 import { ProviderResults, ProviderResultType } from "../../providers/providers";
 import { log } from "../../utils/log";
 import ResultCard from "../../containers/ResultCard";
@@ -15,9 +15,11 @@ import {
   HOTKEYS_CLOSE_SIDEBAR,
   HOTKEYS_TOGGLE_SIDEBAR,
 } from "../../shared/constants";
+import { SettingsPanel } from "../../containers/SettingsPanel";
 
 const Sidebar = () => {
-  console.log("============ IM in Sidebar ============");
+  log.debug("Sidebar re-render");
+
   const [providerData, setProviderData] = useState<ProviderResults>({
     resultType: ProviderResultType.Ok,
     hackerNews: [],
@@ -64,15 +66,34 @@ const Sidebar = () => {
       {/*    /!*<iframe src={clickedUrl} title="Selected Article" />*!/*/}
       {/*  </div>*/}
       {/*)}*/}
-      <div className="h-screen w-full bg-slate-100 flex flex-col">
-        <div className="px-2 space-x-2 items-center text-sm h-10 shrink-0 bg-white border border-slate-300 flex flex-row">
+      <div className="h-screen w-full bg-slate-100 border-b border-x border-slate-300 flex flex-col">
+        <div className="px-2 space-x-2 items-center text-sm h-10 shrink-0 bg-white border-b border-slate-300 flex flex-row">
           <div className="cursor-pointer" onClick={closeSideBar}>
             <ChevronRightIcon className="h-4 w-4 text-slate-500" />
           </div>
           <div className="grow" />
-          <div className="cursor-pointer">
-            <CogIcon className="h-5 w-5 text-slate-500" />
-          </div>
+          <Popover className="relative">
+            {({ open }) => (
+              <>
+                <Popover.Button>
+                  <CogIcon className="h-5 w-5 text-slate-500" />
+                </Popover.Button>
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-200"
+                  enterFrom="opacity-0 translate-y-1"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease-in duration-150"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-1"
+                >
+                  <Popover.Panel className="absolute z-10 w-screen max-w-xs px-4 mt-3 transform right-0 sm:px-0 lg:max-w-3xl">
+                    <SettingsPanel />
+                  </Popover.Panel>
+                </Transition>
+              </>
+            )}
+          </Popover>
           <div className="cursor-pointer">
             <QuestionMarkCircleIcon className="h-5 w-5 text-slate-500" />
           </div>
