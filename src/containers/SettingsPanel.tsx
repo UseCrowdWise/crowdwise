@@ -1,16 +1,33 @@
 import { useChromeStorage } from "../shared/useChromeStorage";
-import { KEY_SIDEBAR_WIDTH } from "../shared/constants";
+import {
+  KEY_SIDEBAR_WIDTH,
+  KEY_SIDEBAR_OPACITY,
+  SETTINGS_DEBOUNCE_TIME,
+  DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_SIDEBAR_OPACITY,
+} from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
-import { log } from "../utils/log";
 import React from "react";
 
 export const SettingsPanel = () => {
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
-    24
+    DEFAULT_SIDEBAR_WIDTH
   );
-  if (sideBarWidth === null) return null;
+  const [sideBarOpacity, setSideBarOpacity] = useChromeStorage(
+    KEY_SIDEBAR_OPACITY,
+    DEFAULT_SIDEBAR_OPACITY
+  );
+
+  const setSideBarWidthDebounced = _.debounce((value: any) => {
+    setSideBarWidth(value);
+  }, SETTINGS_DEBOUNCE_TIME);
+  const setSideBarOpacityDebounced = _.debounce((value: any) => {
+    setSideBarOpacity(value);
+  }, SETTINGS_DEBOUNCE_TIME);
+
+  if (sideBarWidth === null || sideBarOpacity === null) return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
       <div className="relative grid gap-4 bg-white p-6">
@@ -19,14 +36,12 @@ export const SettingsPanel = () => {
           <div>Sidebar Width</div>
           <div className="flex flex-col w-full space-y-8">
             <Slider.Root
-              defaultValue={[sideBarWidth]}
               min={20}
               max={48}
               step={1}
+              defaultValue={[sideBarWidth]}
               className="relative flex items-center h-4 select-none"
-              onValueChange={_.debounce((value: any) => {
-                setSideBarWidth(value);
-              }, 400)}
+              onValueChange={setSideBarWidthDebounced}
             >
               <Slider.Track className="relative w-full h-1 bg-neutral-200 dark:bg-whiteAlpha-300 flex-grow-1">
                 <Slider.Range className="absolute h-full rounded-full bg-blue-500 dark:bg-blue-200" />
@@ -39,11 +54,12 @@ export const SettingsPanel = () => {
           <div>Sidebar Opacity</div>
           <div className="flex flex-col w-full space-y-8">
             <Slider.Root
-              defaultValue={[50]}
+              min={20}
+              max={100}
+              step={1}
+              defaultValue={[sideBarOpacity]}
               className="relative flex items-center h-4 select-none"
-              onValueChange={(value) => {
-                log.debug(Math.round(value[0] / 100));
-              }}
+              onValueChange={setSideBarOpacityDebounced}
             >
               <Slider.Track className="relative w-full h-1 bg-neutral-200 dark:bg-whiteAlpha-300 flex-grow-1">
                 <Slider.Range className="absolute h-full rounded-full bg-blue-500 dark:bg-blue-200" />

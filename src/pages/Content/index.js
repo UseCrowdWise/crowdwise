@@ -1,19 +1,19 @@
-import { printLine } from "./modules/print";
 import ReactDOM from "react-dom";
 import React, { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
+  DEFAULT_SIDEBAR_OPACITY,
+  DEFAULT_SIDEBAR_WIDTH,
   HOTKEYS_CLOSE_SIDEBAR,
   HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_WIDTH,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 
-console.log("Content script works!");
-console.log("Must reload extension for modifications to take effect.");
-
-printLine("Using the 'printLine' function from the Print Module");
+log.debug("Content script works!");
+log.debug("Must reload extension for modifications to take effect.");
 
 let sidebarRoot = document.createElement("div");
 sidebarRoot.style["height"] = "100vh";
@@ -33,7 +33,11 @@ const App = () => {
   const [shouldShowSideBar, setShouldShowSideBar] = useState(true);
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
-    24
+    DEFAULT_SIDEBAR_WIDTH
+  );
+  const [sideBarOpacity, setSideBarOpacity] = useChromeStorage(
+    KEY_SIDEBAR_OPACITY,
+    DEFAULT_SIDEBAR_OPACITY
   );
 
   const toggleSideBar = () => setShouldShowSideBar((show) => !show);
@@ -70,11 +74,11 @@ const App = () => {
           height: "100vh",
           border: "none",
           borderSizing: "border-box",
-          opacity: 0.95,
+          opacity: sideBarOpacity / 100,
         }}
         src={chrome.runtime.getURL("sidebar.html")}
         // ref={(frame) => (this.frame = frame)}
-        onLoad={() => console.log("iFrame loaded")}
+        onLoad={() => log.debug("iFrame loaded")}
       />
       {!shouldShowSideBar && (
         <div
