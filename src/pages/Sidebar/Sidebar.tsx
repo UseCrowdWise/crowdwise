@@ -23,6 +23,7 @@ const Sidebar = () => {
     hackerNews: [],
     reddit: [],
   });
+  const [isUpdatingResults, setIsUpdatingResults] = useState<boolean>(false);
 
   // Toggle the side bar based on incoming message from further down in the component (close arrow)
   const handleMessage = (request: any, sender: any, sendResponse: any) => {
@@ -32,11 +33,14 @@ const Sidebar = () => {
     }
   };
 
+  // Actual call to update current results
   const updateProviderData = () => {
+    setIsUpdatingResults(true);
     log.debug("Sending message to background script to update provider info.")
     chrome.runtime.sendMessage(
       { getProviderData: true },
       (response: ProviderResults) => {
+        setIsUpdatingResults(false);
         log.debug("Printing provider data from background script...");
         log.debug(response);
         setProviderData(response);
@@ -70,6 +74,13 @@ const Sidebar = () => {
 
   return (
     <div className="h-full w-full flex flex-row">
+      {isUpdatingResults &&
+        <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
+        <div className="loader ease-linear rounded-full border-4 border-t-4 h-12 w-12 mb-4"></div>
+        <h2 className="text-center text-white text-xl font-semibold">Loading backlinks...</h2>
+        </div>
+        }
+
       {/*{clickedUrl && (*/}
       {/*  <div className="h-full w-[50vw] bg-slate-100 flex flex-col">*/}
       {/*    Hi*/}
@@ -77,6 +88,10 @@ const Sidebar = () => {
       {/*  </div>*/}
       {/*)}*/}
       <div className="h-screen w-full bg-slate-100 flex flex-col">
+
+
+
+
         <div className="px-2 space-x-2 items-center text-sm h-10 shrink-0 bg-white border border-slate-300 flex flex-row">
           <div className="cursor-pointer" onClick={closeSideBar}>
             <ChevronRightIcon className="h-4 w-4 text-slate-500" />

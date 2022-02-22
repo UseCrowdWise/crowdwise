@@ -42,7 +42,7 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   }
   log.debug('HN Results Pre-translation:');
   log.debug(res.hits);
-  const itemsAll = res.hits.map(translateHnToItem);
+  const itemsAll = res.hits?.map(translateHnToItem) || [];
   // Checks that the right URL is submitted
   // const itemsResults = processResults(itemsAll, searchUrlStripped);
   log.debug('Hacker News returned results:', {

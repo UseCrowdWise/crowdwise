@@ -1,8 +1,32 @@
 .SidebarContainer {
-    background-color: rgb(222, 225, 230);
+  background-color: rgb(222, 225, 230);
 }
 
 .SidebarContainer.Dark {
-    color: rgb(167, 167, 167);
-    background-color: rgb(36, 36, 36);
+  color: rgb(167, 167, 167);
+  background-color: rgb(36, 36, 36);
+}
+
+.loader {
+  border-top-color: #3498db;
+  -webkit-animation: spinner 1.5s linear infinite;
+  animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
