@@ -12,6 +12,8 @@ import {
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
+import { ChevronRightIcon } from "@heroicons/react/outline";
+import ReactTooltip from "react-tooltip";
 
 log.debug("Content script works!");
 log.debug("Must reload extension for modifications to take effect.");
@@ -87,18 +89,27 @@ const App = () => {
         onLoad={() => log.debug("iFrame loaded")}
       />
       {!shouldShowSideBar && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "16px",
-            right: "16px",
-            borderRadius: "100%",
-            width: "64px",
-            height: "64px",
-            backgroundColor: "blue",
-          }}
-          onClick={toggleSideBar}
-        />
+        <>
+          <div
+            style={{
+              position: "fixed",
+              bottom: "16px",
+              right: "16px",
+              borderRadius: "100%",
+              width: "64px",
+              height: "64px",
+              backgroundColor: "blue",
+            }}
+            onClick={toggleSideBar}
+          >
+            {/*Height and width needed because no text is given to p tag*/}
+            <p
+              data-tip={hotkeysToggleSidebar.join(", ").replace("+", " + ")}
+              style={{ height: "64px", width: "64px" }}
+            />
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </div>
+        </>
       )}
     </div>
   );
