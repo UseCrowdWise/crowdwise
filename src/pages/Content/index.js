@@ -1,16 +1,22 @@
-import { printLine } from "./modules/print";
 import ReactDOM from "react-dom";
 import React, { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
-  HOTKEYS_CLOSE_SIDEBAR,
-  HOTKEYS_TOGGLE_SIDEBAR,
+  DEFAULT_SIDEBAR_OPACITY,
+  DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
+  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_SIDEBAR_OPACITY,
+  KEY_SIDEBAR_WIDTH,
 } from "../../shared/constants";
+import { log } from "../../utils/log";
+import { useChromeStorage } from "../../shared/useChromeStorage";
+import { ChevronRightIcon } from "@heroicons/react/outline";
+import ReactTooltip from "react-tooltip";
 
-console.log("Content script works!");
-console.log("Must reload extension for modifications to take effect.");
-
-printLine("Using the 'printLine' function from the Print Module");
+log.debug("Content script works!");
+log.debug("Must reload extension for modifications to take effect.");
 
 let sidebarRoot = document.createElement("div");
 sidebarRoot.style["height"] = "100vh";
@@ -25,7 +31,22 @@ sidebarRoot.setAttribute("id", "vt-sidebar-root");
 // First react component that is rendered onto vt-sidebar-root
 // This had to be a class so we can mount and unmount chrome listeners
 const App = () => {
+  log.debug("App re-render");
+
   const [shouldShowSideBar, setShouldShowSideBar] = useState(true);
+  const [sideBarWidth, setSideBarWidth] = useChromeStorage(
+    KEY_SIDEBAR_WIDTH,
+    DEFAULT_SIDEBAR_WIDTH
+  );
+  const [sideBarOpacity, setSideBarOpacity] = useChromeStorage(
+    KEY_SIDEBAR_OPACITY,
+    DEFAULT_SIDEBAR_OPACITY
+  );
+  const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
+    KEY_HOTKEYS_TOGGLE_SIDEBAR,
+    DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+    []
+  );
 
   const toggleSideBar = () => setShouldShowSideBar((show) => !show);
   const closeSideBar = () => setShouldShowSideBar(false);
@@ -41,8 +62,8 @@ const App = () => {
 
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar also needs to implement the same hotkey shortcuts because it will be within an iFrame
-  useHotkeys(HOTKEYS_TOGGLE_SIDEBAR, toggleSideBar);
-  useHotkeys(HOTKEYS_CLOSE_SIDEBAR, closeSideBar);
+  useHotkeys(hotkeysToggleSidebar.join(","), toggleSideBar);
+  useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
   useEffect(() => {
     // Add listener when component mounts
@@ -57,29 +78,38 @@ const App = () => {
       <iframe
         title="sidebar-iframe"
         style={{
-          width: shouldShowSideBar ? "auto" : "0",
+          width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
           height: "100vh",
           border: "none",
           borderSizing: "border-box",
-          opacity: 0.95,
+          opacity: sideBarOpacity / 100,
         }}
         src={chrome.runtime.getURL("sidebar.html")}
         // ref={(frame) => (this.frame = frame)}
-        onLoad={() => console.log("iFrame loaded")}
+        onLoad={() => log.debug("iFrame loaded")}
       />
       {!shouldShowSideBar && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "10px",
-            right: "10px",
-            borderRadius: "100%",
-            width: "100px",
-            height: "100px",
-            backgroundColor: "red",
-          }}
-          onClick={toggleSideBar}
-        />
+        <>
+          <div
+            style={{
+              position: "fixed",
+              bottom: "16px",
+              right: "16px",
+              borderRadius: "100%",
+              width: "64px",
+              height: "64px",
+              backgroundColor: "blue",
+            }}
+            onClick={toggleSideBar}
+          >
+            {/*Height and width needed because no text is given to p tag*/}
+            <p
+              data-tip={hotkeysToggleSidebar.join(", ").replace("+", " + ")}
+              style={{ height: "64px", width: "64px" }}
+            />
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </div>
+        </>
       )}
     </div>
   );
