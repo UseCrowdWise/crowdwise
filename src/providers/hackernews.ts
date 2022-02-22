@@ -3,6 +3,7 @@ import fromNow from 'fromnow';
 import { ResultItem } from './providers';
 import { cachedApiCall } from '../utils/cache';
 import { log } from '../utils/log';
+import { timeSince } from '../utils/time';
 
 interface HnHit {
   url: string;
@@ -53,11 +54,11 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
 }
 
 function translateHnToItem(h: HnHit): ResultItem {
-  const fromNowStr = fromNow(h.created_at);
-  const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
+  const fromNowStr = timeSince(h.created_at);
+  // const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
   return {
     submitted_url: h.url,
-    submitted_date: fromNowFirst,
+    submitted_date: fromNowStr,
     submitted_upvotes: h.points,
     submitted_title: h.title,
     submitted_by: h.author,
