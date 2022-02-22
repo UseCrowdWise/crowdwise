@@ -19,7 +19,6 @@
     "@sindresorhus/to-milliseconds": "^2.0.0",
     "cheerio": "*",
     "classnames": "^2.3.1",
-    "fromnow": "^3.0.1",
     "loglevel": "^1.8.0",
     "loglevel-plugin-prefix": "^0.8.4",
     "re-resizable": "^6.9.1",

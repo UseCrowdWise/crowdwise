@@ -1,5 +1,4 @@
 // Some code used from https://github.com/benwinding/newsit/
-import fromNow from 'fromnow';
 import { ResultItem } from './providers';
 import { cachedApiCall } from '../utils/cache';
 import { log } from '../utils/log';

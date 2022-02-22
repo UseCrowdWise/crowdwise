@@ -27,16 +27,40 @@ export const timeSince = function(date: any) {
                         intervalType = "min";
                     } else {
                         interval = seconds;
-                        intervalType = "now";
+                        intervalType = "s";
                     }
                 }
             }
         }
     }
 
-    if (interval > 1 || interval === 0) {
-        intervalType += 's';
-    }
+    // if (interval > 1 || interval === 0) {
+    //     intervalType += 's';
+    // }
 
-    return interval + ' ' + intervalType;
+    return interval + ' ' + intervalType + ' ago';
 };
+
+
+const timeDescriptionMap = {
+   "years":"y",
+   "year":"y",
+   "months":"mo",
+   "month":"mo",
+   "days":"d",
+   "day":"d",
+   "hours":"h",
+   "hour":"h",
+   "minutes":"min",
+   "minute":"min",
+   "seconds":"s",
+   "second":"s",
+    "just now": "1 s"
+};
+export function replaceTimeStr(str: string): any {
+    return str.replace(/years|year|months|month|days|day|hours|hour|minutes|minute|seconds|second/gi, function(matched: string){
+        // TODO: deal with this later
+        //@ts-ignore
+        return timeDescriptionMap[matched] || "";
+    });
+}
