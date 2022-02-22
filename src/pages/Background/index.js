@@ -25,8 +25,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       )}, tab: ${JSON.stringify(tab)}`
     );
     chrome.tabs.sendMessage(tabId, {
-      message: "tabUrlChanged",
-      url: changeInfo.url,
+      changedUrl: changeInfo.url,
     });
   }
 });
