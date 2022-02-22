@@ -24,24 +24,19 @@ const Sidebar = () => {
     reddit: [],
   });
 
+  // When sidebar loads for the first time, ask for discussion data from providers.
+  // We don't pass our URL to the background script. The script know what URL our tab is.
+  // This avoids race conditions.
   useEffect(() => {
-    log.debug("Sending message about the window URL");
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      // since only one tab should be active and in the current window at once
-      // the return variable should only have one entry
-      const activeTab = tabs[0];
-      const activeTabUrl = activeTab.url; // or do whatever you need
-
-      log.debug("Active url", activeTabUrl);
+      log.debug("Sending message to background script to update provider info.")
       chrome.runtime.sendMessage(
-        { windowUrl: activeTabUrl },
+        { getProviderData: true },
         (response: ProviderResults) => {
           log.debug("Printing provider data from background script...");
           log.debug(response);
           setProviderData(response);
         }
       );
-    });
   }, [setProviderData]);
 
   const onCardClick = () => {};
