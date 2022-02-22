@@ -42,8 +42,13 @@ export async function fetchDataFromProviders(
   log.debug('Starting to fetch provider data.');
 
   // Remove tracking params that are definitely not relevant to the site URL
-  const cleanedUrl = rawUrl; // cleanUrl(rawUrl);
-  log.debug(`Dirty URL: ${rawUrl}\nCleaned URL: ${cleanedUrl}`);
+  const trackingCleanedUrl = rawUrl; // cleanUrl(rawUrl);
+  log.debug(`Dirty URL: ${rawUrl}\nTracking Cleaned URL: ${trackingCleanedUrl}`);
+
+  // Remove http, https, www
+  let cleanedUrl  = trackingCleanedUrl.replace(/^https?:\/\//, "")
+  cleanedUrl  = cleanedUrl.replace(/www\./, "")
+  log.debug(`Tracking cleaned URL ${trackingCleanedUrl}\nFINAL Cleaned URL: ${cleanedUrl}`);
 
   // Return early if this URL is blacklisted
   if (isBlacklisted(cleanedUrl)) {
