@@ -2,6 +2,7 @@
 import { ResultItem } from './providers';
 import { cachedApiCall } from '../utils/cache';
 import { log } from '../utils/log';
+import { replaceTimeStr } from '../utils/time';
 
 const cheerio = require('cheerio');
 
@@ -39,7 +40,7 @@ function translateRedditToItem(html: string): ResultItem {
   const commentsText = $('.search-comments').text();
   const commentsLink = $('.search-comments').attr('href');
   const postTitle = $('.search-title').text();
-  const postDate = $('.search-time time').text();
+  const postDate = replaceTimeStr($('.search-time time').text());
   const postPointsText = $('.search-score').text();
   const postAuthor = $('.author').text();
   const postAuthorLink = $('.author').attr('href');

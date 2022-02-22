@@ -1,8 +1,8 @@
 // Some code used from https://github.com/benwinding/newsit/
-import fromNow from 'fromnow';
 import { ResultItem } from './providers';
 import { cachedApiCall } from '../utils/cache';
 import { log } from '../utils/log';
+import { timeSince } from '../utils/time';
 
 interface HnHit {
   url: string;
@@ -42,7 +42,7 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   }
   log.debug('HN Results Pre-translation:');
   log.debug(res.hits);
-  const itemsAll = res.hits.map(translateHnToItem);
+  const itemsAll = res.hits?.map(translateHnToItem) || [];
   // Checks that the right URL is submitted
   // const itemsResults = processResults(itemsAll, searchUrlStripped);
   log.debug('Hacker News returned results:', {
@@ -53,11 +53,11 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
 }
 
 function translateHnToItem(h: HnHit): ResultItem {
-  const fromNowStr = fromNow(h.created_at);
-  const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
+  const fromNowStr = timeSince(h.created_at);
+  // const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
   return {
     submitted_url: h.url,
-    submitted_date: fromNowFirst,
+    submitted_date: fromNowStr,
     submitted_upvotes: h.points,
     submitted_title: h.title,
     submitted_by: h.author,

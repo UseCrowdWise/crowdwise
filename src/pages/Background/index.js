@@ -1,5 +1,5 @@
-import { fetchDataFromProviders } from '../../providers/providers';
-import { log } from '../../utils/log';
+import { fetchDataFromProviders } from "../../providers/providers";
+import { log } from "../../utils/log";
 
 /**
  * BACKGROUND SCRIPT.
@@ -13,7 +13,7 @@ import { log } from '../../utils/log';
 
 /**
  * Respond every time a tab is updated in some way.
- * Specifically used to tell content scripts that the URL has changed without a full page reload.
+ * Specifically used to tell content scripts that the URL has changed without a full page reload occuring.
  * For instance, routing within a single-page app.
  * */
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -25,18 +25,18 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       )}, tab: ${JSON.stringify(tab)}`
     );
     chrome.tabs.sendMessage(tabId, {
-      message: 'tabUrlChanged',
-      url: changeInfo.url,
+      changedUrl: changeInfo.url,
     });
   }
 });
 
 /**
- * Handle messages from chrome tabs.
+ * Handle provider data request from content script.
+ * Passes information to handleOnMessage
  * */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   handleOnMessage(request, sender).then((data) => {
-    log.debug('Sending response data to content script: ');
+    log.debug("Sending response data to content script: ");
     log.debug(data);
     sendResponse(data);
   });
@@ -44,17 +44,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 async function handleOnMessage(request, sender) {
-  log.debug('Background script received message...');
+  log.debug("Background script received message...");
   log.debug(
     sender.tab
-      ? 'from a content script at tab URL:' + sender.tab.url
-      : 'from the extension'
+      ? "from a content script at tab URL:" + sender.tab.url
+      : "NOT from a tab"
   );
   // Received from a tab (content script)
   if (sender.tab) {
     // Ask providers for any relevant posts/comments
-    const data = await fetchDataFromProviders(request.windowUrl);
-    log.debug('Background script: printing provider data...');
+    const data = await fetchDataFromProviders(sender.tab.url);
+    log.debug("Background script: printing provider data...");
     log.debug(data);
     return data;
   }
@@ -62,4 +62,4 @@ async function handleOnMessage(request, sender) {
 }
 
 // After all listeners are registered
-log.debug('Background script initialized!');
+log.debug("Background script initialized!");

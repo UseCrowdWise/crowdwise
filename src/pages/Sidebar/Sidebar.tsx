@@ -28,6 +28,7 @@ const Sidebar = () => {
     hackerNews: [],
     reddit: [],
   });
+  const [isUpdatingResults, setIsUpdatingResults] = useState<boolean>(false);
 
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
     KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -35,25 +36,39 @@ const Sidebar = () => {
     []
   );
 
-  useEffect(() => {
-    log.debug("Sending message about the window URL");
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      // since only one tab should be active and in the current window at once
-      // the return variable should only have one entry
-      const activeTab = tabs[0];
-      const activeTabUrl = activeTab.url; // or do whatever you need
+  // Toggle the side bar based on incoming message from further down in the component (close arrow)
+  const handleMessage = (request: any, sender: any, sendResponse: any) => {
+    log.debug("Content script received message that our tab's URL changed.");
+    if (request.changedUrl) {
+      updateProviderData();
+    }
+  };
 
-      log.debug("Active url", activeTabUrl);
-      chrome.runtime.sendMessage(
-        { windowUrl: activeTabUrl },
-        (response: ProviderResults) => {
-          log.debug("Printing provider data from background script...");
-          log.debug(response);
-          setProviderData(response);
-        }
-      );
-    });
-  }, [setProviderData]);
+  // Actual call to update current results
+  const updateProviderData = () => {
+    setIsUpdatingResults(true);
+    log.debug("Sending message to background script to update provider info.");
+    chrome.runtime.sendMessage(
+      { getProviderData: true },
+      (response: ProviderResults) => {
+        setIsUpdatingResults(false);
+        log.debug("Printing provider data from background script...");
+        log.debug(response);
+        setProviderData(response);
+      }
+    );
+  };
+
+  // When sidebar loads for the first time, ask for discussion data from providers.
+  // We don't pass our URL to the background script. The script know what URL our tab is.
+  // This avoids race conditions.
+  useEffect(() => {
+    // Add listener when component mounts
+    chrome.runtime.onMessage.addListener(handleMessage);
+
+    // Update provider info immediately at the start
+    updateProviderData();
+  }, []);
 
   const onCardClick = () => {};
   const setClickedUrl = () => {};
@@ -69,6 +84,15 @@ const Sidebar = () => {
 
   return (
     <div className="h-full w-full flex flex-row">
+      {isUpdatingResults && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
+          <div className="loader ease-linear rounded-full border-4 border-t-4 h-12 w-12 mb-4"></div>
+          <h2 className="text-center text-white text-xl font-semibold">
+            Loading backlinks...
+          </h2>
+        </div>
+      )}
+
       {/*{clickedUrl && (*/}
       {/*  <div className="h-full w-[50vw] bg-slate-100 flex flex-col">*/}
       {/*    Hi*/}

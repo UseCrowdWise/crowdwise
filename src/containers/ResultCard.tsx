@@ -15,6 +15,8 @@ const ResultCard = (props: Props) => {
         <a
           href={result.comments_link}
           onClick={() => onCardClick(result.comments_link)}
+          target="_blank"
+          rel="noreferrer"
         >
           {result.submitted_title}
         </a>
