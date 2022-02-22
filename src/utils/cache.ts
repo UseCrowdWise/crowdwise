@@ -25,26 +25,53 @@ export async function cachedApiCall(
   isJson: boolean = true,
   duration: TimeDescriptor
 ) {
-  // const cacheRes = await cache.get(url);
-  // if (cacheRes === undefined) {
-  log.debug(`URL ${url} NOT found in cache!`);
-  const res = await callApi(url, isJson);
-  log.debug(
-    `URL ${url} data fetched and storing in cache for duration: ${JSON.stringify(
-      duration
-    )}!`
-  );
-  // cache.set(url, res, duration);
-  log.debug(
-    `URL ${url} data stored in cache for duration: ${JSON.stringify(duration)}!`
-  );
-  return res;
-  // } else {
-  //   // Data is in cache and not expired
-  //   const res = await cache.get(url);
-  //   log.debug(`URL ${url} found in cache!`);
-  //   return res;
-  // }
+  const cacheRes = await readCache(url);
+  if (cacheRes === undefined) {
+    log.debug(`URL ${url} NOT found in cache!`);
+    const res = await callApi(url, isJson);
+    log.debug(
+      `URL ${url} data fetched and storing in cache for duration: ${JSON.stringify(
+        duration
+      )}!`
+    );
+    // TODO duration
+    await writeCache(url, res);
+    log.debug(
+      `URL ${url} data stored in cache for duration: ${JSON.stringify(duration)}!`
+    );
+    return res;
+  } else {
+    // Data is in cache and not expired
+    log.debug(`URL ${url} found in cache!`);
+    return cacheRes;
+  }
 }
+
+/**
+ * Get data for associated URL from cache, and removes the object if it expired.
+ * */
+export function readCache(key: string) {
+  log.debug(`Cache reading key ${key}`)
+  return new Promise<any>((resolve, reject) => {
+    chrome.storage.local.get(key, function (result) {
+        log.debug(`Cache reading complete!`)
+        resolve(result[key]);
+    });
+  });
+}
+
+/**
+ * Get data for associated URL from cache, and removes the object if it expired.
+ * */
+export function writeCache(key: string, value: any) {
+  log.debug(`Cache writing key ${key}`)
+  return new Promise<void>((resolve, reject) => {
+    chrome.storage.local.set({[key]: value}, function () {
+      log.debug(`Cache writing complete!`)
+      resolve();
+    });
+  });
+}
+
 
 export { type TimeDescriptor };
