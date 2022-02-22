@@ -19,6 +19,7 @@ import {
 import { SettingsPanel } from "../../containers/SettingsPanel";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
+import "./Sidebar.css";
 
 const Sidebar = () => {
   log.debug("Sidebar re-render");
