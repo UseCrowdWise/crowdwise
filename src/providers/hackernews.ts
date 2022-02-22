@@ -3,6 +3,7 @@ import { ResultItem } from './providers';
 import { cachedApiCall } from '../utils/cache';
 import { log } from '../utils/log';
 import { timeSince } from '../utils/time';
+import { CACHE_URL_DURATION_SEC } from '../shared/constants'
 
 interface HnHit {
   url: string;
@@ -33,9 +34,7 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   const encodedUrl = encodeURIComponent(cleanedUrl);
   const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url`;
   const requestUrl = 'https://hn.algolia.com/api/v1/search?' + queryString;
-  const res: HnJsonResult = await cachedApiCall(requestUrl, true, {
-    minutes: 5,
-  });
+  const res: HnJsonResult = await cachedApiCall(requestUrl, true, CACHE_URL_DURATION_SEC);
   if (res.nbHits === 0) {
     log.debug('Hacker News API: No urls found');
     return [];

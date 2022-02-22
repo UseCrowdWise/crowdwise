@@ -15,3 +15,7 @@ export const DEFAULT_HOTKEYS_CLOSE_SIDEBAR = ["esc"];
 export const KEY_HOTKEYS_TOGGLE_SIDEBAR = "hotkeys-toggle-sidebar";
 export const KEY_SIDEBAR_WIDTH = "sidebar-width";
 export const KEY_SIDEBAR_OPACITY = "sidebar-opacity";
+
+// Cache settings
+export const CACHE_URL_DURATION_SEC = 60
+export const CACHE_CLEAR_ALARM_INTERVAL = 30

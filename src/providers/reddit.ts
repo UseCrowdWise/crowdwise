@@ -3,6 +3,7 @@ import { ResultItem } from './providers';
 import { cachedApiCall } from '../utils/cache';
 import { log } from '../utils/log';
 import { replaceTimeStr } from '../utils/time';
+import { CACHE_URL_DURATION_SEC } from '../shared/constants'
 
 const cheerio = require('cheerio');
 
@@ -18,7 +19,7 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   // }
   const queryString = 'sort=top&q=' + encodeURIComponent('url:' + cleanedUrl);
   const requestUrl = 'https://old.reddit.com/search?' + queryString;
-  const data = await cachedApiCall(requestUrl, false, { minutes: 5 });
+  const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
   const $ = cheerio.load(data);
   const itemsAll = $('.search-result')

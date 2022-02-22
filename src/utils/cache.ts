@@ -23,21 +23,21 @@ import toMilliseconds, { TimeDescriptor } from '@sindresorhus/to-milliseconds';
 export async function cachedApiCall(
   url: string,
   isJson: boolean = true,
-  duration: TimeDescriptor
+  durationSec: number
 ) {
-  const cacheRes = await readCache(url);
+  const cacheRes = await readFromCache(url);
   if (cacheRes === undefined) {
     log.debug(`URL ${url} NOT found in cache!`);
     const res = await callApi(url, isJson);
     log.debug(
       `URL ${url} data fetched and storing in cache for duration: ${JSON.stringify(
-        duration
-      )}!`
+        durationSec
+      )} seconds!`
     );
     // TODO duration
-    await writeCache(url, res);
+    await writeToCache(url, res, durationSec);
     log.debug(
-      `URL ${url} data stored in cache for duration: ${JSON.stringify(duration)}!`
+      `URL ${url} data stored in cache for duration: ${JSON.stringify(durationSec)} seconds!`
     );
     return res;
   } else {
@@ -50,27 +50,48 @@ export async function cachedApiCall(
 /**
  * Get data for associated URL from cache, and removes the object if it expired.
  * */
-export function readCache(key: string) {
+export function readFromCache(key: string) {
   log.debug(`Cache reading key ${key}`)
   return new Promise<any>((resolve, reject) => {
     chrome.storage.local.get(key, function (result) {
-        log.debug(`Cache reading complete!`)
-        resolve(result[key]);
+      log.debug(`Cache reading complete!`)
+      const res = result[key];
+      if (res === undefined) {
+        resolve(res)
+      } else {
+        if (isExpiredCacheEntry(res)) {
+          log.warn("Cache value is expired!")
+          chrome.storage.local.remove(key, () => resolve(undefined));
+        } else {
+          resolve(res.data);
+        }
+      }
     });
   });
 }
 
+
 /**
- * Get data for associated URL from cache, and removes the object if it expired.
+ * Write data for associated URL to cache.
  * */
-export function writeCache(key: string, value: any) {
+export function writeToCache(key: string, value: any, durationSec: number) {
   log.debug(`Cache writing key ${key}`)
+  // TODO create a type for this
+  const now = new Date().valueOf();
+  const cacheData = { data: value, cachedTime: now, maxDuration: durationSec }
   return new Promise<void>((resolve, reject) => {
-    chrome.storage.local.set({[key]: value}, function () {
+    chrome.storage.local.set({[key]: cacheData}, function () {
       log.debug(`Cache writing complete!`)
       resolve();
     });
   });
+}
+
+export function isExpiredCacheEntry(entry: any): boolean {
+  const timeDiffSec =  ((new Date()).valueOf() - entry.cachedTime) / 1000;
+  log.debug(`Cache entry has been around for ${timeDiffSec} seconds, max allowed duration is ${entry.maxDuration}`)
+  const isExpired = timeDiffSec > entry.maxDuration
+  return isExpired;
 }
 
 
