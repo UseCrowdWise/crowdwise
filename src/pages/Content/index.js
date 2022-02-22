@@ -4,8 +4,9 @@ import { useHotkeys } from "react-hotkeys-hook";
 import {
   DEFAULT_SIDEBAR_OPACITY,
   DEFAULT_SIDEBAR_WIDTH,
-  HOTKEYS_CLOSE_SIDEBAR,
-  HOTKEYS_TOGGLE_SIDEBAR,
+  DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
+  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_WIDTH,
 } from "../../shared/constants";
@@ -39,6 +40,11 @@ const App = () => {
     KEY_SIDEBAR_OPACITY,
     DEFAULT_SIDEBAR_OPACITY
   );
+  const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
+    KEY_HOTKEYS_TOGGLE_SIDEBAR,
+    DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+    []
+  );
 
   const toggleSideBar = () => setShouldShowSideBar((show) => !show);
   const closeSideBar = () => setShouldShowSideBar(false);
@@ -54,8 +60,8 @@ const App = () => {
 
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar also needs to implement the same hotkey shortcuts because it will be within an iFrame
-  useHotkeys(HOTKEYS_TOGGLE_SIDEBAR, toggleSideBar);
-  useHotkeys(HOTKEYS_CLOSE_SIDEBAR, closeSideBar);
+  useHotkeys(hotkeysToggleSidebar.join(","), toggleSideBar);
+  useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
   useEffect(() => {
     // Add listener when component mounts

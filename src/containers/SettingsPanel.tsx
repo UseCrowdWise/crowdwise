@@ -5,12 +5,49 @@ import {
   SETTINGS_DEBOUNCE_TIME,
   DEFAULT_SIDEBAR_WIDTH,
   DEFAULT_SIDEBAR_OPACITY,
+  KEY_HOTKEYS_TOGGLE_SIDEBAR,
+  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
 import React from "react";
+import { log } from "../utils/log";
+import { useHotkeysPressed } from "../shared/useHotkeysPressed";
+
+const HotkeyButton = () => {
+  const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
+    KEY_HOTKEYS_TOGGLE_SIDEBAR,
+    DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+    []
+  );
+
+  log.debug("Hotkey Button rerender", hotkeysToggleSidebar);
+
+  const onKeyPressed = (keys: string[]) => {
+    log.debug("Key pressed", [keys.join("+")]);
+    setHotkeysToggleSidebar([keys.join("+")]);
+  };
+
+  const { ref, hotkeysHistory } = useHotkeysPressed<HTMLButtonElement>(
+    200,
+    onKeyPressed
+  );
+  log.debug(hotkeysHistory.map((h) => h.key));
+  return (
+    <>
+      <button
+        ref={ref}
+        className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        {hotkeysToggleSidebar.join(", ").replace("+", " + ")}
+      </button>
+    </>
+  );
+};
 
 export const SettingsPanel = () => {
+  log.debug("Settings Panel rerender");
+
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
     DEFAULT_SIDEBAR_WIDTH
@@ -66,6 +103,18 @@ export const SettingsPanel = () => {
               </Slider.Track>
               <Slider.Thumb className="block w-5 h-5 bg-white border rounded-full border-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
             </Slider.Root>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div>Keyboard Shortcuts</div>
+          <div className="text-xs text-slate-400">
+            Click on the keyboard shortcuts on the right to change them. Refresh
+            to see the changes.
+          </div>
+          <div className="items-center flex flex-row">
+            <div>Toggle Open</div>
+            <div className="grow" />
+            <HotkeyButton />
           </div>
         </div>
       </div>

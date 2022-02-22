@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { sendMessageToActiveTab } from "../utils/tabs";
 
-export const useChromeStorage = (storageKey: string, defaultValue: any) => {
-  const [data, setData] = useState<any>(null);
+export const useChromeStorage = (
+  storageKey: string,
+  defaultValue: any,
+  loadingValue: any = null
+) => {
+  const [data, setData] = useState<any>(loadingValue);
 
   const setStorageData = (newData: any) => {
     const payload = {
