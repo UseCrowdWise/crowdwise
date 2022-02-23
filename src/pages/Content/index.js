@@ -95,7 +95,8 @@ const App = () => {
       <iframe
         title="sidebar-iframe"
         style={{
-          width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
+          width:
+            shouldShowSideBar && !isFullscreen ? `${sideBarWidth}rem` : "0",
           height: "100vh",
           border: "none",
           borderSizing: "border-box",
