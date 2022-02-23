@@ -10,7 +10,9 @@ interface Props {
 const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
   return (
-    <div className="p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded">
+    <div className="p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded"  onClick={() => onCardClick(result.comments_link)}>
+
+
       <div className="hover:underline text-md font-medium text-blue-800">
         <a
           href={result.comments_link}
