@@ -9,6 +9,8 @@ import {
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_WIDTH,
+  KEY_HIDE_CONTENT_BUTTON,
+  DEFAULT_HIDE_CONTENT_BUTTON,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -34,7 +36,7 @@ sidebarRoot.setAttribute("id", "vt-sidebar-root");
 const App = () => {
   log.debug("App re-render");
 
-  const [shouldShowSideBar, setShouldShowSideBar] = useState(true);
+  const [userOpenedSideBar, setUserOpenedSideBar] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
@@ -49,9 +51,13 @@ const App = () => {
     DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
     []
   );
+  const [hideContentButton, setHideContentButton] = useChromeStorage(
+    KEY_HIDE_CONTENT_BUTTON,
+    DEFAULT_HIDE_CONTENT_BUTTON
+  );
 
-  const toggleSideBar = () => setShouldShowSideBar((show) => !show);
-  const closeSideBar = () => setShouldShowSideBar(false);
+  const toggleSideBar = () => setUserOpenedSideBar((show) => !show);
+  const closeSideBar = () => setUserOpenedSideBar(false);
 
   // Toggle the side bar based on incoming message from further down in the component (close arrow)
   const handleMessage = (request, sender, sendResponse) => {
@@ -91,46 +97,59 @@ const App = () => {
     };
   }, []);
 
-  // Don't display anything when it's full screen
-  if (isFullscreen) return null;
+  // NOTE: Do not do things such as this as it will force a re-render
+  // if (isFullscreen) return null;
 
-  return shouldShowSideBar ? (
-    <iframe
-      title="sidebar-iframe"
-      style={{
-        width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
-        height: "100vh",
-        border: "none",
-        borderSizing: "border-box",
-        opacity: sideBarOpacity / 100,
-      }}
-      src={chrome.runtime.getURL("sidebar.html")}
-      onLoad={() => log.debug("iFrame loaded")}
-    />
-  ) : (
-    <div
-      className="allUnset"
-      style={{
-        position: "fixed",
-        bottom: "16px",
-        right: "16px",
-        borderRadius: "100%",
-        width: "64px",
-        height: "64px",
-        backgroundColor: "blue",
-      }}
-      onClick={toggleSideBar}
-    >
-      {/*Height and width needed because no text is given to p tag*/}
-      <p
-        data-tip={hotkeysToggleSidebar.join(", ").replaceAll("+", " + ")}
-        className="resetSpacing"
+  // Don't display anything when it's full screen
+  const shouldShowSideBar = !isFullscreen && userOpenedSideBar;
+  const shouldShowContentButton =
+    !isFullscreen && !shouldShowSideBar && !hideContentButton;
+
+  const contentButtonTooltip =
+    hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
+    "  (Change settings to hide this button)";
+
+  return (
+    <div className="allUnset">
+      {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
+      <iframe
+        title="sidebar-iframe"
         style={{
-          height: "64px",
-          width: "64px",
+          width: userOpenedSideBar ? `${sideBarWidth}rem` : "0",
+          height: "100vh",
+          border: "none",
+          borderSizing: "border-box",
+          opacity: sideBarOpacity / 100,
         }}
+        src={chrome.runtime.getURL("sidebar.html")}
+        onLoad={() => log.debug("iFrame loaded")}
       />
-      <ReactTooltip place="top" type="dark" effect="solid" />
+      {shouldShowContentButton && (
+        <div
+          className="allUnset"
+          style={{
+            position: "fixed",
+            bottom: "16px",
+            right: "16px",
+            borderRadius: "100%",
+            width: "64px",
+            height: "64px",
+            backgroundColor: "blue",
+          }}
+          onClick={toggleSideBar}
+        >
+          {/*Height and width needed because no text is given to p tag*/}
+          <p
+            data-tip={contentButtonTooltip}
+            className="resetSpacing"
+            style={{
+              height: "64px",
+              width: "64px",
+            }}
+          />
+          <ReactTooltip place="top" type="dark" effect="solid" />
+        </div>
+      )}
     </div>
   );
 };
