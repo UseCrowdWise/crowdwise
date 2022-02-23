@@ -62,6 +62,7 @@ function translateRedditToItem(html: string): ResultItem {
     submitted_date: postDate,
     submitted_upvotes: postPoints,
     submitted_by: postAuthor,
+    submitted_by_link: postAuthorLink,
     comments_count: commentsCount,
     comments_link: commentsLink,
     sub_source_name: subreddit,

@@ -39,7 +39,9 @@ const ResultCard = (props: Props) => {
         </div>
         <div className="text-slate-600">{result.submitted_date}</div>
         <div className="grow" />
-        <div className="text-[10px] text-slate-600">{result.submitted_by}</div>
+        <div className="hover:underline text-[10px] text-slate-600">
+        <a href={result.submitted_by_link} target="_blank" onClick={(e) => e.stopPropagation()}>{result.submitted_by}</a>
+        </div>
       </div>
     </div>
   );
