@@ -64,6 +64,8 @@ function translateRedditToItem(html: string): ResultItem {
     submitted_by: postAuthor,
     comments_count: commentsCount,
     comments_link: commentsLink,
+    sub_source_name: subreddit,
+    sub_source_link: subredditLink
   };
   return r;
 }
