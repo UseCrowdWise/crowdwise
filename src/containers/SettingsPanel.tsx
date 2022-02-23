@@ -37,7 +37,11 @@ const HotkeyButton = () => {
     <>
       <button
         ref={ref}
-        className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="
+        inline-flex items-center rounded border border-gray-300
+        bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm
+        hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+        "
       >
         {hotkeysToggleSidebar.join(", ").replaceAll("+", " + ")}
       </button>
@@ -71,37 +75,37 @@ export const SettingsPanel = () => {
         <div className="text-lg font-semibold">Change settings</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
-          <div className="flex flex-col w-full space-y-8">
+          <div className="flex w-full flex-col space-y-8">
             <Slider.Root
               min={20}
               max={48}
               step={1}
               defaultValue={[sideBarWidth]}
-              className="relative flex items-center h-4 select-none"
+              className="relative flex h-4 select-none items-center"
               onValueChange={setSideBarWidthDebounced}
             >
-              <Slider.Track className="relative w-full h-1 bg-neutral-200 dark:bg-whiteAlpha-300 flex-grow-1">
+              <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
                 <Slider.Range className="absolute h-full rounded-full bg-blue-500 dark:bg-blue-200" />
               </Slider.Track>
-              <Slider.Thumb className="block w-5 h-5 bg-white border rounded-full border-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </Slider.Root>
           </div>
         </div>
         <div className="space-y-2">
           <div>Sidebar Opacity</div>
-          <div className="flex flex-col w-full space-y-8">
+          <div className="flex w-full flex-col space-y-8">
             <Slider.Root
               min={20}
               max={100}
               step={1}
               defaultValue={[sideBarOpacity]}
-              className="relative flex items-center h-4 select-none"
+              className="relative flex h-4 select-none items-center"
               onValueChange={setSideBarOpacityDebounced}
             >
-              <Slider.Track className="relative w-full h-1 bg-neutral-200 dark:bg-whiteAlpha-300 flex-grow-1">
+              <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
                 <Slider.Range className="absolute h-full rounded-full bg-blue-500 dark:bg-blue-200" />
               </Slider.Track>
-              <Slider.Thumb className="block w-5 h-5 bg-white border rounded-full border-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </Slider.Root>
           </div>
         </div>
@@ -111,7 +115,7 @@ export const SettingsPanel = () => {
             Click on the keyboard shortcuts on the right to change them. Refresh
             to see the changes.
           </div>
-          <div className="items-center flex flex-row">
+          <div className="flex flex-row items-center">
             <div>Toggle Open</div>
             <div className="grow" />
             <HotkeyButton />

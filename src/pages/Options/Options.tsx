@@ -7,7 +7,7 @@ interface Props {
 
 const Options: React.FC<Props> = ({ title }: Props) => {
   return (
-    <div className="w-64 pt-16 mx-auto">
+    <div className="mx-auto w-64 pt-16">
       <SettingsPanel />
     </div>
   );

@@ -1,17 +1,17 @@
 .allUnset {
-    all: unset;
+  all: unset;
 }
 
 .resetSpacing {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .__react_component_tooltip {
-    margin: 0;
-    width: auto;
+  margin: 0;
+  width: auto;
 }
 
 .__react_component_tooltip .place-left {
-    margin: 0 5px 0 0;
+  margin: 0 5px 0 0;
 }

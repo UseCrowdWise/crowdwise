@@ -11,45 +11,45 @@ const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
   return (
     <div
-      className="cursor-pointer p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded"
-      onClick={() => onCardClick(result.comments_link)}
+      className="flex cursor-pointer flex-col space-y-2 rounded border border-slate-300 bg-white p-3"
+      onClick={() => onCardClick(result.commentsLink)}
     >
-      {result.sub_source_name !== "" && (
+      {result.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
-          <div className="hover:underline text-md font-medium text-slate-500">
+          <div className="text-md font-medium text-slate-500 hover:underline">
             <a
-              href={result.sub_source_link}
+              href={result.subSourceLink}
               target="_blank"
               onClick={(e) => e.stopPropagation()}
             >
-              {result.sub_source_name}
+              {result.subSourceName}
             </a>
           </div>
         </div>
       )}
-      <div className="hover:underline text-md font-medium text-blue-800">
-        <a href={result.comments_link} target="_blank" rel="noreferrer">
-          {result.submitted_title}
+      <div className="text-md font-medium text-blue-800 hover:underline">
+        <a href={result.commentsLink} target="_blank" rel="noreferrer">
+          {result.submittedTitle}
         </a>
       </div>
-      <div className="text-xs space-x-3 flex flex-row">
+      <div className="flex flex-row space-x-3 text-xs">
         <div className="flex flex-row space-x-1">
-          <strong className="text-slate-500">{result.submitted_upvotes}</strong>
-          <ThumbUpIcon className="h-3 w-3 text-slate-300 mt-0.5" />
+          <strong className="text-slate-500">{result.submittedUpvotes}</strong>
+          <ThumbUpIcon className="mt-0.5 h-3 w-3 text-slate-300" />
         </div>
         <div className="flex flex-row space-x-1">
-          <strong className="text-slate-500">{result.comments_count}</strong>
-          <ChatIcon className="h-3 w-3 text-slate-300 mt-0.5" />
+          <strong className="text-slate-500">{result.commentsCount}</strong>
+          <ChatIcon className="mt-0.5 h-3 w-3 text-slate-300" />
         </div>
-        <div className="text-slate-600">{result.submitted_date}</div>
+        <div className="text-slate-600">{result.submittedDate}</div>
         <div className="grow" />
-        <div className="hover:underline text-[10px] text-slate-600">
+        <div className="text-[10px] text-slate-600 hover:underline">
           <a
-            href={result.submitted_by_link}
+            href={result.submittedByLink}
             target="_blank"
             onClick={(e) => e.stopPropagation()}
           >
-            {result.submitted_by}
+            {result.submittedBy}
           </a>
         </div>
       </div>
