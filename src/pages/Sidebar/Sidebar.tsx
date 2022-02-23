@@ -104,7 +104,11 @@ const Sidebar = () => {
         <div className="pt-3 pb-2 shrink-0 items-end bg-white border-b border-slate-300 ">
           <div className="px-2 space-x-2 text-md flex flex-row">
             <div className="cursor-pointer" onClick={closeSideBar}>
-              <p data-tip={hotkeysToggleSidebar.join(", ").replace("+", " + ")}>
+              <p
+                data-tip={hotkeysToggleSidebar
+                  .join(", ")
+                  .replaceAll("+", " + ")}
+              >
                 <ChevronRightIcon className="h-4 w-4 text-slate-500" />
               </p>
               <ReactTooltip place="right" type="dark" effect="solid" />
