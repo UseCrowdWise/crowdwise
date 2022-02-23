@@ -65,6 +65,8 @@ export const SettingsPanel = () => {
     setSideBarWidth(value);
   }, SETTINGS_DEBOUNCE_TIME);
   const setSideBarOpacityDebounced = _.debounce((value: any) => {
+    if (value == 100) value = 99.99; // Avoid
+    log.debug(`Setting opacity to ${value}`)
     setSideBarOpacity(value);
   }, SETTINGS_DEBOUNCE_TIME);
 
@@ -96,7 +98,7 @@ export const SettingsPanel = () => {
           <div className="flex w-full flex-col space-y-8">
             <Slider.Root
               min={20}
-              max={99}
+              max={100}
               step={1}
               defaultValue={[sideBarOpacity]}
               className="relative flex h-4 select-none items-center"
