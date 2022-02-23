@@ -3,34 +3,34 @@
 // Fetches data from multiple providers given a base URL
 // import { cleanUrl } from 'tracking-params';
 
-import * as hackernews from './hackernews';
-import * as reddit from './reddit';
-import { isBlacklisted } from './blacklist';
+import * as hackernews from "./hackernews";
+import * as reddit from "./reddit";
+import { isBlacklisted } from "./blacklist";
 
-import { log } from '../utils/log';
+import { log } from "../utils/log";
 
 // All providers must return a list of resultitems
 export interface ResultItem {
-  raw_html?: string;
-  submitted_url: string;
-  submitted_date: string;
-  submitted_upvotes: number;
-  submitted_title: string;
-  submitted_by: string;
-  submitted_by_link: string;
-  comments_count: number;
-  comments_link: string;
+  rawHtml?: string;
+  submittedUrl: string;
+  submittedDate: string;
+  submittedUpvotes: number;
+  submittedTitle: string;
+  submittedBy: string;
+  submittedByLink: string;
+  commentsCount: number;
+  commentsLink: string;
   // Name of the source within the provider for this info
   // E.g., subreddit name for reddit
-  sub_source_name: string;
+  subSourceName: string;
   // Link to the source within the provider
   // E.g., subreddit link for reddit
-  sub_source_link: string;
+  subSourceLink: string;
 }
 
 export enum ProviderResultType {
-  Ok = 'OK',
-  Blacklisted = 'BLACKLISTED',
+  Ok = "OK",
+  Blacklisted = "BLACKLISTED",
 }
 
 export interface ProviderResults {
@@ -46,16 +46,20 @@ export interface ProviderResults {
 export async function fetchDataFromProviders(
   rawUrl: string
 ): Promise<ProviderResults> {
-  log.debug('Starting to fetch provider data.');
+  log.debug("Starting to fetch provider data.");
 
   // Remove tracking params that are definitely not relevant to the site URL
   const trackingCleanedUrl = rawUrl; // cleanUrl(rawUrl);
-  log.debug(`Dirty URL: ${rawUrl}\nTracking Cleaned URL: ${trackingCleanedUrl}`);
+  log.debug(
+    `Dirty URL: ${rawUrl}\nTracking Cleaned URL: ${trackingCleanedUrl}`
+  );
 
   // Remove http, https, www
-  let cleanedUrl  = trackingCleanedUrl.replace(/^https?:\/\//, "")
-  cleanedUrl  = cleanedUrl.replace(/www\./, "")
-  log.debug(`Tracking cleaned URL ${trackingCleanedUrl}\nFINAL Cleaned URL: ${cleanedUrl}`);
+  let cleanedUrl = trackingCleanedUrl.replace(/^https?:\/\//, "");
+  cleanedUrl = cleanedUrl.replace(/www\./, "");
+  log.debug(
+    `Tracking cleaned URL ${trackingCleanedUrl}\nFINAL Cleaned URL: ${cleanedUrl}`
+  );
 
   // Return early if this URL is blacklisted
   if (isBlacklisted(cleanedUrl)) {
@@ -71,11 +75,11 @@ export async function fetchDataFromProviders(
 
   // Call each provider in turn
   const hnResults = await hackernews.getResults(cleanedUrl);
-  log.debug('HN results:');
+  log.debug("HN results:");
   log.debug(hnResults);
 
   const redditResults = await reddit.getResults(cleanedUrl);
-  log.debug('Reddit results:');
+  log.debug("Reddit results:");
   log.debug(redditResults);
 
   return {
