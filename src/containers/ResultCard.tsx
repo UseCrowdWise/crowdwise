@@ -1,6 +1,6 @@
-import React from 'react';
-import { ResultItem } from '../providers/providers';
-import { ChatIcon, ThumbUpIcon } from '@heroicons/react/solid';
+import React from "react";
+import { ResultItem } from "../providers/providers";
+import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
 
 interface Props {
   result: ResultItem;
@@ -10,8 +10,8 @@ interface Props {
 const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
   return (
-    <div className="p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded">
-      <div className="hover:underline text-md font-medium text-blue-800">
+    <div className="flex flex-col space-y-2 rounded border border-slate-300 bg-white p-3">
+      <div className="text-md font-medium text-blue-800 hover:underline">
         <a
           href={result.comments_link}
           onClick={() => onCardClick(result.comments_link)}
@@ -21,14 +21,14 @@ const ResultCard = (props: Props) => {
           {result.submitted_title}
         </a>
       </div>
-      <div className="text-xs space-x-3 flex flex-row">
+      <div className="flex flex-row space-x-3 text-xs">
         <div className="flex flex-row space-x-1">
           <strong className="text-slate-500">{result.submitted_upvotes}</strong>
-          <ThumbUpIcon className="h-3 w-3 text-slate-300 mt-0.5" />
+          <ThumbUpIcon className="mt-0.5 h-3 w-3 text-slate-300" />
         </div>
         <div className="flex flex-row space-x-1">
           <strong className="text-slate-500">{result.comments_count}</strong>
-          <ChatIcon className="h-3 w-3 text-slate-300 mt-0.5" />
+          <ChatIcon className="mt-0.5 h-3 w-3 text-slate-300" />
         </div>
         <div className="text-slate-600">{result.submitted_date}</div>
         <div className="grow" />

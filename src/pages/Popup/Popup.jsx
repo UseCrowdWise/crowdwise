@@ -3,7 +3,7 @@ import { SettingsPanel } from "../../containers/SettingsPanel";
 
 const Popup = () => {
   return (
-    <div className="w-64 h-auto">
+    <div className="h-auto w-64">
       <SettingsPanel />
     </div>
   );

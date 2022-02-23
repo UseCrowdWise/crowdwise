@@ -67,6 +67,7 @@
     "postcss": "^8.4.6",
     "postcss-loader": "^6.2.1",
     "prettier": "^2.5.1",
+    "prettier-plugin-tailwindcss": "^0.1.7",
     "prop-types": "^15.8.1",
     "sass-loader": "^12.4.0",
     "source-map-loader": "^3.0.1",

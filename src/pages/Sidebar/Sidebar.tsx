@@ -84,11 +84,11 @@ const Sidebar = () => {
   useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
   return (
-    <div className="h-full w-full flex flex-row">
+    <div className="flex h-full w-full flex-row">
       {isUpdatingResults && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
-          <div className="loader ease-linear rounded-full border-4 border-t-4 h-12 w-12 mb-4"></div>
-          <h2 className="text-center text-white text-xl font-semibold">
+        <div className="fixed top-0 left-0 right-0 bottom-0 z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-75">
+          <div className="loader mb-4 h-12 w-12 rounded-full border-4 border-t-4 ease-linear" />
+          <h2 className="text-center text-xl font-semibold text-white">
             Loading backlinks...
           </h2>
         </div>
@@ -100,9 +100,9 @@ const Sidebar = () => {
       {/*    /!*<iframe src={clickedUrl} title="Selected Article" />*!/*/}
       {/*  </div>*/}
       {/*)}*/}
-      <div className="h-screen w-full bg-slate-100 border-b border-x border-slate-300 flex flex-col">
-        <div className="pt-3 pb-2 shrink-0 items-end bg-white border-b border-slate-300 ">
-          <div className="px-2 space-x-2 text-md flex flex-row">
+      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-slate-100">
+        <div className="shrink-0 items-end border-b border-slate-300 bg-white pt-3 pb-2 ">
+          <div className="text-md flex flex-row space-x-2 px-2">
             <div className="cursor-pointer" onClick={closeSideBar}>
               <p
                 data-tip={hotkeysToggleSidebar
@@ -129,7 +129,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute z-10 w-screen max-w-xs px-4 mt-3 transform right-0 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute right-0 z-10 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel />
                     </Popover.Panel>
                   </Transition>
@@ -141,10 +141,10 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-        <div className="text-left p-3 space-y-3 scrollbar scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-slate-100 grow">
+        <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
           <p className="text-lg text-blue-700">Backlinks</p>
           <div className="space-y-2">
-            <div className="align-bottom space-x-2 flex flex-row">
+            <div className="flex flex-row space-x-2 align-bottom">
               {/*<img*/}
               {/*  alt="Hacker News Icon"*/}
               {/*  className="my-auto h-4 w-4"*/}
@@ -162,7 +162,7 @@ const Sidebar = () => {
             ))}
           </div>
           <div className="space-y-2">
-            <div className="align-bottom space-x-2 flex flex-row">
+            <div className="flex flex-row space-x-2 align-bottom">
               {/*<img*/}
               {/*  alt="Reddit Icon"*/}
               {/*  className="my-auto h-5 w-5"*/}
