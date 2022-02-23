@@ -9,6 +9,8 @@ import {
   DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_HIDE_CONTENT_BUTTON,
   DEFAULT_HIDE_CONTENT_BUTTON,
+  DEFAULT_CONTENT_BUTTON_PLACEMENT,
+  KEY_CONTENT_BUTTON_PLACEMENT,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -16,6 +18,8 @@ import React from "react";
 import { log } from "../utils/log";
 import { useHotkeysPressed } from "../shared/useHotkeysPressed";
 import Toggle from "./Toggle";
+import SelectMenu from "./SelectMenu";
+import { CONTENT_BUTTON_PLACEMENT_OPTIONS } from "../shared/options";
 
 const HotkeyButton = () => {
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
@@ -67,6 +71,10 @@ export const SettingsPanel = () => {
     KEY_HIDE_CONTENT_BUTTON,
     DEFAULT_HIDE_CONTENT_BUTTON
   );
+  const [contentButtonPlacement, setContentButtonPlacement] = useChromeStorage(
+    KEY_CONTENT_BUTTON_PLACEMENT,
+    DEFAULT_CONTENT_BUTTON_PLACEMENT
+  );
 
   const setSideBarWidthDebounced = _.debounce((value: any) => {
     setSideBarWidth(value);
@@ -80,12 +88,13 @@ export const SettingsPanel = () => {
   if (
     sideBarWidth === null ||
     sideBarOpacity === null ||
-    hideContentButton === null
+    hideContentButton === null ||
+    contentButtonPlacement === null
   )
     return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-      <div className="relative grid gap-4 bg-white p-6">
+      <div className="relative grid gap-6 bg-white p-6">
         <div className="text-lg font-semibold">Change settings</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
@@ -123,19 +132,24 @@ export const SettingsPanel = () => {
             </Slider.Root>
           </div>
         </div>
+        <div className="flex flex-col space-y-2">
+          <div>Content Button Placement</div>
+          <SelectMenu
+            options={CONTENT_BUTTON_PLACEMENT_OPTIONS}
+            defaultOption={contentButtonPlacement}
+            onSelected={setContentButtonPlacement}
+          />
+        </div>
         <div className="flex flex-row items-center space-x-2">
-          <div className="flex flex-col space-y-2">
-            <div>Hide Content Button</div>
-            <div className="text-slate-400">
-              This is the circular button that is fixed onto every web page.
-            </div>
-          </div>
+          <div>Hide Content Button</div>
+          <div className="grow" />
           <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
           <div className="text-xs text-slate-400">
-            Click on the keyboard shortcuts on the right to change them. Refresh
+            Click on the keyboard shortcuts on the right to change them.{" "}
+            <span className="font-semibold">Refresh</span>
             to see the changes.
           </div>
           <div className="flex flex-row items-center">

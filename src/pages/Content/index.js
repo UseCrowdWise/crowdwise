@@ -11,6 +11,9 @@ import {
   KEY_SIDEBAR_WIDTH,
   KEY_HIDE_CONTENT_BUTTON,
   DEFAULT_HIDE_CONTENT_BUTTON,
+  KEY_CONTENT_BUTTON_PLACEMENT,
+  DEFAULT_CONTENT_BUTTON_PLACEMENT,
+  DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -54,6 +57,10 @@ const App = () => {
   const [hideContentButton, setHideContentButton] = useChromeStorage(
     KEY_HIDE_CONTENT_BUTTON,
     DEFAULT_HIDE_CONTENT_BUTTON
+  );
+  const [contentButtonPlacement, setContentButtonPlacement] = useChromeStorage(
+    KEY_CONTENT_BUTTON_PLACEMENT,
+    DEFAULT_CONTENT_BUTTON_PLACEMENT
   );
 
   const toggleSideBar = () => setUserOpenedSideBar((show) => !show);
@@ -109,6 +116,29 @@ const App = () => {
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
     "  (Change settings to hide this button)";
 
+  const contentButtonPlacementCss = {
+    "top-left": {
+      top: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+      left: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+    },
+    "top-right": {
+      top: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+      right: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+    },
+    "bottom-left": {
+      bottom: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+      left: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+    },
+    "bottom-right": {
+      bottom: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+      right: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+    },
+  }[
+    contentButtonPlacement === null
+      ? "bottom-right"
+      : contentButtonPlacement.key
+  ];
+
   return (
     <div className="allUnset">
       {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
@@ -128,9 +158,8 @@ const App = () => {
         <div
           className="allUnset"
           style={{
+            ...contentButtonPlacementCss,
             position: "fixed",
-            bottom: "16px",
-            right: "16px",
             borderRadius: "100%",
             width: "64px",
             height: "64px",
