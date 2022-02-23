@@ -35,6 +35,7 @@ const App = () => {
   log.debug("App re-render");
 
   const [shouldShowSideBar, setShouldShowSideBar] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
     DEFAULT_SIDEBAR_WIDTH
@@ -61,18 +62,37 @@ const App = () => {
     }
   };
 
+  // Toggle the sidebar activation button as necessary
+  // i.e., don't show it on fullscreen
+  const handleFullscreenChange = () => {
+    if (document.fullscreen) {
+      log.debug("Entering fullscreen and hiding button!");
+      setIsFullscreen(true);
+    } else {
+      log.debug("Exiting fullscreen and showing button (if necessary)");
+      setIsFullscreen(false);
+    }
+  };
+
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar also needs to implement the same hotkey shortcuts because it will be within an iFrame
   useHotkeys(hotkeysToggleSidebar.join(","), toggleSideBar);
   useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
   useEffect(() => {
-    // Add listener when component mounts
+    // Add listeners when component mounts
     chrome.runtime.onMessage.addListener(handleMessage);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
 
-    // Remove listener when this component unmounts
-    return () => chrome.runtime.onMessage.removeListener(handleMessage);
+    // Remove listeners when this component unmounts
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+      document.removeEventListener("fullscreenchange");
+    };
   }, []);
+
+  // Don't display anything when it's full screen
+  if (isFullscreen) return null;
 
   return shouldShowSideBar ? (
     <iframe
