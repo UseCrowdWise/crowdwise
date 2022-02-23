@@ -62,5 +62,7 @@ function translateHnToItem(h: HnHit): ResultItem {
     submitted_by: h.author,
     comments_count: h.num_comments,
     comments_link: `https://news.ycombinator.com/item?id=${h.objectID}`,
+    sub_source_name: "",
+    sub_source_link: ""
   };
 }
