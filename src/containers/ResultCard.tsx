@@ -1,6 +1,6 @@
-import React from 'react';
-import { ResultItem } from '../providers/providers';
-import { ChatIcon, ThumbUpIcon } from '@heroicons/react/solid';
+import React from "react";
+import { ResultItem } from "../providers/providers";
+import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
 
 interface Props {
   result: ResultItem;
@@ -10,21 +10,25 @@ interface Props {
 const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
   return (
-    <div className="p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded"  onClick={() => onCardClick(result.comments_link)}>
-      { result.sub_source_name !== "" &&
+    <div
+      className="cursor-pointer p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded"
+      onClick={() => onCardClick(result.comments_link)}
+    >
+      {result.sub_source_name !== "" && (
         <div className="flex flex-row space-x-1">
           <div className="hover:underline text-md font-medium text-slate-500">
-            <a href={result.sub_source_link} target="_blank" onClick={(e) => e.stopPropagation()}>{result.sub_source_name}</a>
+            <a
+              href={result.sub_source_link}
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {result.sub_source_name}
+            </a>
           </div>
         </div>
-      }
+      )}
       <div className="hover:underline text-md font-medium text-blue-800">
-        <a
-          href={result.comments_link}
-          onClick={() => onCardClick(result.comments_link)}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={result.comments_link} target="_blank" rel="noreferrer">
           {result.submitted_title}
         </a>
       </div>
@@ -40,7 +44,13 @@ const ResultCard = (props: Props) => {
         <div className="text-slate-600">{result.submitted_date}</div>
         <div className="grow" />
         <div className="hover:underline text-[10px] text-slate-600">
-        <a href={result.submitted_by_link} target="_blank" onClick={(e) => e.stopPropagation()}>{result.submitted_by}</a>
+          <a
+            href={result.submitted_by_link}
+            target="_blank"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {result.submitted_by}
+          </a>
         </div>
       </div>
     </div>
