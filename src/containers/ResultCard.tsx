@@ -10,14 +10,25 @@ interface Props {
 const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
   return (
-    <div className="flex flex-col space-y-2 rounded border border-slate-300 bg-white p-3">
+    <div
+      className="flex cursor-pointer flex-col space-y-2 rounded border border-slate-300 bg-white p-3"
+      onClick={() => onCardClick(result.comments_link)}
+    >
+      {result.sub_source_name !== "" && (
+        <div className="flex flex-row space-x-1">
+          <div className="text-md font-medium text-slate-500 hover:underline">
+            <a
+              href={result.sub_source_link}
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {result.sub_source_name}
+            </a>
+          </div>
+        </div>
+      )}
       <div className="text-md font-medium text-blue-800 hover:underline">
-        <a
-          href={result.comments_link}
-          onClick={() => onCardClick(result.comments_link)}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={result.comments_link} target="_blank" rel="noreferrer">
           {result.submitted_title}
         </a>
       </div>
@@ -32,7 +43,15 @@ const ResultCard = (props: Props) => {
         </div>
         <div className="text-slate-600">{result.submitted_date}</div>
         <div className="grow" />
-        <div className="text-[10px] text-slate-600">{result.submitted_by}</div>
+        <div className="text-[10px] text-slate-600 hover:underline">
+          <a
+            href={result.submitted_by_link}
+            target="_blank"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {result.submitted_by}
+          </a>
+        </div>
       </div>
     </div>
   );

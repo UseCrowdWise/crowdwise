@@ -17,8 +17,15 @@ export interface ResultItem {
   submitted_upvotes: number;
   submitted_title: string;
   submitted_by: string;
+  submitted_by_link: string;
   comments_count: number;
   comments_link: string;
+  // Name of the source within the provider for this info
+  // E.g., subreddit name for reddit
+  sub_source_name: string;
+  // Link to the source within the provider
+  // E.g., subreddit link for reddit
+  sub_source_link: string;
 }
 
 export enum ProviderResultType {

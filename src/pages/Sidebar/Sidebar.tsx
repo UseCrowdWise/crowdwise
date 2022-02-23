@@ -71,7 +71,8 @@ const Sidebar = () => {
     updateProviderData();
   }, []);
 
-  const onCardClick = () => {};
+  // Open the card in a new tab
+  const onCardClick = (url: string) => { window.open(url, '_blank'); };
   const setClickedUrl = () => {};
 
   // Send a message to the extension (alternative: use redux?) to close
@@ -175,7 +176,7 @@ const Sidebar = () => {
               <ResultCard
                 key={index}
                 result={result}
-                onCardClick={setClickedUrl}
+                onCardClick={onCardClick}
               />
             ))}
           </div>

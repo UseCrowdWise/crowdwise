@@ -60,7 +60,10 @@ function translateHnToItem(h: HnHit): ResultItem {
     submitted_upvotes: h.points,
     submitted_title: h.title,
     submitted_by: h.author,
+    submitted_by_link: `https://news.ycombinator.com/user?id=${h.author}`,
     comments_count: h.num_comments,
     comments_link: `https://news.ycombinator.com/item?id=${h.objectID}`,
+    sub_source_name: "",
+    sub_source_link: ""
   };
 }
