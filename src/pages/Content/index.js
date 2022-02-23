@@ -12,13 +12,14 @@ import {
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
-import { ChevronRightIcon } from "@heroicons/react/outline";
 import ReactTooltip from "react-tooltip";
+import "./index.css";
 
 log.debug("Content script works!");
 log.debug("Must reload extension for modifications to take effect.");
 
 let sidebarRoot = document.createElement("div");
+sidebarRoot.classList.add("allUnset");
 sidebarRoot.style["height"] = "100vh";
 sidebarRoot.style["top"] = 0;
 sidebarRoot.style["right"] = 0;
@@ -73,44 +74,43 @@ const App = () => {
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
   }, []);
 
-  return (
-    <div>
-      <iframe
-        title="sidebar-iframe"
+  return shouldShowSideBar ? (
+    <iframe
+      title="sidebar-iframe"
+      style={{
+        width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
+        height: "100vh",
+        border: "none",
+        borderSizing: "border-box",
+        opacity: sideBarOpacity / 100,
+      }}
+      src={chrome.runtime.getURL("sidebar.html")}
+      onLoad={() => log.debug("iFrame loaded")}
+    />
+  ) : (
+    <div
+      className="allUnset"
+      style={{
+        position: "fixed",
+        bottom: "16px",
+        right: "16px",
+        borderRadius: "100%",
+        width: "64px",
+        height: "64px",
+        backgroundColor: "blue",
+      }}
+      onClick={toggleSideBar}
+    >
+      {/*Height and width needed because no text is given to p tag*/}
+      <p
+        data-tip={hotkeysToggleSidebar.join(", ").replaceAll("+", " + ")}
+        className="resetSpacing"
         style={{
-          width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
-          height: "100vh",
-          border: "none",
-          borderSizing: "border-box",
-          opacity: sideBarOpacity / 100,
+          height: "64px",
+          width: "64px",
         }}
-        src={chrome.runtime.getURL("sidebar.html")}
-        // ref={(frame) => (this.frame = frame)}
-        onLoad={() => log.debug("iFrame loaded")}
       />
-      {!shouldShowSideBar && (
-        <>
-          <div
-            style={{
-              position: "fixed",
-              bottom: "16px",
-              right: "16px",
-              borderRadius: "100%",
-              width: "64px",
-              height: "64px",
-              backgroundColor: "blue",
-            }}
-            onClick={toggleSideBar}
-          >
-            {/*Height and width needed because no text is given to p tag*/}
-            <p
-              data-tip={hotkeysToggleSidebar.join(", ").replace("+", " + ")}
-              style={{ height: "64px", width: "64px" }}
-            />
-            <ReactTooltip place="top" type="dark" effect="solid" />
-          </div>
-        </>
-      )}
+      <ReactTooltip place="top" type="dark" effect="solid" />
     </div>
   );
 };
