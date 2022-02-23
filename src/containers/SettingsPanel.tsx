@@ -96,7 +96,7 @@ export const SettingsPanel = () => {
           <div className="flex w-full flex-col space-y-8">
             <Slider.Root
               min={20}
-              max={100}
+              max={99}
               step={1}
               defaultValue={[sideBarOpacity]}
               className="relative flex h-4 select-none items-center"
