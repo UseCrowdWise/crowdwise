@@ -21,6 +21,20 @@ import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
 import "./Sidebar.css";
 
+const EmptyDiscussionsState = () => (
+  <>
+    <img
+      alt="Online discussions"
+      className="mx-auto w-3/4 p-4 opacity-80"
+      src={chrome.runtime.getURL("undraw_group_chat.svg")}
+    />
+    <div className="text-center text-base font-semibold">No discussions</div>
+    <div className="text-center text-slate-500">
+      We can't find any relevant discussions on this page.
+    </div>
+  </>
+);
+
 const Sidebar = () => {
   log.debug("Sidebar re-render");
 
@@ -86,6 +100,9 @@ const Sidebar = () => {
   useHotkeys(hotkeysToggleSidebar.join(","), toggleSideBar);
   useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
+  const noDiscussions =
+    providerData.hackerNews.length === 0 && providerData.reddit.length === 0;
+
   return (
     <div className="flex h-full w-full flex-row">
       {isUpdatingResults && (
@@ -146,44 +163,42 @@ const Sidebar = () => {
         </div>
         <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
           <p className="text-lg text-blue-700">Discussions</p>
-          <img
-            alt="Online discussions"
-            src={chrome.runtime.getURL("undraw_group_chat.svg")}
-          />
-          <div className="space-y-2">
-            <div className="flex flex-row space-x-2 align-bottom">
-              <img
-                alt="Hacker News Icon"
-                className="my-auto h-4 w-4"
-                src={chrome.runtime.getURL("hackernews_icon.png")}
-              />
-              <p className="my-1 text-slate-500">Hacker News</p>
+          {noDiscussions ? (
+            <EmptyDiscussionsState />
+          ) : (
+            <div className="space-y-2">
+              <div className="flex flex-row space-x-2 align-bottom">
+                <img
+                  alt="Hacker News Icon"
+                  className="my-auto h-4 w-4"
+                  src={chrome.runtime.getURL("hackernews_icon.png")}
+                />
+                <p className="my-1 text-slate-500">Hacker News</p>
+              </div>
+              {providerData.hackerNews.map((result, index) => (
+                <ResultCard
+                  key={index}
+                  result={result}
+                  onCardClick={onCardClick}
+                />
+              ))}
+              <div className="flex flex-row space-x-2 align-bottom">
+                <img
+                  alt="Reddit Icon"
+                  className="my-auto h-5 w-5"
+                  src={chrome.runtime.getURL("reddit_icon.png")}
+                />
+                <p className="my-1 text-slate-500">Reddit</p>
+              </div>
+              {providerData.reddit.map((result, index) => (
+                <ResultCard
+                  key={index}
+                  result={result}
+                  onCardClick={onCardClick}
+                />
+              ))}
             </div>
-            {providerData.hackerNews.map((result, index) => (
-              <ResultCard
-                key={index}
-                result={result}
-                onCardClick={onCardClick}
-              />
-            ))}
-          </div>
-          <div className="space-y-2">
-            <div className="flex flex-row space-x-2 align-bottom">
-              <img
-                alt="Reddit Icon"
-                className="my-auto h-5 w-5"
-                src={chrome.runtime.getURL("reddit_icon.png")}
-              />
-              <p className="my-1 text-slate-500">Reddit</p>
-            </div>
-            {providerData.reddit.map((result, index) => (
-              <ResultCard
-                key={index}
-                result={result}
-                onCardClick={onCardClick}
-              />
-            ))}
-          </div>
+          )}
         </div>
       </div>
     </div>
