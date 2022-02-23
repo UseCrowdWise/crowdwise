@@ -7,12 +7,15 @@ import {
   DEFAULT_SIDEBAR_OPACITY,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_HIDE_CONTENT_BUTTON,
+  DEFAULT_HIDE_CONTENT_BUTTON,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
 import React from "react";
 import { log } from "../utils/log";
 import { useHotkeysPressed } from "../shared/useHotkeysPressed";
+import Toggle from "./Toggle";
 
 const HotkeyButton = () => {
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
@@ -60,17 +63,26 @@ export const SettingsPanel = () => {
     KEY_SIDEBAR_OPACITY,
     DEFAULT_SIDEBAR_OPACITY
   );
+  const [hideContentButton, setHideContentButton] = useChromeStorage(
+    KEY_HIDE_CONTENT_BUTTON,
+    DEFAULT_HIDE_CONTENT_BUTTON
+  );
 
   const setSideBarWidthDebounced = _.debounce((value: any) => {
     setSideBarWidth(value);
   }, SETTINGS_DEBOUNCE_TIME);
   const setSideBarOpacityDebounced = _.debounce((value: any) => {
     if (value == 100) value = 99.99; // Avoid
-    log.debug(`Setting opacity to ${value}`)
+    log.debug(`Setting opacity to ${value}`);
     setSideBarOpacity(value);
   }, SETTINGS_DEBOUNCE_TIME);
 
-  if (sideBarWidth === null || sideBarOpacity === null) return null;
+  if (
+    sideBarWidth === null ||
+    sideBarOpacity === null ||
+    hideContentButton === null
+  )
+    return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
       <div className="relative grid gap-4 bg-white p-6">
@@ -87,9 +99,9 @@ export const SettingsPanel = () => {
               onValueChange={setSideBarWidthDebounced}
             >
               <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
-                <Slider.Range className="absolute h-full rounded-full bg-blue-500 dark:bg-blue-200" />
+                <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
               </Slider.Track>
-              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Slider.Root>
           </div>
         </div>
@@ -105,11 +117,20 @@ export const SettingsPanel = () => {
               onValueChange={setSideBarOpacityDebounced}
             >
               <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
-                <Slider.Range className="absolute h-full rounded-full bg-blue-500 dark:bg-blue-200" />
+                <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
               </Slider.Track>
-              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Slider.Root>
           </div>
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div className="flex flex-col space-y-2">
+            <div>Hide Content Button</div>
+            <div className="text-slate-400">
+              This is the circular button that is fixed onto every web page.
+            </div>
+          </div>
+          <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
@@ -118,7 +139,7 @@ export const SettingsPanel = () => {
             to see the changes.
           </div>
           <div className="flex flex-row items-center">
-            <div>Toggle Open</div>
+            <div className="text-slate-600">Toggle Open</div>
             <div className="grow" />
             <HotkeyButton />
           </div>
