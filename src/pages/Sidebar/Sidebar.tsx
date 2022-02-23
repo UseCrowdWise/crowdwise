@@ -72,7 +72,9 @@ const Sidebar = () => {
   }, []);
 
   // Open the card in a new tab
-  const onCardClick = (url: string) => { window.open(url, '_blank'); };
+  const onCardClick = (url: string) => {
+    window.open(url, "_blank");
+  };
   const setClickedUrl = () => {};
 
   // Send a message to the extension (alternative: use redux?) to close
@@ -143,15 +145,18 @@ const Sidebar = () => {
           </div>
         </div>
         <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
-          <p className="text-lg text-blue-700">Backlinks</p>
+          <p className="text-lg text-blue-700">Discussions</p>
+          <img
+            alt="Online discussions"
+            src={chrome.runtime.getURL("undraw_group_chat.svg")}
+          />
           <div className="space-y-2">
             <div className="flex flex-row space-x-2 align-bottom">
-              {/*<img*/}
-              {/*  alt="Hacker News Icon"*/}
-              {/*  className="my-auto h-4 w-4"*/}
-              {/*  // src={hackerNewsLogo}*/}
-              {/*  src={chrome.runtime.getURL(hackerNewsLogo)}*/}
-              {/*/>*/}
+              <img
+                alt="Hacker News Icon"
+                className="my-auto h-4 w-4"
+                src={chrome.runtime.getURL("hackernews_icon.png")}
+              />
               <p className="my-1 text-slate-500">Hacker News</p>
             </div>
             {providerData.hackerNews.map((result, index) => (
@@ -164,12 +169,11 @@ const Sidebar = () => {
           </div>
           <div className="space-y-2">
             <div className="flex flex-row space-x-2 align-bottom">
-              {/*<img*/}
-              {/*  alt="Reddit Icon"*/}
-              {/*  className="my-auto h-5 w-5"*/}
-              {/*  // src={redditLogo}*/}
-              {/*  src={chrome.runtime.getURL(redditLogo)}*/}
-              {/*/>*/}
+              <img
+                alt="Reddit Icon"
+                className="my-auto h-5 w-5"
+                src={chrome.runtime.getURL("reddit_icon.png")}
+              />
               <p className="my-1 text-slate-500">Reddit</p>
             </div>
             {providerData.reddit.map((result, index) => (

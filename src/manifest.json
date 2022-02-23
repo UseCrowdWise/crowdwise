@@ -21,7 +21,13 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["chrome-extension://*/*.bundle.js.map", "sidebar.html", "content.styles.css", "icon-128.png", "icon-34.png"],
+      "resources": [
+        "chrome-extension://*/*.bundle.js.map",
+        "sidebar.html",
+        "content.styles.css",
+        "*.png",
+        "*.svg"
+      ],
       "matches": ["http://*/*", "https://*/*"]
     }
   ]
