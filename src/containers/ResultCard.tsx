@@ -11,8 +11,13 @@ const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
   return (
     <div className="p-3 space-y-2 flex flex-col bg-white border border-slate-300 rounded"  onClick={() => onCardClick(result.comments_link)}>
-
-
+      { result.sub_source_name !== "" &&
+        <div className="flex flex-row space-x-1">
+          <div className="hover:underline text-md font-medium text-slate-500">
+            <a href={result.sub_source_link} target="_blank" onClick={(e) => e.stopPropagation()}>{result.sub_source_name}</a>
+          </div>
+        </div>
+      }
       <div className="hover:underline text-md font-medium text-blue-800">
         <a
           href={result.comments_link}
