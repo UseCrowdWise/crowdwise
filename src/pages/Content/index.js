@@ -64,7 +64,7 @@ const App = () => {
   // Toggle the sidebar activation button as necessary
   // i.e., don't show it on fullscreen
   const handleFullscreenChange = () => {
-    if (document.fullscreen) {
+    if (document.fullscreenElement) {
       log.debug("Entering fullscreen and hiding button!");
       setIsFullscreen(true);
     } else {
