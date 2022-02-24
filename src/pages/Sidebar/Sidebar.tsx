@@ -30,7 +30,8 @@ const EmptyDiscussionsState = () => (
     />
     <div className="text-center text-base font-semibold">No discussions</div>
     <div className="text-center text-slate-500">
-      We can't find any relevant discussions on this page.
+      We can't find any relevant discussions on this web page, try going to a
+      different web page.
     </div>
   </>
 );
@@ -149,7 +150,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute right-0 z-10 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-8 z-10 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel />
                     </Popover.Panel>
                   </Transition>
