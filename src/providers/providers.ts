@@ -54,11 +54,19 @@ export async function fetchDataFromProviders(
     `Dirty URL: ${rawUrl}\nTracking Cleaned URL: ${trackingCleanedUrl}`
   );
 
+  // Remove fragment identifier ("#") at the end of a URL
+  // Think google slides slide identifier, google text highlighting, TOC navigation etc
+  // Fragments indicate that we're on the same page, just a different section
+  const noFragmentUrl = trackingCleanedUrl.replace(/#.*$/, "")
+  log.debug(
+    `Tracking cleaned URL ${trackingCleanedUrl}\nNo fragment URL: ${noFragmentUrl}`
+  );
+
   // Remove http, https, www
-  let cleanedUrl = trackingCleanedUrl.replace(/^https?:\/\//, "");
+  let cleanedUrl = noFragmentUrl.replace(/^https?:\/\//, "");
   cleanedUrl = cleanedUrl.replace(/www\./, "");
   log.debug(
-    `Tracking cleaned URL ${trackingCleanedUrl}\nFINAL Cleaned URL: ${cleanedUrl}`
+    `No fragment URL ${noFragmentUrl}\nFINAL Cleaned URL: ${cleanedUrl}`
   );
 
   // Return early if this URL is blacklisted
