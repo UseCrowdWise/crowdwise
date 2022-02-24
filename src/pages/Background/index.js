@@ -87,11 +87,16 @@ async function handleOnMessage(request, sender) {
   );
   // Received from a tab (content script)
   if (sender.tab) {
-    // Ask providers for any relevant posts/comments
-    const data = await fetchDataFromProviders(sender.tab.url);
-    log.debug("Background script: printing provider data...");
-    log.debug(data);
-    return data;
+    if (request.getProviderData) {
+      // Ask providers for any relevant posts/comments
+      const data = await fetchDataFromProviders(sender.tab.url);
+      log.debug("Background script: printing provider data...");
+      log.debug(data);
+      return data;
+    } else if (request.getTabId) {
+      // Tab wants to know if it should be open or closed (last open/close action by the user in this tab)
+      return sender.tab.id;
+    }
   }
   return {};
 }
