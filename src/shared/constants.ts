@@ -13,6 +13,7 @@ export const DEFAULT_CONTENT_BUTTON_PLACEMENT =
   CONTENT_BUTTON_PLACEMENT_OPTIONS[3];
 export const DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET = "16px";
 export const DEFAULT_SIDEBAR_OPEN_TAB_STATE = false;
+export const DEFAULT_INCOGNITO_MODE = false;
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
@@ -27,6 +28,7 @@ export const KEY_HIDE_CONTENT_BUTTON = "hide-content-button";
 export const KEY_CONTENT_BUTTON_BACKGROUND = "content-button-background";
 export const KEY_CONTENT_BUTTON_PLACEMENT = "content-button-placement";
 export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
+export const KEY_INCOGNITO_MODE = "sidebar-private-mode";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 120;

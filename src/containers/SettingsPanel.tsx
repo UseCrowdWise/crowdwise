@@ -13,6 +13,8 @@ import {
   KEY_CONTENT_BUTTON_PLACEMENT,
   DEFAULT_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_BACKGROUND,
+  KEY_INCOGNITO_MODE,
+  DEFAULT_INCOGNITO_MODE,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -61,6 +63,9 @@ const HotkeyButton = () => {
 export const SettingsPanel = () => {
   log.debug("Settings Panel rerender");
 
+  // NOTE: IF YOU ADD MORE SETTINGS BELOW,
+  //   UPDATE THE if(...) return null below!
+
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
     DEFAULT_SIDEBAR_WIDTH
@@ -82,6 +87,10 @@ export const SettingsPanel = () => {
     KEY_CONTENT_BUTTON_PLACEMENT,
     DEFAULT_CONTENT_BUTTON_PLACEMENT
   );
+  const [isIncognito, setIsIncognito] = useChromeStorage(
+    KEY_INCOGNITO_MODE,
+    DEFAULT_INCOGNITO_MODE
+  );
 
   const setSideBarWidthDebounced = _.debounce((value: any) => {
     setSideBarWidth(value);
@@ -92,11 +101,15 @@ export const SettingsPanel = () => {
     setSideBarOpacity(value);
   }, SETTINGS_DEBOUNCE_TIME);
 
+  // NOTE: IF YOU ADD MORE SETTINGS ABOVE,
+  //   UPDATE THE if(...) return null below!
+
   if (
     sideBarWidth === null ||
     sideBarOpacity === null ||
     hideContentButton === null ||
-    contentButtonPlacement === null
+    contentButtonPlacement === null ||
+    isIncognito === null
   )
     return null;
   return (
@@ -159,6 +172,11 @@ export const SettingsPanel = () => {
             checked={contentButtonBackground}
             onCheck={setContentButtonBackground}
           />
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div>Incognito Mode</div>
+          <div className="grow" />
+          <Toggle checked={isIncognito} onCheck={setIsIncognito} />
         </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>

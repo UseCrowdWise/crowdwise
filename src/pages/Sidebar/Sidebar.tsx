@@ -39,7 +39,14 @@ const EmptyDiscussionsState = () => (
 const Sidebar = () => {
   log.debug("Sidebar re-render");
 
-  const { isLoading, hasNoProviderData, providerData } = useProvidersData();
+  const {
+    isLoading,
+    isIncognito,
+    hasFetchedDataForThisPage,
+    hasNoProviderData,
+    providerData,
+    updateProviderData,
+  } = useProvidersData();
 
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
     KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -121,44 +128,60 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-        <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
-          <p className="text-lg text-blue-700">Discussions</p>
-          {noDiscussions ? (
-            <EmptyDiscussionsState />
-          ) : (
-            <div className="space-y-2">
-              <div className="flex flex-row space-x-2 align-bottom">
-                <img
-                  alt="Hacker News Icon"
-                  className="my-auto h-4 w-4"
-                  src={chrome.runtime.getURL("hackernews_icon.png")}
-                />
-                <p className="my-1 text-slate-500">Hacker News</p>
+        <div>
+          {isIncognito &&
+            hasFetchedDataForThisPage == false &&
+            isLoading === false && (
+              <div
+                className="fixed z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-99"
+                onClick={updateProviderData}
+              >
+                <h2 className="text-center text-xl font-semibold text-white">
+                  Incognito mode. <br /> Click sidebar to fetch data.
+                </h2>
               </div>
-              {providerData.hackerNews.map((result, index) => (
-                <ResultCard
-                  key={index}
-                  result={result}
-                  onCardClick={onCardClick}
-                />
-              ))}
-              <div className="flex flex-row space-x-2 align-bottom">
-                <img
-                  alt="Reddit Icon"
-                  className="my-auto h-5 w-5"
-                  src={chrome.runtime.getURL("reddit_icon.png")}
-                />
-                <p className="my-1 text-slate-500">Reddit</p>
+            )}
+
+          <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
+            <p className="text-lg text-blue-700">Discussions</p>
+
+            {noDiscussions ? (
+              <EmptyDiscussionsState />
+            ) : (
+              <div className="space-y-2">
+                <div className="flex flex-row space-x-2 align-bottom">
+                  <img
+                    alt="Hacker News Icon"
+                    className="my-auto h-4 w-4"
+                    src={chrome.runtime.getURL("hackernews_icon.png")}
+                  />
+                  <p className="my-1 text-slate-500">Hacker News</p>
+                </div>
+                {providerData.hackerNews.map((result, index) => (
+                  <ResultCard
+                    key={index}
+                    result={result}
+                    onCardClick={onCardClick}
+                  />
+                ))}
+                <div className="flex flex-row space-x-2 align-bottom">
+                  <img
+                    alt="Reddit Icon"
+                    className="my-auto h-5 w-5"
+                    src={chrome.runtime.getURL("reddit_icon.png")}
+                  />
+                  <p className="my-1 text-slate-500">Reddit</p>
+                </div>
+                {providerData.reddit.map((result, index) => (
+                  <ResultCard
+                    key={index}
+                    result={result}
+                    onCardClick={onCardClick}
+                  />
+                ))}
               </div>
-              {providerData.reddit.map((result, index) => (
-                <ResultCard
-                  key={index}
-                  result={result}
-                  onCardClick={onCardClick}
-                />
-              ))}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

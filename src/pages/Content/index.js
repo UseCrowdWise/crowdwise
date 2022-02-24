@@ -18,6 +18,8 @@ import {
   DEFAULT_SIDEBAR_OPEN_TAB_STATE,
   KEY_CONTENT_BUTTON_BACKGROUND,
   DEFAULT_CONTENT_BUTTON_BACKGROUND,
+  KEY_INCOGNITO_MODE,
+  DEFAULT_INCOGNITO_MODE,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -50,7 +52,7 @@ const App = () => {
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
   );
-  const { isLoading, providerData } = useProvidersData();
+  const { isLoading, providerData, updateProviderData } = useProvidersData();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(

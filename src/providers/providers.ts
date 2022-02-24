@@ -57,7 +57,7 @@ export async function fetchDataFromProviders(
   // Remove fragment identifier ("#") at the end of a URL
   // Think google slides slide identifier, google text highlighting, TOC navigation etc
   // Fragments indicate that we're on the same page, just a different section
-  const noFragmentUrl = trackingCleanedUrl.replace(/#.*$/, "")
+  const noFragmentUrl = trackingCleanedUrl.replace(/#.*$/, "");
   log.debug(
     `Tracking cleaned URL ${trackingCleanedUrl}\nNo fragment URL: ${noFragmentUrl}`
   );
