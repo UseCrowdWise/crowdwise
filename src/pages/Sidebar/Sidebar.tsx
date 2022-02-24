@@ -133,7 +133,7 @@ const Sidebar = () => {
             hasFetchedDataForThisPage == false &&
             isLoading === false && (
               <div
-                className="fixed z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-99"
+                className="cursor-pointer fixed z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-99"
                 onClick={updateProviderData}
               >
                 <h2 className="text-center text-xl font-semibold text-white">
