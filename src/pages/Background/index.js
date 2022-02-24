@@ -1,7 +1,13 @@
 import { fetchDataFromProviders } from "../../providers/providers";
 import { log } from "../../utils/log";
 import { isExpiredCacheEntry } from "../../utils/cache";
-import { CACHE_CLEAR_ALARM_INTERVAL_MIN } from "../../shared/constants";
+import {
+  CACHE_CLEAR_URL_ALARM_INTERVAL_MIN,
+  CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN,
+  CACHE_CLEAR_URL_ALARM_NAME,
+  CACHE_CLEAR_TABID_ALARM_NAME,
+  KEY_SIDEBAR_OPEN_TAB_STATE,
+} from "../../shared/constants";
 /**
  * BACKGROUND SCRIPT.
  *
@@ -16,14 +22,50 @@ import { CACHE_CLEAR_ALARM_INTERVAL_MIN } from "../../shared/constants";
 chrome.runtime.onInstalled.addListener(() => {
   log.debug("background script onInstalled...");
   // create alarm after extension is installed / upgraded
-  chrome.alarms.create("refresh_cache", {
+  chrome.alarms.create(CACHE_CLEAR_URL_ALARM_NAME, {
     delayInMinutes: 1,
-    periodInMinutes: CACHE_CLEAR_ALARM_INTERVAL_MIN,
+    periodInMinutes: CACHE_CLEAR_URL_ALARM_INTERVAL_MIN,
+  });
+  chrome.alarms.create(CACHE_CLEAR_TABID_ALARM_NAME, {
+    delayInMinutes: 2, // offset a little to make logs easier to read
+    periodInMinutes: CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN,
   });
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  removeExpiredCacheEntries();
+  if (alarm.name === CACHE_CLEAR_URL_ALARM_NAME) {
+    // Remove data from URL fetches that we cached
+    removeExpiredCacheEntries();
+  } else if (alarm.name === CACHE_CLEAR_TABID_ALARM_NAME) {
+    // Remove tabId preference information (open/closed)
+    // Many of these tabs will not exist.
+    // TODO bit of a callback hell at the moment
+    log.debug("Running tab id cache clearning alarm.");
+    chrome.tabs.query({}, function (tabs) {
+      log.debug("Got all active tabs..");
+      log.debug(tabs);
+      const tabIdKeyStrings = tabs.map(
+        (t) => `${KEY_SIDEBAR_OPEN_TAB_STATE}${t.id}`
+      );
+      log.debug(`TabID key strings: ${tabIdKeyStrings}`);
+      // Get all keys in local storage and remove invalid tab states
+      chrome.storage.local.get(null, (items) => {
+        log.debug("Local storage items:");
+        log.debug(items);
+        const invalidKeys = Object.keys(items).filter(
+          (key) =>
+            key.startsWith(KEY_SIDEBAR_OPEN_TAB_STATE) &&
+            tabIdKeyStrings.indexOf(key) < 0
+        );
+        chrome.storage.local.remove(invalidKeys, () => {
+          log.debug(
+            `Removed ${invalidKeys.length} invalid tabId states from cache!`
+          );
+          log.debug(invalidKeys);
+        });
+      });
+    });
+  }
 });
 
 // Clear all expired cache entries

@@ -28,4 +28,7 @@ export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 120;
-export const CACHE_CLEAR_ALARM_INTERVAL_MIN = 1;
+export const CACHE_CLEAR_URL_ALARM_INTERVAL_MIN = 1;
+export const CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN = 5;
+export const CACHE_CLEAR_URL_ALARM_NAME = "refresh_url_cache"
+export const CACHE_CLEAR_TABID_ALARM_NAME = "refresh_tabid_cache"
