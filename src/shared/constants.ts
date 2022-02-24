@@ -27,5 +27,5 @@ export const KEY_CONTENT_BUTTON_PLACEMENT = "content-button-placement";
 export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 
 // Cache settings
-export const CACHE_URL_DURATION_SEC = 60;
-export const CACHE_CLEAR_ALARM_INTERVAL = 30;
+export const CACHE_URL_DURATION_SEC = 120;
+export const CACHE_CLEAR_ALARM_INTERVAL_MIN = 1;

@@ -1,6 +1,7 @@
 import { fetchDataFromProviders } from "../../providers/providers";
 import { log } from "../../utils/log";
 import { isExpiredCacheEntry } from "../../utils/cache";
+import { CACHE_CLEAR_ALARM_INTERVAL_MIN } from "../../shared/constants";
 /**
  * BACKGROUND SCRIPT.
  *
@@ -17,7 +18,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // create alarm after extension is installed / upgraded
   chrome.alarms.create("refresh_cache", {
     delayInMinutes: 1,
-    periodInMinutes: 1,
+    periodInMinutes: CACHE_CLEAR_ALARM_INTERVAL_MIN,
   });
 });
 
