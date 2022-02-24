@@ -23,6 +23,7 @@ import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
 import "./index.css";
+import { useProvidersData } from "../../providers/useProvidersData";
 
 log.debug("Content script works!");
 log.debug("Must reload extension for modifications to take effect.");
@@ -49,6 +50,7 @@ const App = () => {
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
   );
+  const { isLoading, providerData } = useProvidersData();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(

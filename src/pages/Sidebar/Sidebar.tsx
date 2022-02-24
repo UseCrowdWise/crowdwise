@@ -6,7 +6,6 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/outline";
 
-import { ProviderResults, ProviderResultType } from "../../providers/providers";
 import { log } from "../../utils/log";
 import ResultCard from "../../containers/ResultCard";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -20,6 +19,7 @@ import { SettingsPanel } from "../../containers/SettingsPanel";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
 import "./Sidebar.css";
+import { useProvidersData } from "../../providers/useProvidersData";
 
 const EmptyDiscussionsState = () => (
   <>
@@ -39,12 +39,7 @@ const EmptyDiscussionsState = () => (
 const Sidebar = () => {
   log.debug("Sidebar re-render");
 
-  const [providerData, setProviderData] = useState<ProviderResults>({
-    resultType: ProviderResultType.Ok,
-    hackerNews: [],
-    reddit: [],
-  });
-  const [isUpdatingResults, setIsUpdatingResults] = useState<boolean>(false);
+  const { isLoading, hasNoProviderData, providerData } = useProvidersData();
 
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
     KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -52,45 +47,10 @@ const Sidebar = () => {
     []
   );
 
-  // Toggle the side bar based on incoming message from further down in the component (close arrow)
-  const handleMessage = (request: any, sender: any, sendResponse: any) => {
-    log.debug("Content script received message that our tab's URL changed.");
-    if (request.changedUrl) {
-      updateProviderData();
-    }
-  };
-
-  // Actual call to update current results
-  const updateProviderData = () => {
-    setIsUpdatingResults(true);
-    log.debug("Sending message to background script to update provider info.");
-    chrome.runtime.sendMessage(
-      { getProviderData: true },
-      (response: ProviderResults) => {
-        setIsUpdatingResults(false);
-        log.debug("Printing provider data from background script...");
-        log.debug(response);
-        setProviderData(response);
-      }
-    );
-  };
-
-  // When sidebar loads for the first time, ask for discussion data from providers.
-  // We don't pass our URL to the background script. The script know what URL our tab is.
-  // This avoids race conditions.
-  useEffect(() => {
-    // Add listener when component mounts
-    chrome.runtime.onMessage.addListener(handleMessage);
-
-    // Update provider info immediately at the start
-    updateProviderData();
-  }, []);
-
   // Open the card in a new tab
   const onCardClick = (url: string) => {
     window.open(url, "_blank");
   };
-  const setClickedUrl = () => {};
 
   // Send a message to the extension (alternative: use redux?) to close
   const closeSideBar = () => sendMessageToActiveTab({ closeSideBar: true });
@@ -101,12 +61,11 @@ const Sidebar = () => {
   useHotkeys(hotkeysToggleSidebar.join(","), toggleSideBar);
   useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
-  const noDiscussions =
-    providerData.hackerNews.length === 0 && providerData.reddit.length === 0;
+  const noDiscussions = isLoading || hasNoProviderData;
 
   return (
     <div className="flex h-full w-full flex-row">
-      {isUpdatingResults && (
+      {isLoading && (
         <div className="fixed top-0 left-0 right-0 bottom-0 z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-75">
           <div className="loader mb-4 h-12 w-12 rounded-full border-4 border-t-4 ease-linear" />
           <h2 className="text-center text-xl font-semibold text-white">
