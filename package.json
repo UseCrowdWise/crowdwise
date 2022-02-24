@@ -1,11 +1,11 @@
 {
-  "name": "tailwind-react-chrome-extension-template",
-  "version": "4.3.5",
-  "description": "A chrome extension boilerplate built with Tailwind 3, React 17, Webpack 5, and Webpack Dev Server 4",
+  "name": "CrowdWise",
+  "version": "0.0.1",
+  "description": "",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yewsiang/tailwind-react-chrome-extension-template.git"
+    "url": "https://github.com/frizensami/webpage-discussion-extension/"
   },
   "scripts": {
     "build": "node utils/build.js",

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Chrome Extension with Tailwind, React & Webpack",
-  "description": "A chrome extension boilerplate built with Tailwind 3, React 17, Webpack 5, and Webpack Dev Server 4",
+  "name": "CrowdWise",
+  "description": "",
   "permissions": ["storage", "tabs", "alarms", "activeTab"],
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
