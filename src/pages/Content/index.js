@@ -178,7 +178,7 @@ const App = () => {
 
   const contentButtonTooltip =
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
-    "  (Change settings to hide this button)";
+    "  (Go settings to hide button)";
 
   const contentButtonPlacementCss = {
     "top-left": {
@@ -224,20 +224,27 @@ const App = () => {
           style={{
             ...contentButtonPlacementCss,
             position: "fixed",
-            borderRadius: "100%",
-            width: "64px",
-            height: "64px",
-            backgroundColor: "blue",
           }}
           onClick={toggleSideBar}
         >
           {/*Height and width needed because no text is given to p tag*/}
+          <img
+            alt="Trigger Extension Button"
+            style={{
+              width: "64px",
+              height: "64px",
+            }}
+            src={chrome.runtime.getURL("icon-outline.svg")}
+            onClick={toggleSideBar}
+          />
           <p
             data-tip={contentButtonTooltip}
             className="resetSpacing"
             style={{
               height: "64px",
               width: "64px",
+              top: "0",
+              position: "absolute",
             }}
           />
           <ReactTooltip place="top" type="dark" effect="solid" />

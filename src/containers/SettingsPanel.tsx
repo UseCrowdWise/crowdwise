@@ -133,7 +133,7 @@ export const SettingsPanel = () => {
           </div>
         </div>
         <div className="flex flex-col space-y-2">
-          <div>Content Button Placement</div>
+          <div>Extension Button Placement</div>
           <SelectMenu
             options={CONTENT_BUTTON_PLACEMENT_OPTIONS}
             defaultOption={contentButtonPlacement}
@@ -141,7 +141,7 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Hide Content Button</div>
+          <div>Hide Extension Button</div>
           <div className="grow" />
           <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
