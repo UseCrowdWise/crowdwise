@@ -11,6 +11,8 @@ import {
   DEFAULT_HIDE_CONTENT_BUTTON,
   DEFAULT_CONTENT_BUTTON_PLACEMENT,
   KEY_CONTENT_BUTTON_PLACEMENT,
+  DEFAULT_CONTENT_BUTTON_BACKGROUND,
+  KEY_CONTENT_BUTTON_BACKGROUND,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -71,6 +73,11 @@ export const SettingsPanel = () => {
     KEY_HIDE_CONTENT_BUTTON,
     DEFAULT_HIDE_CONTENT_BUTTON
   );
+  const [contentButtonBackground, setContentButtonBackground] =
+    useChromeStorage(
+      KEY_CONTENT_BUTTON_BACKGROUND,
+      DEFAULT_CONTENT_BUTTON_BACKGROUND
+    );
   const [contentButtonPlacement, setContentButtonPlacement] = useChromeStorage(
     KEY_CONTENT_BUTTON_PLACEMENT,
     DEFAULT_CONTENT_BUTTON_PLACEMENT
@@ -145,12 +152,20 @@ export const SettingsPanel = () => {
           <div className="grow" />
           <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div>Extension Button Background</div>
+          <div className="grow" />
+          <Toggle
+            checked={contentButtonBackground}
+            onCheck={setContentButtonBackground}
+          />
+        </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
           <div className="text-xs text-slate-400">
             Click on the keyboard shortcuts on the right to change them.{" "}
-            <span className="font-semibold">Refresh</span>
-            to see the changes.
+            <span className="font-semibold text-indigo-600">Refresh</span> to
+            see the changes.
           </div>
           <div className="flex flex-row items-center">
             <div className="text-slate-600">Toggle Open</div>
