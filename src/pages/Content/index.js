@@ -43,8 +43,7 @@ const App = () => {
 
   const [tabId, setTabId] = useState(undefined);
 
-  // "Expensive" computation of the sidebar state on first load
-  // We get our tab ID from background script and then check storage for this tab's sidebar open/closed state/
+  // Start with a default state.
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
   );
@@ -71,42 +70,6 @@ const App = () => {
     KEY_CONTENT_BUTTON_PLACEMENT,
     DEFAULT_CONTENT_BUTTON_PLACEMENT
   );
-
-  const setUserOpenedSidebarStateWithStorage = (show) => {
-    setUserOpenedSideBar(show);
-    updateStorageWithOpenClosedState(show);
-  };
-
-  const toggleUserOpenedSidebarStateWithStorage = () => {
-    setUserOpenedSideBar((show) => !show);
-    updateStorageWithOpenClosedState(!userOpenedSideBar);
-  };
-
-  const updateStorageWithOpenClosedState = (show) => {
-    log.debug("Sending message to background script to tell us our tab ID");
-    chrome.runtime.sendMessage({ getTabId: true }, (tabId) => {
-      log.debug(`Background script tells us our tab ID should be ${tabId}`);
-      const tabOpenClosedStateStorageKey = `${KEY_SIDEBAR_OPEN_TAB_STATE}${tabId}`;
-      log.debug(
-        `Setting open/closed state in storage for key ${tabOpenClosedStateStorageKey} to ${show}`
-      );
-      chrome.storage.local.set({ [tabOpenClosedStateStorageKey]: show }, () => {
-        log.debug(
-          `Set open/closed state in storage for key ${tabOpenClosedStateStorageKey} to ${show}`
-        );
-      });
-    });
-
-    // Update storage
-    const tabOpenClosedStateStorageKey = `${KEY_SIDEBAR_OPEN_TAB_STATE}${tabId}`;
-    log.debug(
-      `Setting open/closed state in storage for key ${tabOpenClosedStateStorageKey} to ${show}`
-    );
-    chrome.storage.local.set(
-      { [tabOpenClosedStateStorageKey]: show },
-      () => {}
-    );
-  };
 
   const toggleSideBar = () => toggleUserOpenedSidebarStateWithStorage();
   const closeSideBar = () => setUserOpenedSidebarStateWithStorage(false);
@@ -151,6 +114,10 @@ const App = () => {
   }, []);
 
   // For tab state from storage
+  // "Expensive" computation of the sidebar state on first load
+  // We get our tab ID from background script and then check local storage
+  //  for this tab's sidebar open/closed state.
+  // Then, we update the state with setUserOpenedSidebar
   useEffect(() => {
     log.debug("Sending message to background script to tell us our tab ID");
     chrome.runtime.sendMessage({ getTabId: true }, (tabId) => {
@@ -168,6 +135,39 @@ const App = () => {
     });
   }, []);
 
+  // UI should call this to update sidebar state if it's a boolean
+  // The storage will update too.
+  const setUserOpenedSidebarStateWithStorage = (show) => {
+    setUserOpenedSideBar(show);
+    updateStorageWithOpenClosedState(show);
+  };
+
+  // UI should call this to update sidebar state if it needs to be toggled somehow
+  // The storage will update too.
+  const toggleUserOpenedSidebarStateWithStorage = () => {
+    setUserOpenedSideBar((show) => !show);
+    updateStorageWithOpenClosedState(!userOpenedSideBar);
+  };
+
+  // Actually updates storage about the open-closed state
+  // We once again ask the background script for our tab ID (storing this as state didn't work)
+  // Then, we update storage with the key based on our tab ID
+  const updateStorageWithOpenClosedState = (show) => {
+    log.debug("Sending message to background script to tell us our tab ID");
+    chrome.runtime.sendMessage({ getTabId: true }, (tabId) => {
+      log.debug(`Background script tells us our tab ID should be ${tabId}`);
+      const tabOpenClosedStateStorageKey = `${KEY_SIDEBAR_OPEN_TAB_STATE}${tabId}`;
+      log.debug(
+        `Setting open/closed state in storage for key ${tabOpenClosedStateStorageKey} to ${show}`
+      );
+      chrome.storage.local.set({ [tabOpenClosedStateStorageKey]: show }, () => {
+        log.debug(
+          `Set open/closed state in storage for key ${tabOpenClosedStateStorageKey} to ${show}`
+        );
+      });
+    });
+  };
+
   // NOTE: Do not do things such as this as it will force a re-render
   // if (isFullscreen) return null;
 
@@ -175,7 +175,6 @@ const App = () => {
   const shouldShowSideBar = !isFullscreen && userOpenedSideBar;
   const shouldShowContentButton =
     !isFullscreen && !shouldShowSideBar && !hideContentButton;
-  log.debug(`Should show sidebar? ${!isFullscreen} && ${userOpenedSideBar}`);
 
   const contentButtonTooltip =
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
