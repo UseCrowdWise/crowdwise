@@ -24,7 +24,7 @@ export const KEY_SIDEBAR_WIDTH = "sidebar-width";
 export const KEY_SIDEBAR_OPACITY = "sidebar-opacity";
 export const KEY_HIDE_CONTENT_BUTTON = "hide-content-button";
 export const KEY_CONTENT_BUTTON_PLACEMENT = "content-button-placement";
-export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-state-tab-";
+export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 60;
