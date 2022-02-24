@@ -252,6 +252,7 @@ const App = () => {
             style={{
               height: "64px",
               width: "64px",
+              cursor: "pointer",
               top: "0",
               position: "absolute",
             }}
