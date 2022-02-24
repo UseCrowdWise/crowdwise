@@ -107,9 +107,9 @@ export const SettingsPanel = () => {
           <div>Sidebar Width</div>
           <div className="flex w-full flex-col space-y-8">
             <Slider.Root
-              min={20}
-              max={48}
-              step={1}
+              min={300}
+              max={640}
+              step={4}
               defaultValue={[sideBarWidth]}
               className="relative flex h-4 select-none items-center"
               onValueChange={setSideBarWidthDebounced}
