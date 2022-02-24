@@ -16,6 +16,8 @@ import {
   DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
   KEY_SIDEBAR_OPEN_TAB_STATE,
   DEFAULT_SIDEBAR_OPEN_TAB_STATE,
+  KEY_CONTENT_BUTTON_BACKGROUND,
+  DEFAULT_CONTENT_BUTTON_BACKGROUND,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -66,6 +68,11 @@ const App = () => {
     KEY_HIDE_CONTENT_BUTTON,
     DEFAULT_HIDE_CONTENT_BUTTON
   );
+  const [contentButtonBackground, setContentButtonBackground] =
+    useChromeStorage(
+      KEY_CONTENT_BUTTON_BACKGROUND,
+      DEFAULT_CONTENT_BUTTON_BACKGROUND
+    );
   const [contentButtonPlacement, setContentButtonPlacement] = useChromeStorage(
     KEY_CONTENT_BUTTON_PLACEMENT,
     DEFAULT_CONTENT_BUTTON_PLACEMENT
@@ -234,7 +241,9 @@ const App = () => {
               width: "64px",
               height: "64px",
             }}
-            src={chrome.runtime.getURL("icon-outline.svg")}
+            src={chrome.runtime.getURL(
+              contentButtonBackground ? "icon.svg" : "icon-outline.svg"
+            )}
             onClick={toggleSideBar}
           />
           <p
