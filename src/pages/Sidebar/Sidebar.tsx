@@ -213,7 +213,7 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-        <div>
+        <div className="grow scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
           {shouldDisplayIncognitoOverlay && (
             <div
               className="opacity-99 fixed z-20 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
@@ -225,7 +225,7 @@ const Sidebar = () => {
             </div>
           )}
 
-          <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
+          <div className="space-y-3 p-3 text-left">
             <p className="text-lg text-blue-700">Discussions</p>
             {noDiscussions ? (
               <EmptyDiscussionsState />
