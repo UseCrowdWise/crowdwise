@@ -27,7 +27,7 @@ const ResultCard = (props: Props) => {
           </div>
         </div>
       )}
-      <div className="text-md font-medium text-blue-800 hover:underline">
+      <div className="text-md font-medium text-indigo-600 hover:underline">
         <a
           href={result.commentsLink}
           target="_blank"
