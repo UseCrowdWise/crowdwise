@@ -231,7 +231,7 @@ const Sidebar = () => {
           )}
 
           <div className="space-y-3 p-3 text-left">
-            <p className="text-lg text-blue-700">Discussions</p>
+            <p className="text-lg text-indigo-600">Discussions</p>
             {noDiscussions ? (
               <EmptyDiscussionsState />
             ) : (
