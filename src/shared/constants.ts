@@ -5,7 +5,7 @@ export const APP_NAME_FULL = "Vertical Tabs";
 export const SIDEBAR_CONTAINER_ID = `${APP_NAME_SHORT}-sidebar-container`;
 
 export const SETTINGS_DEBOUNCE_TIME = 400;
-export const DEFAULT_SIDEBAR_WIDTH = 24; // rem
+export const DEFAULT_SIDEBAR_WIDTH = 360; // px
 export const DEFAULT_SIDEBAR_OPACITY = 95; // Divided by 100
 export const DEFAULT_HIDE_CONTENT_BUTTON = false;
 export const DEFAULT_CONTENT_BUTTON_BACKGROUND = false;
@@ -32,5 +32,5 @@ export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 export const CACHE_URL_DURATION_SEC = 120;
 export const CACHE_CLEAR_URL_ALARM_INTERVAL_MIN = 1;
 export const CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN = 5;
-export const CACHE_CLEAR_URL_ALARM_NAME = "refresh_url_cache"
-export const CACHE_CLEAR_TABID_ALARM_NAME = "refresh_tabid_cache"
+export const CACHE_CLEAR_URL_ALARM_NAME = "refresh_url_cache";
+export const CACHE_CLEAR_TABID_ALARM_NAME = "refresh_tabid_cache";

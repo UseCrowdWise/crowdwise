@@ -30,7 +30,8 @@ const EmptyDiscussionsState = () => (
     />
     <div className="text-center text-base font-semibold">No discussions</div>
     <div className="text-center text-slate-500">
-      We can't find any relevant discussions on this page.
+      We can't find any relevant discussions on this web page, try going to a
+      different web page.
     </div>
   </>
 );
@@ -43,7 +44,8 @@ const Sidebar = () => {
     hackerNews: [],
     reddit: [],
   });
-  const [isUpdatingResults, setIsUpdatingResults] = useState<boolean>(false);
+  const [isLoadingProviderData, setIsLoadingProviderData] =
+    useState<boolean>(false);
 
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
     KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -61,13 +63,13 @@ const Sidebar = () => {
 
   // Actual call to update current results
   const updateProviderData = () => {
-    setIsUpdatingResults(true);
+    setIsLoadingProviderData(true);
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
       { getProviderData: true },
       (results: ProviderResults) => {
         // Received results from providers
-        setIsUpdatingResults(false);
+        setIsLoadingProviderData(false);
         log.debug("Printing provider data from background script...");
         log.debug(results);
         setProviderData(results);
@@ -114,7 +116,7 @@ const Sidebar = () => {
 
   return (
     <div className="flex h-full w-full flex-row">
-      {isUpdatingResults && (
+      {isLoadingProviderData && (
         <div className="fixed top-0 left-0 right-0 bottom-0 z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-75">
           <div className="loader mb-4 h-12 w-12 rounded-full border-4 border-t-4 ease-linear" />
           <h2 className="text-center text-xl font-semibold text-white">
@@ -158,7 +160,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute right-0 z-10 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-8 z-10 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel />
                     </Popover.Panel>
                   </Transition>

@@ -222,7 +222,7 @@ const App = () => {
       <iframe
         title="sidebar-iframe"
         style={{
-          width: shouldShowSideBar ? `${sideBarWidth}rem` : "0",
+          width: shouldShowSideBar ? `${sideBarWidth}px` : "0",
           height: "100vh",
           border: "none",
           borderSizing: "border-box",
@@ -258,6 +258,7 @@ const App = () => {
             style={{
               height: "64px",
               width: "64px",
+              cursor: "pointer",
               top: "0",
               position: "absolute",
             }}
