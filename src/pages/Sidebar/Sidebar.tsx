@@ -236,14 +236,16 @@ const Sidebar = () => {
               <EmptyDiscussionsState />
             ) : (
               <div className="space-y-2">
-                <div className="flex flex-row space-x-2 align-bottom">
-                  <img
-                    alt="Hacker News Icon"
-                    className="my-auto h-4 w-4"
-                    src={chrome.runtime.getURL("hackernews_icon.png")}
-                  />
-                  <p className="my-1 text-slate-500">Hacker News</p>
-                </div>
+                {providerData.hackerNews.length > 0 && (
+                  <div className="flex flex-row space-x-2 align-bottom">
+                    <img
+                      alt="Hacker News Icon"
+                      className="my-auto h-4 w-4"
+                      src={chrome.runtime.getURL("hackernews_icon.png")}
+                    />
+                    <p className="my-1 text-slate-500">Hacker News</p>
+                  </div>
+                )}
                 {providerData.hackerNews.map((result, index) => (
                   <ResultCard
                     key={index}
@@ -251,14 +253,16 @@ const Sidebar = () => {
                     onCardClick={onCardClick}
                   />
                 ))}
-                <div className="flex flex-row space-x-2 align-bottom">
-                  <img
-                    alt="Reddit Icon"
-                    className="my-auto h-5 w-5"
-                    src={chrome.runtime.getURL("reddit_icon.png")}
-                  />
-                  <p className="my-1 text-slate-500">Reddit</p>
-                </div>
+                {providerData.reddit.length > 0 && (
+                  <div className="flex flex-row space-x-2 align-bottom">
+                    <img
+                      alt="Reddit Icon"
+                      className="my-auto h-5 w-5"
+                      src={chrome.runtime.getURL("reddit_icon.png")}
+                    />
+                    <p className="my-1 text-slate-500">Reddit</p>
+                  </div>
+                )}
                 {providerData.reddit.map((result, index) => (
                   <ResultCard
                     key={index}
