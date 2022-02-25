@@ -22,6 +22,7 @@ import { SettingsPanel } from "../../containers/SettingsPanel";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
 import "./Sidebar.css";
+import { useSettingsStore } from "../../shared/settings";
 
 const EmptyDiscussionsState = () => (
   <>
@@ -56,12 +57,14 @@ const Sidebar = () => {
     DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
     []
   );
+  const [settings, setSettings, isPersistent, error, isLoadingStore] =
+    useSettingsStore();
 
-  const [isIncognito, _] = useChromeStorage(
-    KEY_INCOGNITO_MODE,
-    DEFAULT_INCOGNITO_MODE
-  );
-
+  /* const [isIncognito, _] = useChromeStorage(
+   *   KEY_INCOGNITO_MODE,
+   *   DEFAULT_INCOGNITO_MODE
+   * );
+   */
   // Handles message from background script that our URL changed.
   // We receive this message only when we are in a SPA and the link changes without full-page reload.
   // Full-page reload will hit the useEffect instead.
@@ -72,7 +75,11 @@ const Sidebar = () => {
       setHasFetchedDataForThisPage(false);
     }
 
-    if (request.changedUrl && isIncognito !== null && !isIncognito) {
+    if (
+      request.changedUrl &&
+      !isLoadingStore &&
+      !settings[KEY_INCOGNITO_MODE]
+    ) {
       updateProviderData();
     }
   };
@@ -104,17 +111,20 @@ const Sidebar = () => {
   // We don't pass our URL to the background script. The script know what URL our tab is.
   // This avoids race conditions.
   useEffect(() => {
+    log.debug(
+      `Current incognito setting: ${settings[KEY_INCOGNITO_MODE]}, loading store? ${isLoadingStore}`
+    );
     // Add listener when component mounts
     chrome.runtime.onMessage.addListener(handleMessage);
 
     // Update provider info ONLY IF we are not incognito
-    if (isIncognito !== null && !isIncognito) {
+    if (!isLoadingStore && !settings[KEY_INCOGNITO_MODE]) {
       updateProviderData();
     }
 
     // Remove listener when this component unmounts
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
-  }, [isIncognito]);
+  }, [settings[KEY_INCOGNITO_MODE]]);
 
   // Open the card in a new tab
   const onCardClick = (url: string) => {
@@ -192,56 +202,59 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-        {isIncognito &&
-          hasFetchedDataForThisPage == false &&
-          isLoadingProviderData === false && (
-            <div
-              className="opacity-99 fixed z-50 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
-              onClick={updateProviderData}
-            >
-              <h2 className="text-center text-xl font-semibold text-white">
-                Incognito mode. <br /> Click sidebar to fetch data.
-              </h2>
-            </div>
-          )}
-        <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
-          <p className="text-lg text-blue-700">Discussions</p>
-          {noDiscussions ? (
-            <EmptyDiscussionsState />
-          ) : (
-            <div className="space-y-2">
-              <div className="flex flex-row space-x-2 align-bottom">
-                <img
-                  alt="Hacker News Icon"
-                  className="my-auto h-4 w-4"
-                  src={chrome.runtime.getURL("hackernews_icon.png")}
-                />
-                <p className="my-1 text-slate-500">Hacker News</p>
+        <div>
+          {settings[KEY_INCOGNITO_MODE] &&
+            hasFetchedDataForThisPage == false &&
+            isLoadingProviderData === false && (
+              <div
+                className="opacity-99 fixed z-20 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
+                onClick={updateProviderData}
+              >
+                <h2 className="text-center text-xl font-semibold text-white">
+                  Incognito mode. <br /> Click sidebar to fetch data.
+                </h2>
               </div>
-              {providerData.hackerNews.map((result, index) => (
-                <ResultCard
-                  key={index}
-                  result={result}
-                  onCardClick={onCardClick}
-                />
-              ))}
-              <div className="flex flex-row space-x-2 align-bottom">
-                <img
-                  alt="Reddit Icon"
-                  className="my-auto h-5 w-5"
-                  src={chrome.runtime.getURL("reddit_icon.png")}
-                />
-                <p className="my-1 text-slate-500">Reddit</p>
+            )}
+
+          <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
+            <p className="text-lg text-blue-700">Discussions</p>
+            {noDiscussions ? (
+              <EmptyDiscussionsState />
+            ) : (
+              <div className="space-y-2">
+                <div className="flex flex-row space-x-2 align-bottom">
+                  <img
+                    alt="Hacker News Icon"
+                    className="my-auto h-4 w-4"
+                    src={chrome.runtime.getURL("hackernews_icon.png")}
+                  />
+                  <p className="my-1 text-slate-500">Hacker News</p>
+                </div>
+                {providerData.hackerNews.map((result, index) => (
+                  <ResultCard
+                    key={index}
+                    result={result}
+                    onCardClick={onCardClick}
+                  />
+                ))}
+                <div className="flex flex-row space-x-2 align-bottom">
+                  <img
+                    alt="Reddit Icon"
+                    className="my-auto h-5 w-5"
+                    src={chrome.runtime.getURL("reddit_icon.png")}
+                  />
+                  <p className="my-1 text-slate-500">Reddit</p>
+                </div>
+                {providerData.reddit.map((result, index) => (
+                  <ResultCard
+                    key={index}
+                    result={result}
+                    onCardClick={onCardClick}
+                  />
+                ))}
               </div>
-              {providerData.reddit.map((result, index) => (
-                <ResultCard
-                  key={index}
-                  result={result}
-                  onCardClick={onCardClick}
-                />
-              ))}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
