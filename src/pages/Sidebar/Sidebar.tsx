@@ -89,6 +89,9 @@ const Sidebar = () => {
 
     // Update provider info immediately at the start
     updateProviderData();
+
+    // Remove listener when this component unmounts
+    return () => chrome.runtime.onMessage.removeListener(handleMessage);
   }, []);
 
   // Open the card in a new tab
