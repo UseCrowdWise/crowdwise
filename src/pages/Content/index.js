@@ -47,6 +47,7 @@ const App = () => {
 
   const [tabId, setTabId] = useState(undefined);
 
+  const [isLoadingResults, setIsLoadingResults] = useState(null);
   const [numResults, setNumResults] = useState(null);
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
@@ -87,15 +88,17 @@ const App = () => {
   const handleMessage = (request, sender, sendResponse) => {
     if (request.toggleSideBar === true) {
       toggleSideBar();
-    } else if (request.closeSideBar === true) {
+    }
+    if (request.closeSideBar === true) {
       closeSideBar();
-    } else if (request.newProviderDataCount !== undefined) {
+    }
+    if (request.newProviderDataCount !== undefined) {
       // We can differentiate between having 0 results but the call completes (maybe to un-animate a loading icon)
       //  and having > 0 results from the call
-      log.debug(
-        `Providers returned for this link, we have ${request.newProviderDataCount} results!`
-      );
       setNumResults(request.newProviderDataCount);
+    }
+    if (request.loadingProviderData !== undefined) {
+      setIsLoadingResults(request.loadingProviderData);
     }
   };
 
@@ -221,8 +224,6 @@ const App = () => {
       : contentButtonPlacement.key
   ];
 
-  const isLoadingResults = numResults === null;
-
   return (
     <div className="allUnset">
       {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
@@ -261,7 +262,7 @@ const App = () => {
               margin={2}
             />
           )}
-          {numResults !== null && numResults > 0 && (
+          {!isLoadingResults && numResults > 0 && (
             <div
               className="allUnset animate__animated animate__heartBeat"
               style={{
