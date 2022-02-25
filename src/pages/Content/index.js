@@ -201,28 +201,32 @@ const App = () => {
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
     "  (Go settings to hide button)";
 
-  const contentButtonPlacementCss = {
-    "top-left": {
-      top: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-      left: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-    },
-    "top-right": {
-      top: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-      right: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-    },
-    "bottom-left": {
-      bottom: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-      left: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-    },
-    "bottom-right": {
-      bottom: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-      right: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-    },
-  }[
+  // Hide content button when we have not fetched its position. If we gave
+  // a default placement (e.g. bottom-right), then there will be "flashing"
+  // problems if the user has already specified a different placement
+  // (e.g. top-left) where the button appears briefly at the bottom-right
+  // and then goes to the top-left.
+  const contentButtonPlacementCss =
     contentButtonPlacement === null
-      ? "bottom-right"
-      : contentButtonPlacement.key
-  ];
+      ? { display: "none" }
+      : {
+          "top-left": {
+            top: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+            left: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+          },
+          "top-right": {
+            top: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+            right: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+          },
+          "bottom-left": {
+            bottom: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+            left: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+          },
+          "bottom-right": {
+            bottom: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+            right: DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
+          },
+        }[contentButtonPlacement.key];
 
   return (
     <div className="allUnset">
