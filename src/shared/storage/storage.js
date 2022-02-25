@@ -1,3 +1,4 @@
+// From: https://github.com/onikienko/use-chrome-storage
 export const storage = {
   get: (key, defaultValue, storageArea) => {
     const keyObj = defaultValue === undefined ? key : { [key]: defaultValue };
