@@ -22,6 +22,7 @@ import {
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
+import DotLoader from "react-spinners/DotLoader";
 import "./index.css";
 import "animate.css";
 
@@ -220,6 +221,8 @@ const App = () => {
       : contentButtonPlacement.key
   ];
 
+  const isLoadingResults = numResults === null;
+
   return (
     <div className="allUnset">
       {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
@@ -244,6 +247,20 @@ const App = () => {
           }}
           onClick={toggleSideBar}
         >
+          {isLoadingResults && (
+            <DotLoader
+              color={"rgba(163,163,163,0.5)"}
+              css={{
+                display: "block",
+                position: "fixed",
+                bottom: "64px",
+                right: "16px",
+              }}
+              loading={isLoadingResults}
+              size={20}
+              margin={2}
+            />
+          )}
           {numResults !== null && numResults > 0 && (
             <div
               className="allUnset animate__animated animate__heartBeat"
