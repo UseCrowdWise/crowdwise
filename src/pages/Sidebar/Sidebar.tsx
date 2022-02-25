@@ -65,11 +65,17 @@ const Sidebar = () => {
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
       { getProviderData: true },
-      (response: ProviderResults) => {
+      (results: ProviderResults) => {
+        // Received results from providers
         setIsUpdatingResults(false);
         log.debug("Printing provider data from background script...");
-        log.debug(response);
-        setProviderData(response);
+        log.debug(results);
+        setProviderData(results);
+        // Inform content script about how much new data there is
+        sendMessageToActiveTab({
+          newProviderDataCount:
+            results.hackerNews.length + results.reddit.length,
+        });
       }
     );
   };

@@ -33,6 +33,8 @@ export enum ProviderResultType {
   Blacklisted = "BLACKLISTED",
 }
 
+// NOTE: if we add more providers, remember to update code that adds the length of these together
+//  to get total result counts.
 export interface ProviderResults {
   resultType: ProviderResultType;
   hackerNews: ResultItem[];

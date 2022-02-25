@@ -87,6 +87,12 @@ const App = () => {
       toggleSideBar();
     } else if (request.closeSideBar === true) {
       closeSideBar();
+    } else if (request.newProviderDataCount !== undefined) {
+      // We can differentiate between having 0 results but the call completes (maybe to un-animate a loading icon)
+      //  and having > 0 results from the call
+      log.debug(
+        `Providers returned for this link, we have ${request.newProviderDataCount} results!`
+      );
     }
   };
 
