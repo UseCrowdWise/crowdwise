@@ -72,7 +72,12 @@ const Sidebar = () => {
     log.debug("Content script received message that our tab's URL changed.");
     // A SPA-like page change happened so we should allow incog users to request new data.
     if (request.changedUrl) {
+      // For incognito to know to show the click-to-call-api overlay
       setHasFetchedDataForThisPage(false);
+      // To tell button to not display (no results yet)
+      sendMessageToActiveTab({
+        newProviderDataCount: 0,
+      });
     }
 
     if (
@@ -124,7 +129,7 @@ const Sidebar = () => {
 
     // Remove listener when this component unmounts
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
-  }, [settings[KEY_INCOGNITO_MODE]]);
+  }, [settings[KEY_INCOGNITO_MODE], isLoadingStore]);
 
   // Open the card in a new tab
   const onCardClick = (url: string) => {
@@ -190,7 +195,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute -right-8 z-10 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-8 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel />
                     </Popover.Panel>
                   </Transition>
