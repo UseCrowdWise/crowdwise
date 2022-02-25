@@ -24,6 +24,7 @@ import { useHotkeysPressed } from "../shared/useHotkeysPressed";
 import Toggle from "./Toggle";
 import SelectMenu from "./SelectMenu";
 import { CONTENT_BUTTON_PLACEMENT_OPTIONS } from "../shared/options";
+import { useSettingsStore } from "../shared/settings";
 
 const HotkeyButton = () => {
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
@@ -63,6 +64,17 @@ const HotkeyButton = () => {
 export const SettingsPanel = () => {
   log.debug("Settings Panel rerender");
 
+  const [settings, setSettings, isPersistent, error, isLoadingStore] =
+    useSettingsStore();
+  const handleIncogChange = (state: boolean) => {
+    setSettings((prevState: any) => {
+      return {
+        ...prevState,
+        [KEY_INCOGNITO_MODE]: state,
+      };
+    });
+  };
+
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
     DEFAULT_SIDEBAR_WIDTH
@@ -94,17 +106,17 @@ export const SettingsPanel = () => {
     log.debug(`Setting opacity to ${value}`);
     setSideBarOpacity(value);
   }, SETTINGS_DEBOUNCE_TIME);
-  const [isIncognito, setIsIncognito] = useChromeStorage(
-    KEY_INCOGNITO_MODE,
-    DEFAULT_INCOGNITO_MODE
-  );
-
+  /* const [isIncognito, setIsIncognito] = useChromeStorage(
+   *   KEY_INCOGNITO_MODE,
+   *   DEFAULT_INCOGNITO_MODE
+   * );
+   */
   if (
     sideBarWidth === null ||
     sideBarOpacity === null ||
     hideContentButton === null ||
     contentButtonPlacement === null ||
-    isIncognito === null
+    isLoadingStore
   )
     return null;
   return (
@@ -171,7 +183,10 @@ export const SettingsPanel = () => {
         <div className="flex flex-row items-center space-x-2">
           <div>Incognito Mode</div>
           <div className="grow" />
-          <Toggle checked={isIncognito} onCheck={setIsIncognito} />
+          <Toggle
+            checked={settings[KEY_INCOGNITO_MODE]}
+            onCheck={handleIncogChange}
+          />
         </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
