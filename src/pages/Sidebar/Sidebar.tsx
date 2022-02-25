@@ -77,6 +77,7 @@ const Sidebar = () => {
       // To tell button to not display (no results yet)
       sendMessageToActiveTab({
         newProviderDataCount: 0,
+        loadingProviderData: false,
       });
     }
 
@@ -93,6 +94,9 @@ const Sidebar = () => {
   const updateProviderData = () => {
     setIsLoadingProviderData(true);
     setHasFetchedDataForThisPage(false);
+    sendMessageToActiveTab({
+      loadingProviderData: true,
+    });
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
       { getProviderData: true },
@@ -107,6 +111,7 @@ const Sidebar = () => {
         sendMessageToActiveTab({
           newProviderDataCount:
             results.hackerNews.length + results.reddit.length,
+          loadingProviderData: false,
         });
       }
     );
