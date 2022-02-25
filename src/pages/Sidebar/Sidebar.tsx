@@ -15,6 +15,8 @@ import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_INCOGNITO_MODE,
+  DEFAULT_INCOGNITO_MODE,
 } from "../../shared/constants";
 import { SettingsPanel } from "../../containers/SettingsPanel";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -46,6 +48,8 @@ const Sidebar = () => {
   });
   const [isLoadingProviderData, setIsLoadingProviderData] =
     useState<boolean>(false);
+  const [hasFetchedDataForThisPage, setHasFetchedDataForThisPage] =
+    useState<boolean>(false);
 
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
     KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -53,10 +57,22 @@ const Sidebar = () => {
     []
   );
 
-  // Toggle the side bar based on incoming message from further down in the component (close arrow)
+  const [isIncognito, _] = useChromeStorage(
+    KEY_INCOGNITO_MODE,
+    DEFAULT_INCOGNITO_MODE
+  );
+
+  // Handles message from background script that our URL changed.
+  // We receive this message only when we are in a SPA and the link changes without full-page reload.
+  // Full-page reload will hit the useEffect instead.
   const handleMessage = (request: any, sender: any, sendResponse: any) => {
     log.debug("Content script received message that our tab's URL changed.");
+    // A SPA-like page change happened so we should allow incog users to request new data.
     if (request.changedUrl) {
+      setHasFetchedDataForThisPage(false);
+    }
+
+    if (request.changedUrl && isIncognito !== null && !isIncognito) {
       updateProviderData();
     }
   };
@@ -64,12 +80,14 @@ const Sidebar = () => {
   // Actual call to update current results
   const updateProviderData = () => {
     setIsLoadingProviderData(true);
+    setHasFetchedDataForThisPage(false);
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
       { getProviderData: true },
       (results: ProviderResults) => {
         // Received results from providers
         setIsLoadingProviderData(false);
+        setHasFetchedDataForThisPage(true);
         log.debug("Printing provider data from background script...");
         log.debug(results);
         setProviderData(results);
@@ -89,12 +107,14 @@ const Sidebar = () => {
     // Add listener when component mounts
     chrome.runtime.onMessage.addListener(handleMessage);
 
-    // Update provider info immediately at the start
-    updateProviderData();
+    // Update provider info ONLY IF we are not incognito
+    if (isIncognito !== null && !isIncognito) {
+      updateProviderData();
+    }
 
     // Remove listener when this component unmounts
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
-  }, []);
+  }, [isIncognito]);
 
   // Open the card in a new tab
   const onCardClick = (url: string) => {
@@ -172,6 +192,18 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
+        {isIncognito &&
+          hasFetchedDataForThisPage == false &&
+          isLoadingProviderData === false && (
+            <div
+              className="opacity-99 fixed z-50 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
+              onClick={updateProviderData}
+            >
+              <h2 className="text-center text-xl font-semibold text-white">
+                Incognito mode. <br /> Click sidebar to fetch data.
+              </h2>
+            </div>
+          )}
         <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
           <p className="text-lg text-blue-700">Discussions</p>
           {noDiscussions ? (
