@@ -149,6 +149,12 @@ const Sidebar = () => {
   const noDiscussions =
     providerData.hackerNews.length === 0 && providerData.reddit.length === 0;
 
+  // Must be incognito mode, no data fetched so far (click option to fetch), and not already loading results
+  const shouldDisplayIncognitoOverlay =
+    settings[KEY_INCOGNITO_MODE] &&
+    hasFetchedDataForThisPage == false &&
+    isLoadingProviderData === false;
+
   return (
     <div className="flex h-full w-full flex-row">
       {isLoadingProviderData && (
@@ -208,18 +214,16 @@ const Sidebar = () => {
           </div>
         </div>
         <div>
-          {settings[KEY_INCOGNITO_MODE] &&
-            hasFetchedDataForThisPage == false &&
-            isLoadingProviderData === false && (
-              <div
-                className="opacity-99 fixed z-20 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
-                onClick={updateProviderData}
-              >
-                <h2 className="text-center text-xl font-semibold text-white">
-                  Incognito mode. <br /> Click sidebar to fetch data.
-                </h2>
-              </div>
-            )}
+          {shouldDisplayIncognitoOverlay && (
+            <div
+              className="opacity-99 fixed z-20 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
+              onClick={updateProviderData}
+            >
+              <h2 className="text-center text-xl font-semibold text-white">
+                Incognito mode. <br /> Click sidebar to fetch data.
+              </h2>
+            </div>
+          )}
 
           <div className="grow space-y-3 p-3 text-left scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
             <p className="text-lg text-blue-700">Discussions</p>
