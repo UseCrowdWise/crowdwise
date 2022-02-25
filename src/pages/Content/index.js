@@ -253,9 +253,8 @@ const App = () => {
               color={"rgba(163,163,163,0.5)"}
               css={{
                 display: "block",
-                position: "fixed",
-                bottom: "64px",
-                right: "16px",
+                position: "absolute",
+                right: "0",
               }}
               loading={isLoadingResults}
               size={20}
@@ -266,9 +265,8 @@ const App = () => {
             <div
               className="allUnset animate__animated animate__heartBeat"
               style={{
-                position: "fixed",
-                bottom: "64px",
-                right: "16px",
+                position: "absolute",
+                right: "0",
                 textAlign: "center",
                 fontSize: "12px",
                 minWidth: "8px",
