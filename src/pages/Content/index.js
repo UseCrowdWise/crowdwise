@@ -23,6 +23,7 @@ import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
 import ReactTooltip from "react-tooltip";
 import "./index.css";
+import "animate.css";
 
 log.debug("Content script works!");
 log.debug("Must reload extension for modifications to take effect.");
@@ -45,7 +46,7 @@ const App = () => {
 
   const [tabId, setTabId] = useState(undefined);
 
-  // Start with a default state.
+  const [numResults, setNumResults] = useState(null);
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
   );
@@ -93,6 +94,7 @@ const App = () => {
       log.debug(
         `Providers returned for this link, we have ${request.newProviderDataCount} results!`
       );
+      setNumResults(request.newProviderDataCount);
     }
   };
 
@@ -242,6 +244,25 @@ const App = () => {
           }}
           onClick={toggleSideBar}
         >
+          {numResults !== null && numResults > 0 && (
+            <div
+              className="allUnset animate__animated animate__heartBeat"
+              style={{
+                position: "fixed",
+                bottom: "64px",
+                right: "16px",
+                textAlign: "center",
+                fontSize: "12px",
+                minWidth: "8px",
+                backgroundColor: "red",
+                color: "white",
+                borderRadius: "16px",
+                padding: "1px 5px",
+              }}
+            >
+              {numResults}
+            </div>
+          )}
           {/*Height and width needed because no text is given to p tag*/}
           <img
             alt="Trigger Extension Button"
