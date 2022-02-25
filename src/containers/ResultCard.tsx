@@ -28,7 +28,12 @@ const ResultCard = (props: Props) => {
         </div>
       )}
       <div className="text-md font-medium text-blue-800 hover:underline">
-        <a href={result.commentsLink} target="_blank" rel="noreferrer">
+        <a
+          href={result.commentsLink}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
+        >
           {result.submittedTitle}
         </a>
       </div>
