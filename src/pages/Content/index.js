@@ -140,7 +140,7 @@ const App = () => {
       // Now we check local storage for tab state, otherwise return default val
       chrome.storage.local.get([tabOpenClosedStateStorageKey], (result) => {
         const shouldTabBeOpen =
-          result[tabOpenClosedStateStorageKey] ||
+          result[tabOpenClosedStateStorageKey] ??
           DEFAULT_SIDEBAR_OPEN_TAB_STATE;
         log.debug(`Sidebar should be open? ${shouldTabBeOpen}`);
         setUserOpenedSideBar(shouldTabBeOpen);
@@ -158,8 +158,10 @@ const App = () => {
   // UI should call this to update sidebar state if it needs to be toggled somehow
   // The storage will update too.
   const toggleUserOpenedSidebarStateWithStorage = () => {
-    setUserOpenedSideBar((show) => !show);
-    updateStorageWithOpenClosedState(!userOpenedSideBar);
+    setUserOpenedSideBar((show) => {
+      updateStorageWithOpenClosedState(!show);
+      return !show;
+    });
   };
 
   // Actually updates storage about the open-closed state
