@@ -38,13 +38,13 @@ const ResultCard = (props: Props) => {
         </a>
       </div>
       <div className="flex flex-row space-x-3 text-xs">
-        <div className="flex flex-row space-x-1">
+        <div className="flex flex-row items-center space-x-1">
           <strong className="text-slate-500">{result.submittedUpvotes}</strong>
-          <ThumbUpIcon className="mt-0.5 h-3 w-3 text-slate-300" />
+          <ThumbUpIcon className="h-3 w-3 text-slate-300" />
         </div>
-        <div className="flex flex-row space-x-1">
+        <div className="flex flex-row items-center space-x-1">
           <strong className="text-slate-500">{result.commentsCount}</strong>
-          <ChatIcon className="mt-0.5 h-3 w-3 text-slate-300" />
+          <ChatIcon className="h-3 w-3 text-slate-300" />
         </div>
         <div className="text-slate-600">{result.submittedDate}</div>
         <div className="grow" />
