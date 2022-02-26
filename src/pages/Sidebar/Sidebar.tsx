@@ -16,7 +16,6 @@ import {
   DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
-  DEFAULT_INCOGNITO_MODE,
 } from "../../shared/constants";
 import { SettingsPanel } from "../../containers/SettingsPanel";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -179,7 +178,7 @@ const Sidebar = () => {
       {/*)}*/}
       <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-slate-100">
         <div className="shrink-0 items-end border-b border-slate-300 bg-white pt-3 pb-2 ">
-          <div className="text-md flex flex-row space-x-2 px-2">
+          <div className="flex flex-row space-x-2 px-2">
             <div className="cursor-pointer" onClick={closeSideBar}>
               <p
                 data-tip={hotkeysToggleSidebar

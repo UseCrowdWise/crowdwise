@@ -14,7 +14,7 @@ import {
   DEFAULT_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_INCOGNITO_MODE,
-  DEFAULT_INCOGNITO_MODE,
+  KEY_FONT_SIZES,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -23,8 +23,12 @@ import { log } from "../utils/log";
 import { useHotkeysPressed } from "../shared/useHotkeysPressed";
 import Toggle from "./Toggle";
 import SelectMenu from "./SelectMenu";
-import { CONTENT_BUTTON_PLACEMENT_OPTIONS } from "../shared/options";
+import {
+  CONTENT_BUTTON_PLACEMENT_OPTIONS,
+  FONT_SIZE_OPTIONS,
+} from "../shared/options";
 import { useSettingsStore } from "../shared/settings";
+import { indexOfObjectArr } from "../utils/array";
 
 const HotkeyButton = () => {
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
@@ -64,16 +68,19 @@ const HotkeyButton = () => {
 export const SettingsPanel = () => {
   log.debug("Settings Panel rerender");
 
-  const [settings, setSettings, isPersistent, error, isLoadingStore] =
-    useSettingsStore();
-  const handleIncogChange = (state: boolean) => {
-    setSettings((prevState: any) => {
-      return {
-        ...prevState,
-        [KEY_INCOGNITO_MODE]: state,
-      };
-    });
-  };
+  const [
+    settings,
+    setSettings,
+    setKeyValue,
+    isPersistent,
+    error,
+    isLoadingStore,
+  ] = useSettingsStore();
+  const handleIncogChange = (state: boolean) =>
+    setKeyValue(KEY_INCOGNITO_MODE, state);
+  const handleFontSizeChange = (state: Record<string, string>) =>
+    setKeyValue(KEY_FONT_SIZES, state);
+  log.debug("***", settings[KEY_FONT_SIZES], "***");
 
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
@@ -151,6 +158,28 @@ export const SettingsPanel = () => {
               defaultValue={[sideBarOpacity]}
               className="relative flex h-4 select-none items-center"
               onValueChange={setSideBarOpacityDebounced}
+            >
+              <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
+                <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
+              </Slider.Track>
+              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            </Slider.Root>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div>Font Size</div>
+          <div className="flex w-full flex-col space-y-8">
+            <Slider.Root
+              min={0}
+              max={FONT_SIZE_OPTIONS.length - 1}
+              step={1}
+              defaultValue={[
+                indexOfObjectArr(FONT_SIZE_OPTIONS, settings[KEY_FONT_SIZES]),
+              ]}
+              className="relative flex h-4 select-none items-center"
+              onValueChange={(sizeIds) =>
+                handleFontSizeChange(FONT_SIZE_OPTIONS[sizeIds[0]])
+              }
             >
               <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
                 <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
