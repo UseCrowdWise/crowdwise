@@ -71,7 +71,7 @@ export const SettingsPanel = () => {
 
   const [
     settings,
-    setSettings,
+    setValueAll,
     setKeyValue,
     isPersistent,
     error,

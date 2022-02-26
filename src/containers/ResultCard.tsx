@@ -16,8 +16,14 @@ interface Props {
 
 const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
-  const [settings, setSettings, isPersistent, error, isLoadingStore] =
-    useSettingsStore();
+  const [
+    settings,
+    setValueAll,
+    setKeyValue,
+    isPersistent,
+    error,
+    isLoadingStore,
+  ] = useSettingsStore();
 
   const fontSizes = settings[KEY_FONT_SIZES];
   const colorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]

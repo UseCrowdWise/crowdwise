@@ -27,7 +27,7 @@ export default function useChromeStorage(key, initialValue, storageArea) {
         setState(res);
         setIsPersistent(true);
         setError("");
-        setIsLoadinStorageg(false);
+        setIsLoadingStorage(false);
       })
       .catch((error) => {
         setIsPersistent(false);

@@ -56,8 +56,14 @@ const Sidebar = () => {
     DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
     []
   );
-  const [settings, setSettings, isPersistent, error, isLoadingStore] =
-    useSettingsStore();
+  const [
+    settings,
+    setSettings,
+    setKeyValue,
+    isPersistent,
+    error,
+    isLoadingStore,
+  ] = useSettingsStore();
 
   /* const [isIncognito, _] = useChromeStorage(
    *   KEY_INCOGNITO_MODE,
@@ -121,7 +127,9 @@ const Sidebar = () => {
   // This avoids race conditions.
   useEffect(() => {
     log.debug(
-      `Current incognito setting: ${settings[KEY_INCOGNITO_MODE]}, loading store? ${isLoadingStore}`
+      `Current incognito setting: ${
+        settings[KEY_INCOGNITO_MODE]
+      }, loading store? ${JSON.stringify(isLoadingStore)}`
     );
     // Add listener when component mounts
     chrome.runtime.onMessage.addListener(handleMessage);
