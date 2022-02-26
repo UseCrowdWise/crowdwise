@@ -10,7 +10,7 @@ import { ProviderResults, ProviderResultType } from "../../providers/providers";
 import { log } from "../../utils/log";
 import ResultCard from "../../containers/ResultCard";
 import { useHotkeys } from "react-hotkeys-hook";
-import { sendMessageToActiveTab } from "../../utils/tabs";
+import { sendMessageToCurrentTab } from "../../utils/tabs";
 import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
@@ -80,7 +80,7 @@ const Sidebar = () => {
       // For incognito to know to show the click-to-call-api overlay
       setHasFetchedDataForThisPage(false);
       // To tell button to not display (no results yet)
-      sendMessageToActiveTab({
+      sendMessageToCurrentTab({
         newProviderDataCount: 0,
         loadingProviderData: false,
       });
@@ -99,7 +99,7 @@ const Sidebar = () => {
   const updateProviderData = () => {
     setIsLoadingProviderData(true);
     setHasFetchedDataForThisPage(false);
-    sendMessageToActiveTab({
+    sendMessageToCurrentTab({
       loadingProviderData: true,
     });
     log.debug("Sending message to background script to update provider info.");
@@ -113,7 +113,7 @@ const Sidebar = () => {
         log.debug(results);
         setProviderData(results);
         // Inform content script about how much new data there is
-        sendMessageToActiveTab({
+        sendMessageToCurrentTab({
           newProviderDataCount:
             results.hackerNews.length + results.reddit.length,
           loadingProviderData: false,
@@ -150,8 +150,8 @@ const Sidebar = () => {
   const setClickedUrl = () => {};
 
   // Send a message to the extension (alternative: use redux?) to close
-  const closeSideBar = () => sendMessageToActiveTab({ closeSideBar: true });
-  const toggleSideBar = () => sendMessageToActiveTab({ toggleSideBar: true });
+  const closeSideBar = () => sendMessageToCurrentTab({ closeSideBar: true });
+  const toggleSideBar = () => sendMessageToCurrentTab({ toggleSideBar: true });
 
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar is reimplementing the same hotkey shortcuts because it will be within an iFrame
