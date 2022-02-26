@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "CrowdWise",
-  "description": "",
-  "permissions": ["storage", "tabs", "alarms", "activeTab"],
+  "description": "CrowdWise shows you discussions (from HN/Reddit) about the page you're browsing. What have you missed? What do other people think?",
+  "permissions": ["storage", "tabs", "alarms"],
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
@@ -14,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }
