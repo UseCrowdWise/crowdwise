@@ -1,9 +1,5 @@
 import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
 
-export const APP_NAME_SHORT = "vt";
-export const APP_NAME_FULL = "Vertical Tabs";
-export const SIDEBAR_CONTAINER_ID = `${APP_NAME_SHORT}-sidebar-container`;
-
 export const SETTINGS_DEBOUNCE_TIME = 400;
 export const DEFAULT_SIDEBAR_WIDTH = 360; // px
 export const DEFAULT_SIDEBAR_OPACITY = 95; // Divided by 100
@@ -15,6 +11,7 @@ export const DEFAULT_CONTENT_BUTTON_PLACEMENT =
 export const DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET = "16px";
 export const DEFAULT_SIDEBAR_OPEN_TAB_STATE = false;
 export const DEFAULT_INCOGNITO_MODE = false;
+export const DEFAULT_SHOULD_COLOR_FOR_SUBMITTED_BY = true;
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
@@ -31,6 +28,8 @@ export const KEY_CONTENT_BUTTON_BACKGROUND = "content-button-background";
 export const KEY_CONTENT_BUTTON_PLACEMENT = "content-button-placement";
 export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 export const KEY_INCOGNITO_MODE = "sidebar-incognito-mode";
+export const KEY_SHOULD_COLOR_FOR_SUBMITTED_BY =
+  "should-color-for-submitted-by";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 120;
@@ -38,3 +37,23 @@ export const CACHE_CLEAR_URL_ALARM_INTERVAL_MIN = 1;
 export const CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN = 5;
 export const CACHE_CLEAR_URL_ALARM_NAME = "refresh_url_cache";
 export const CACHE_CLEAR_TABID_ALARM_NAME = "refresh_tabid_cache";
+
+// Color settings
+const COLOR_MAP_FOR_STRINGS = {
+  "text-red-600": "abc",
+  "text-yellow-600": "def",
+  "text-green-600": "ghij",
+  "text-teal-600": "klmn",
+  "text-cyan-600": "opqr",
+  "text-blue-600": "stuv",
+  "text-fuchsia-600": "wxyz",
+};
+export const COLOR_IF_OUTSIDE_HASH = "text-slate-600";
+export const COLOR_HASH_FOR_STRINGS = Object.entries(
+  COLOR_MAP_FOR_STRINGS
+).reduce(function (obj: Record<string, string>, [color, values]) {
+  for (const char of values) {
+    obj[char] = color;
+  }
+  return obj;
+}, {});

@@ -15,6 +15,7 @@ import {
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_INCOGNITO_MODE,
   KEY_FONT_SIZES,
+  KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -76,11 +77,13 @@ export const SettingsPanel = () => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
-  const handleIncogChange = (state: boolean) =>
-    setKeyValue(KEY_INCOGNITO_MODE, state);
+
   const handleFontSizeChange = (state: Record<string, string>) =>
     setKeyValue(KEY_FONT_SIZES, state);
-  log.debug("***", settings[KEY_FONT_SIZES], "***");
+  const handleIncogChange = (state: boolean) =>
+    setKeyValue(KEY_INCOGNITO_MODE, state);
+  const handleShouldColorForSubmittedBy = (state: boolean) =>
+    setKeyValue(KEY_SHOULD_COLOR_FOR_SUBMITTED_BY, state);
 
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
@@ -207,6 +210,14 @@ export const SettingsPanel = () => {
           <Toggle
             checked={contentButtonBackground}
             onCheck={setContentButtonBackground}
+          />
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div>Add Color To Article Authors</div>
+          <div className="grow" />
+          <Toggle
+            checked={settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]}
+            onCheck={handleShouldColorForSubmittedBy}
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
