@@ -19,6 +19,15 @@ export default function createChromeStorageStateHook(
       }
     }, []);
 
+    const setKeyValue = (key, newValue) => {
+      setValueAll((prevState) => {
+        return {
+          ...prevState,
+          [key]: newValue,
+        };
+      });
+    };
+
     useEffect(() => {
       consumers.push(setValue);
       return () => {
@@ -26,6 +35,13 @@ export default function createChromeStorageStateHook(
       };
     }, [setValue]);
 
-    return [value, setValueAll, isPersistent, error, isLoadingStorage];
+    return [
+      value,
+      setValueAll,
+      setKeyValue,
+      isPersistent,
+      error,
+      isLoadingStorage,
+    ];
   };
 }

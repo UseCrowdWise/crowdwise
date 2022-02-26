@@ -38,7 +38,7 @@ function useChromeStorageSync(key, initialValue) {
  *
  * @param {string} key - they key name in chrome's storage. Nested keys not supported
  * @param {*} [initialValue] - default value to use
- * @returns {function(): [any, (value: any) => void, boolean, string, boolean]}
+ * @returns {function(): [any, (value: any) => void, any, (value: any) => void, boolean, string, boolean]}
  */
 function createChromeStorageStateHookLocal(key, initialValue) {
   return createChromeStorageStateHook(key, initialValue, "local");
@@ -50,7 +50,7 @@ function createChromeStorageStateHookLocal(key, initialValue) {
  *
  * @param {string} key - they key name in chrome's storage. Nested keys not supported
  * @param {*} [initialValue] - default value to use
- * @returns {function(): [any, (value: any) => void, boolean, string, boolean]}
+ * @returns {function(): [any, (value: any) => void, any, (value: any) => void, boolean, string, boolean]}
  */
 function createChromeStorageStateHookSync(key, initialValue) {
   return createChromeStorageStateHook(key, initialValue, "sync");

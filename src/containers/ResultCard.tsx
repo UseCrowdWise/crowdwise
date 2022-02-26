@@ -1,6 +1,8 @@
 import React from "react";
 import { ResultItem } from "../providers/providers";
 import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
+import { KEY_FONT_SIZES } from "../shared/constants";
+import { useSettingsStore } from "../shared/settings";
 
 interface Props {
   result: ResultItem;
@@ -9,6 +11,11 @@ interface Props {
 
 const ResultCard = (props: Props) => {
   const { result, onCardClick } = props;
+  const [settings, setSettings, isPersistent, error, isLoadingStore] =
+    useSettingsStore();
+
+  const fontSizes = settings[KEY_FONT_SIZES];
+
   return (
     <div
       className="flex cursor-pointer flex-col space-y-2 rounded border border-slate-300 bg-white p-3"
@@ -16,7 +23,9 @@ const ResultCard = (props: Props) => {
     >
       {result.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
-          <div className="text-md font-medium text-slate-500 hover:underline">
+          <div
+            className={`${fontSizes.subtext} font-medium text-slate-500 hover:underline`}
+          >
             <a
               href={result.subSourceLink}
               target="_blank"
@@ -27,7 +36,9 @@ const ResultCard = (props: Props) => {
           </div>
         </div>
       )}
-      <div className="text-md font-medium text-indigo-600 hover:underline">
+      <div
+        className={`${fontSizes.mainText} font-medium text-indigo-600 hover:underline`}
+      >
         <a
           href={result.commentsLink}
           target="_blank"
@@ -37,7 +48,7 @@ const ResultCard = (props: Props) => {
           {result.submittedTitle}
         </a>
       </div>
-      <div className="flex flex-row space-x-3 text-xs">
+      <div className={`${fontSizes.subText} flex flex-row space-x-3`}>
         <div className="flex flex-row items-center space-x-1">
           <strong className="text-slate-500">{result.submittedUpvotes}</strong>
           <ThumbUpIcon className="h-3 w-3 text-slate-300" />
