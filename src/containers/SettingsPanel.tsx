@@ -132,7 +132,7 @@ export const SettingsPanel = () => {
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
       <div className="relative grid gap-6 bg-white p-6">
-        <div className="text-lg font-semibold">Change settings</div>
+        <div className="text-lg font-medium">Change settings</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
           <div className="flex w-full flex-col space-y-8">
