@@ -17,7 +17,7 @@ export const DEFAULT_SHOULD_COLOR_FOR_SUBMITTED_BY = true;
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
-export const DEFAULT_HOTKEYS_TOGGLE_SIDEBAR = ["ctrl+/", "⌘+/"];
+export const DEFAULT_HOTKEYS_TOGGLE_SIDEBAR = ["ctrl+.", "⌘+."];
 export const DEFAULT_HOTKEYS_CLOSE_SIDEBAR = ["esc"];
 
 // Chrome storage keys
