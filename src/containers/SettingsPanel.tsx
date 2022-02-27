@@ -33,11 +33,18 @@ import { indexOfObjectArr } from "../utils/array";
 import { classNames } from "../utils/classNames";
 
 const HotkeyButton = () => {
-  const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
-    KEY_HOTKEYS_TOGGLE_SIDEBAR,
-    DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
-    []
-  );
+  const [
+    settings,
+    setValueAll,
+    setKeyValue,
+    isPersistent,
+    error,
+    isLoadingStore,
+  ] = useSettingsStore();
+  const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
+  const setHotkeysToggleSidebar = (state: string[]) =>
+    setKeyValue(KEY_HOTKEYS_TOGGLE_SIDEBAR, state);
+
   const [isHotkeyFocused, setIsHotkeyFocused] = useState<boolean>(false);
 
   log.debug("Hotkey Button rerender", hotkeysToggleSidebar);
@@ -55,6 +62,8 @@ const HotkeyButton = () => {
     onKeyPressed
   );
   log.debug(hotkeysHistory.map((h) => h.key));
+
+  if (isLoadingStore) return null;
   return (
     <div className="relative text-center">
       {isHotkeyFocused && (
@@ -245,12 +254,12 @@ export const SettingsPanel = () => {
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
           <div className="text-xs text-slate-400">
-            Click on the keyboard shortcuts on the right to change them.{" "}
-            <span className="font-semibold text-indigo-600">Refresh</span> to
-            see the changes.
+            Click on the keyboard shortcuts on the right to change them. When
+            "Enter hotkey" is shown, press a combination of two keys, e.g.,
+            "Control" and "G", to set the new hotkey combination.
           </div>
           <div className="flex flex-row items-center">
-            <div className="text-slate-600">Toggle Open</div>
+            <div className="text-slate-600">Toggle Sidebar</div>
             <div className="grow" />
             <HotkeyButton />
           </div>

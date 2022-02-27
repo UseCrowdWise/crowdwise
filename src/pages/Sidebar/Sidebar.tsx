@@ -52,11 +52,6 @@ const Sidebar = () => {
   const [hasFetchedDataForThisPage, setHasFetchedDataForThisPage] =
     useState<boolean>(false);
 
-  const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
-    KEY_HOTKEYS_TOGGLE_SIDEBAR,
-    DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
-    []
-  );
   const [
     settings,
     setSettings,
@@ -65,6 +60,8 @@ const Sidebar = () => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
+
+  const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
 
   /* const [isIncognito, _] = useChromeStorage(
    *   KEY_INCOGNITO_MODE,
