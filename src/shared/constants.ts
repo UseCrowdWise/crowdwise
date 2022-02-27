@@ -1,5 +1,7 @@
 import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
 
+export const GITHUB_REPOSITORY_LINK = "https://github.com/frizensami/crowdwise";
+
 export const SETTINGS_DEBOUNCE_TIME = 400;
 export const DEFAULT_SIDEBAR_WIDTH = 360; // px
 export const DEFAULT_SIDEBAR_OPACITY = 95; // Divided by 100
