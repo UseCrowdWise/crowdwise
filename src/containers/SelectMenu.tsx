@@ -1,10 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-
-const classNames = (...classes: string[]) => {
-  return classes.filter(Boolean).join(" ");
-};
+import { classNames } from "../utils/classNames";
 
 interface Option {
   key: string;

@@ -19,7 +19,7 @@ import {
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import { log } from "../utils/log";
 import { useHotkeysPressed } from "../shared/useHotkeysPressed";
 import Toggle from "./Toggle";
@@ -30,6 +30,7 @@ import {
 } from "../shared/options";
 import { useSettingsStore } from "../shared/settings";
 import { indexOfObjectArr } from "../utils/array";
+import { classNames } from "../utils/classNames";
 
 const HotkeyButton = () => {
   const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
@@ -37,12 +38,16 @@ const HotkeyButton = () => {
     DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
     []
   );
+  const [isHotkeyFocused, setIsHotkeyFocused] = useState<boolean>(false);
 
   log.debug("Hotkey Button rerender", hotkeysToggleSidebar);
 
   const onKeyPressed = (keys: string[]) => {
     log.debug("Key pressed", [keys.join("+")]);
-    setHotkeysToggleSidebar([keys.join("+")]);
+    if (keys.length >= 2) {
+      setHotkeysToggleSidebar([keys.join("+")]);
+      setIsHotkeyFocused(false);
+    }
   };
 
   const { ref, hotkeysHistory } = useHotkeysPressed<HTMLButtonElement>(
@@ -51,18 +56,27 @@ const HotkeyButton = () => {
   );
   log.debug(hotkeysHistory.map((h) => h.key));
   return (
-    <>
+    <div className="relative text-center">
+      {isHotkeyFocused && (
+        <div className="absolute -top-4 right-0 whitespace-nowrap text-[10px] text-slate-500">
+          Enter hotkey
+        </div>
+      )}
       <button
         ref={ref}
-        className="
-        inline-flex items-center rounded border border-gray-300
-        bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm
-        hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-        "
+        className={classNames(
+          "inline-flex items-center rounded border border-gray-300",
+          "px-2.5 py-1.5 text-xs font-medium shadow-sm",
+          isHotkeyFocused
+            ? "border-none bg-indigo-600 text-white"
+            : "bg-white text-gray-700"
+        )}
+        onFocus={() => setIsHotkeyFocused(true)}
+        onBlur={() => setIsHotkeyFocused(false)}
       >
         {hotkeysToggleSidebar.join(", ").replaceAll("+", " + ")}
       </button>
-    </>
+    </div>
   );
 };
 
