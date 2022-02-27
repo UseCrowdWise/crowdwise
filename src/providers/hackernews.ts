@@ -32,7 +32,7 @@ export async function getResults(cleanedUrl: string): Promise<ResultItem[]> {
   //   };
   // }
   const encodedUrl = encodeURIComponent(cleanedUrl);
-  const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url`;
+  const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url&typoTolerance=false`;
   const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
   const res: HnJsonResult = await cachedApiCall(
     requestUrl,
