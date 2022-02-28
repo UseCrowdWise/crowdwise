@@ -17,6 +17,7 @@ import {
   KEY_FONT_SIZES,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
+  KEY_SIDEBAR_SQUEEZES_PAGE,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -103,6 +104,8 @@ export const SettingsPanel = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const handleSidebarSqueezePage = (state: boolean) =>
+    setKeyValue(KEY_SIDEBAR_SQUEEZES_PAGE, state);
   const handleFontSizeChange = (state: Record<string, string>) =>
     setKeyValue(KEY_FONT_SIZES, state);
   const handleIncogChange = (state: boolean) =>
@@ -227,7 +230,7 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Hide Extension Button</div>
+          <div>Extension Button Hidden</div>
           <div className="grow" />
           <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
@@ -248,7 +251,15 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Open Sidebar When Results Found</div>
+          <div>Sidebar Squeezes Page When Opened</div>
+          <div className="grow" />
+          <Toggle
+            checked={settings[KEY_SIDEBAR_SQUEEZES_PAGE]}
+            onCheck={handleSidebarSqueezePage}
+          />
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div>Sidebar Opens When Results Found</div>
           <div className="grow" />
           <Toggle
             checked={settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS]}

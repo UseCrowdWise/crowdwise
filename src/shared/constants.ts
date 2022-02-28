@@ -3,6 +3,7 @@ import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
 export const GITHUB_REPOSITORY_LINK = "https://github.com/frizensami/crowdwise";
 
 export const SETTINGS_DEBOUNCE_TIME = 100;
+export const DEFAULT_SIDEBAR_SQUEEZES_PAGE = false;
 export const DEFAULT_SIDEBAR_WIDTH = 360; // px
 export const DEFAULT_SIDEBAR_OPACITY = 100; // Divided by 100
 export const DEFAULT_FONT_SIZES = FONT_SIZE_OPTIONS[3];
@@ -23,6 +24,7 @@ export const DEFAULT_HOTKEYS_CLOSE_SIDEBAR = ["esc"];
 
 // Chrome storage keys
 export const KEY_HOTKEYS_TOGGLE_SIDEBAR = "hotkeys-toggle-sidebar";
+export const KEY_SIDEBAR_SQUEEZES_PAGE = "sidebar-squeeze-page";
 export const KEY_SIDEBAR_WIDTH = "sidebar-width";
 export const KEY_SIDEBAR_OPACITY = "sidebar-opacity";
 export const KEY_FONT_SIZES = "font-sizes";
