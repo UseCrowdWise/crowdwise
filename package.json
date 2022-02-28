@@ -1,11 +1,11 @@
 {
   "name": "CrowdWise",
   "version": "0.0.1",
-  "description": "",
+  "description": "CrowdWise shows you discussions (from HN/Reddit) about the page you're browsing. What do other people think?",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/frizensami/webpage-discussion-extension/"
+    "url": "https://github.com/frizensami/crowdwise/"
   },
   "scripts": {
     "build": "node utils/build.js",
