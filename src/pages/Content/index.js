@@ -18,9 +18,11 @@ import {
   DEFAULT_SIDEBAR_OPEN_TAB_STATE,
   KEY_CONTENT_BUTTON_BACKGROUND,
   DEFAULT_CONTENT_BUTTON_BACKGROUND,
+  KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
+import { useSettingsStore } from "../../shared/settings";
 import ReactTooltip from "react-tooltip";
 import DotLoader from "react-spinners/DotLoader";
 import "./index.css";
@@ -52,6 +54,10 @@ const App = () => {
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
   );
+  const [
+    userClosedSidebarSinceLatestResults,
+    setUserClosedSidebarSinceLatestResults,
+  ] = useState(false);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
@@ -80,6 +86,16 @@ const App = () => {
     KEY_CONTENT_BUTTON_PLACEMENT,
     DEFAULT_CONTENT_BUTTON_PLACEMENT
   );
+  const [
+    settings,
+    setSettings,
+    setKeyValue,
+    isPersistent,
+    error,
+    isLoadingStore,
+  ] = useSettingsStore();
+
+  const showSidebarOnResults = settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
 
   const toggleSideBar = () => toggleUserOpenedSidebarStateWithStorage();
   const closeSideBar = () => setUserOpenedSidebarStateWithStorage(false);
@@ -96,6 +112,10 @@ const App = () => {
       // We can differentiate between having 0 results but the call completes (maybe to un-animate a loading icon)
       //  and having > 0 results from the call
       setNumResults(request.newProviderDataCount);
+      // If we just got a new set of results, we reset the user's preference to close the auto-opening sidebar.
+      if (request.newProviderDataCount > 0) {
+        setUserClosedSidebarSinceLatestResults(false);
+      }
     }
     if (request.loadingProviderData !== undefined) {
       setIsLoadingResults(request.loadingProviderData);
@@ -164,6 +184,10 @@ const App = () => {
   // UI should call this to update sidebar state if it needs to be toggled somehow
   // The storage will update too.
   const toggleUserOpenedSidebarStateWithStorage = () => {
+    // For auto-sidebar
+    if (userOpenedSideBar === false) {
+      setUserClosedSidebarSinceLatestResults(true);
+    }
     setUserOpenedSideBar((show) => {
       updateStorageWithOpenClosedState(!show);
       return !show;
@@ -174,6 +198,10 @@ const App = () => {
   // We once again ask the background script for our tab ID (storing this as state didn't work)
   // Then, we update storage with the key based on our tab ID
   const updateStorageWithOpenClosedState = (show) => {
+    // For auto-sidebar
+    if (show === false) {
+      setUserClosedSidebarSinceLatestResults(true);
+    }
     log.debug("Sending message to background script to tell us our tab ID");
     chrome.runtime.sendMessage({ getTabId: true }, (tabId) => {
       log.debug(`Background script tells us our tab ID should be ${tabId}`);
@@ -192,8 +220,15 @@ const App = () => {
   // NOTE: Do not do things such as this as it will force a re-render
   // if (isFullscreen) return null;
 
-  // Don't display anything when it's full screen
-  const shouldShowSideBar = !isFullscreen && userOpenedSideBar;
+  // We should only auto-open the sidebar if the user hasn't interacted with the sidebar
+  //  since the last set of provider results has come in (i.e., respect the button click)
+  const shouldAutoOpenSideBar =
+    showSidebarOnResults &&
+    !isLoadingResults &&
+    numResults > 0 &&
+    !userClosedSidebarSinceLatestResults;
+  const shouldShowSideBar =
+    !isFullscreen && (userOpenedSideBar || shouldAutoOpenSideBar);
   const shouldShowContentButton =
     !isFullscreen && !shouldShowSideBar && !hideContentButton;
 

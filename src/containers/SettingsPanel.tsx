@@ -16,6 +16,7 @@ import {
   KEY_INCOGNITO_MODE,
   KEY_FONT_SIZES,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
+  KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
 } from "../shared/constants";
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
@@ -108,6 +109,8 @@ export const SettingsPanel = () => {
     setKeyValue(KEY_INCOGNITO_MODE, state);
   const handleShouldColorForSubmittedBy = (state: boolean) =>
     setKeyValue(KEY_SHOULD_COLOR_FOR_SUBMITTED_BY, state);
+  const handleShouldShowSidebarOnResults = (state: boolean) =>
+    setKeyValue(KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS, state);
 
   const [sideBarWidth, setSideBarWidth] = useChromeStorage(
     KEY_SIDEBAR_WIDTH,
@@ -242,6 +245,14 @@ export const SettingsPanel = () => {
           <Toggle
             checked={settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]}
             onCheck={handleShouldColorForSubmittedBy}
+          />
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div>Open Sidebar When Results Found</div>
+          <div className="grow" />
+          <Toggle
+            checked={settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS]}
+            onCheck={handleShouldShowSidebarOnResults}
           />
         </div>
         <div className="flex flex-row items-center space-x-2">

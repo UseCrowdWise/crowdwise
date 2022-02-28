@@ -14,6 +14,7 @@ export const DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET = "16px";
 export const DEFAULT_SIDEBAR_OPEN_TAB_STATE = false;
 export const DEFAULT_INCOGNITO_MODE = false;
 export const DEFAULT_SHOULD_COLOR_FOR_SUBMITTED_BY = true;
+export const DEFAULT_SHOULD_SHOW_SIDEBAR_ON_RESULTS = false;
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
@@ -32,6 +33,7 @@ export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 export const KEY_INCOGNITO_MODE = "sidebar-incognito-mode";
 export const KEY_SHOULD_COLOR_FOR_SUBMITTED_BY =
   "should-color-for-submitted-by";
+export const KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS = "show-sidebar-on-results";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 120;
