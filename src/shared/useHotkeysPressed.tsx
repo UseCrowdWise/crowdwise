@@ -36,7 +36,8 @@ const KEY_ORDER = [
 
 export const useHotkeysPressed = <T extends Element>(
   delayThreshold: number = 200,
-  onKeyPressed?: (keys: string[]) => void
+  onKeyPressed?: (keys: string[]) => void,
+  enabled: boolean = true
 ) => {
   const [hotkeysHistory, setHotkeysHistory] = useState<hotkeyHistory[]>([]);
 
@@ -68,10 +69,14 @@ export const useHotkeysPressed = <T extends Element>(
   };
 
   // Use "*" to detect all hotkeys pressed
-  const ref = useHotkeys<T>("*", (e, handler) => {
-    e.preventDefault();
-    appendHotkeysHistory(replaceHotkey(e.key), Date.now());
-  });
+  const ref = useHotkeys<T>(
+    "*",
+    (e, handler) => {
+      e.preventDefault();
+      appendHotkeysHistory(replaceHotkey(e.key), Date.now());
+    },
+    { enabled }
+  );
 
   return {
     ref,
