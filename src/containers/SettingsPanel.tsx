@@ -49,17 +49,18 @@ const HotkeyButton = () => {
 
   log.debug("Hotkey Button rerender", hotkeysToggleSidebar);
 
-  const onKeyPressed = (keys: string[]) => {
+  const onKeyPressed = _.debounce((keys: string[]) => {
     log.debug("Key pressed", [keys.join("+")]);
     if (keys.length >= 2) {
       setHotkeysToggleSidebar([keys.join("+")]);
       setIsHotkeyFocused(false);
     }
-  };
+  }, SETTINGS_DEBOUNCE_TIME);
 
   const { ref, hotkeysHistory } = useHotkeysPressed<HTMLButtonElement>(
     200,
-    onKeyPressed
+    onKeyPressed,
+    isHotkeyFocused
   );
   log.debug(hotkeysHistory.map((h) => h.key));
 
@@ -80,7 +81,7 @@ const HotkeyButton = () => {
             ? "border-none bg-indigo-600 text-white"
             : "bg-white text-gray-700"
         )}
-        onFocus={() => setIsHotkeyFocused(true)}
+        onClick={() => setIsHotkeyFocused((focus) => !focus)}
         onBlur={() => setIsHotkeyFocused(false)}
       >
         {hotkeysToggleSidebar.join(", ").replaceAll("+", " + ")}
