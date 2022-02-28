@@ -161,7 +161,7 @@ export const SettingsPanel = () => {
     return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-      <div className="relative grid gap-6 bg-white p-6">
+      <div className="relative grid max-h-[80vh] gap-6 bg-white p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
         <div className="text-lg font-medium">Change settings</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
@@ -251,7 +251,7 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Sidebar Squeezes Page When Opened</div>
+          <div>Sidebar Tries To Squeeze Page When Opened</div>
           <div className="grow" />
           <Toggle
             checked={settings[KEY_SIDEBAR_SQUEEZES_PAGE]}
