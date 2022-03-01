@@ -64,11 +64,6 @@ const Sidebar = () => {
 
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
 
-  /* const [isIncognito, _] = useChromeStorage(
-   *   KEY_INCOGNITO_MODE,
-   *   DEFAULT_INCOGNITO_MODE
-   * );
-   */
   // Handles message from background script that our URL changed.
   // We receive this message only when we are in a SPA and the link changes without full-page reload.
   // Full-page reload will hit the useEffect instead.
