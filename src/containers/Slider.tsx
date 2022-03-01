@@ -1,8 +1,6 @@
 import * as RadixSlider from "@radix-ui/react-slider";
 import React from "react";
 
-import { KEY_FONT_SIZES } from "../shared/constants";
-import { FONT_SIZE_OPTIONS } from "../shared/options";
 import { indexOfObjectArr } from "../utils/array";
 import { classNames } from "../utils/classNames";
 
