@@ -188,8 +188,9 @@ const App = () => {
   // UI should call this to update sidebar state if it needs to be toggled somehow
   // The storage will update too.
   const toggleUserOpenedSidebarStateWithStorage = () => {
-    // For auto-sidebar
-    if (userOpenedSideBar === false) {
+    // For auto-sidebar - if the sidebar is currently open, that means it will be false after this toggle.
+    // Therefore, count it as user closing sidebar if current status is open.
+    if (userOpenedSideBar === true) {
       setUserClosedSidebarSinceLatestResults(true);
     }
     setUserOpenedSideBar((show) => {

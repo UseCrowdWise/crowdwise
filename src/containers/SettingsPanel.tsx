@@ -19,6 +19,8 @@ import {
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
   KEY_SIDEBAR_SQUEEZES_PAGE,
 } from "../shared/constants";
+import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
+
 import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
 import React, { useState } from "react";
@@ -33,6 +35,7 @@ import {
 import { useSettingsStore } from "../shared/settings";
 import { indexOfObjectArr } from "../utils/array";
 import { classNames } from "../utils/classNames";
+import ReactTooltip from "react-tooltip";
 
 const HotkeyButton = () => {
   const [
@@ -230,12 +233,24 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Extension Button Hidden</div>
+          <div>
+            <div className="mr-1 inline">Extension Button Hidden</div>
+            <QuestionMarkCircleIcon
+              data-tip="Only shows sidebar when set to auto-open or opened with hotkeys."
+              className="inline h-4 w-4 text-slate-500"
+            />
+          </div>
           <div className="grow" />
           <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Extension Button Background</div>
+          <div>
+            <div className="mr-1 inline">Extension Button Background</div>
+            <QuestionMarkCircleIcon
+              data-tip="Adds a solid background to the floating extension button for better visibility."
+              className="inline h-4 w-4 text-slate-500"
+            />
+          </div>
           <div className="grow" />
           <Toggle
             checked={contentButtonBackground}
@@ -243,7 +258,13 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Add Color To Article Authors</div>
+          <div>
+            <div className="mr-1 inline">Color Author Names</div>
+            <QuestionMarkCircleIcon
+              data-tip="Color the name of each discussion author differently to identify different points of view. "
+              className="inline h-4 w-4 text-slate-500"
+            />
+          </div>
           <div className="grow" />
           <Toggle
             checked={settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]}
@@ -251,7 +272,15 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Sidebar Tries To Squeeze Page When Opened</div>
+          <div>
+            <div className="mr-1 inline">
+              Sidebar Tries To Squeeze Page When Opened
+            </div>
+            <QuestionMarkCircleIcon
+              data-tip="Attempts to squeeze the page to fit the sidebar and if it doesn't work, it will overlay on top of the page."
+              className="inline h-4 w-4 text-slate-500"
+            />
+          </div>
           <div className="grow" />
           <Toggle
             checked={settings[KEY_SIDEBAR_SQUEEZES_PAGE]}
@@ -259,7 +288,15 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Sidebar Opens When Results Found</div>
+          <div>
+            <div className="mr-1 inline">
+              Sidebar Opens When Results Found
+            </div>
+            <QuestionMarkCircleIcon
+              data-tip="Adds a more direct indication that results were found for a particular page."
+              className="inline h-4 w-4 text-slate-500"
+            />
+          </div>
           <div className="grow" />
           <Toggle
             checked={settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS]}
@@ -267,7 +304,13 @@ export const SettingsPanel = () => {
           />
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <div>Incognito Mode</div>
+          <div>
+            <div className="mr-1 inline">Incognito Mode</div>
+            <QuestionMarkCircleIcon
+              data-tip="Only start searching for discussions when the sidebar is clicked."
+              className="inline h-4 w-4 text-slate-500"
+            />
+          </div>
           <div className="grow" />
           <Toggle
             checked={settings[KEY_INCOGNITO_MODE]}
@@ -288,6 +331,8 @@ export const SettingsPanel = () => {
           </div>
         </div>
       </div>
+
+      <ReactTooltip place="top" type="dark" effect="solid" />
     </div>
   );
 };
