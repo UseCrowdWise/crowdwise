@@ -63,32 +63,7 @@ const App = () => {
   ] = useState(false);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [sideBarWidth, setSideBarWidth] = useChromeStorage(
-    KEY_SIDEBAR_WIDTH,
-    DEFAULT_SIDEBAR_WIDTH
-  );
-  const [sideBarOpacity, setSideBarOpacity] = useChromeStorage(
-    KEY_SIDEBAR_OPACITY,
-    DEFAULT_SIDEBAR_OPACITY
-  );
-  const [hotkeysToggleSidebar, setHotkeysToggleSidebar] = useChromeStorage(
-    KEY_HOTKEYS_TOGGLE_SIDEBAR,
-    DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
-    []
-  );
-  const [hideContentButton, setHideContentButton] = useChromeStorage(
-    KEY_HIDE_CONTENT_BUTTON,
-    DEFAULT_HIDE_CONTENT_BUTTON
-  );
-  const [contentButtonBackground, setContentButtonBackground] =
-    useChromeStorage(
-      KEY_CONTENT_BUTTON_BACKGROUND,
-      DEFAULT_CONTENT_BUTTON_BACKGROUND
-    );
-  const [contentButtonPlacement, setContentButtonPlacement] = useChromeStorage(
-    KEY_CONTENT_BUTTON_PLACEMENT,
-    DEFAULT_CONTENT_BUTTON_PLACEMENT
-  );
+
   const [
     settings,
     setSettings,
@@ -98,6 +73,12 @@ const App = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const sideBarWidth = settings[KEY_SIDEBAR_WIDTH];
+  const sideBarOpacity = settings[KEY_SIDEBAR_OPACITY];
+  const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
+  const hideContentButton = settings[KEY_HIDE_CONTENT_BUTTON];
+  const contentButtonBackground = settings[KEY_CONTENT_BUTTON_BACKGROUND];
+  const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
   const sidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const showSidebarOnResults = settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
 

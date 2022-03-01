@@ -1,23 +1,16 @@
-import { useChromeStorage } from "../shared/useChromeStorage";
 import {
-  KEY_SIDEBAR_WIDTH,
-  KEY_SIDEBAR_OPACITY,
-  SETTINGS_DEBOUNCE_TIME,
-  DEFAULT_SIDEBAR_WIDTH,
-  DEFAULT_SIDEBAR_OPACITY,
-  KEY_HOTKEYS_TOGGLE_SIDEBAR,
-  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
-  KEY_HIDE_CONTENT_BUTTON,
-  DEFAULT_HIDE_CONTENT_BUTTON,
-  DEFAULT_CONTENT_BUTTON_PLACEMENT,
-  KEY_CONTENT_BUTTON_PLACEMENT,
-  DEFAULT_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_BACKGROUND,
-  KEY_INCOGNITO_MODE,
+  KEY_CONTENT_BUTTON_PLACEMENT,
   KEY_FONT_SIZES,
+  KEY_HIDE_CONTENT_BUTTON,
+  KEY_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_INCOGNITO_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
+  KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_SQUEEZES_PAGE,
+  KEY_SIDEBAR_WIDTH,
+  SETTINGS_DEBOUNCE_TIME,
 } from "../shared/constants";
 import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
 
@@ -107,6 +100,27 @@ export const SettingsPanel = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const sideBarWidth = settings[KEY_SIDEBAR_WIDTH];
+  const sideBarOpacity = settings[KEY_SIDEBAR_OPACITY];
+  const hideContentButton = settings[KEY_HIDE_CONTENT_BUTTON];
+  const contentButtonBackground = settings[KEY_CONTENT_BUTTON_BACKGROUND];
+  const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
+  const shouldColorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY];
+  const shouldSidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
+  const shouldShowSidebarOnResults =
+    settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
+  const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
+
+  const setSideBarWidth = (state: number) =>
+    setKeyValue(KEY_SIDEBAR_WIDTH, state);
+  const setSideBarOpacity = (state: number) =>
+    setKeyValue(KEY_SIDEBAR_OPACITY, state);
+  const setHideContentButton = (state: boolean) =>
+    setKeyValue(KEY_HIDE_CONTENT_BUTTON, state);
+  const setContentButtonBackground = (state: boolean) =>
+    setKeyValue(KEY_CONTENT_BUTTON_BACKGROUND, state);
+  const setContentButtonPlacement = (state: any) =>
+    setKeyValue(KEY_CONTENT_BUTTON_PLACEMENT, state);
   const handleSidebarSqueezePage = (state: boolean) =>
     setKeyValue(KEY_SIDEBAR_SQUEEZES_PAGE, state);
   const handleFontSizeChange = (state: Record<string, string>) =>
@@ -118,50 +132,16 @@ export const SettingsPanel = () => {
   const handleShouldShowSidebarOnResults = (state: boolean) =>
     setKeyValue(KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS, state);
 
-  const [sideBarWidth, setSideBarWidth] = useChromeStorage(
-    KEY_SIDEBAR_WIDTH,
-    DEFAULT_SIDEBAR_WIDTH
-  );
-  const [sideBarOpacity, setSideBarOpacity] = useChromeStorage(
-    KEY_SIDEBAR_OPACITY,
-    DEFAULT_SIDEBAR_OPACITY
-  );
-  const [hideContentButton, setHideContentButton] = useChromeStorage(
-    KEY_HIDE_CONTENT_BUTTON,
-    DEFAULT_HIDE_CONTENT_BUTTON
-  );
-  const [contentButtonBackground, setContentButtonBackground] =
-    useChromeStorage(
-      KEY_CONTENT_BUTTON_BACKGROUND,
-      DEFAULT_CONTENT_BUTTON_BACKGROUND
-    );
-  const [contentButtonPlacement, setContentButtonPlacement] = useChromeStorage(
-    KEY_CONTENT_BUTTON_PLACEMENT,
-    DEFAULT_CONTENT_BUTTON_PLACEMENT
-  );
-
   const setSideBarWidthDebounced = _.debounce((value: any) => {
     setSideBarWidth(value);
   }, SETTINGS_DEBOUNCE_TIME);
   const setSideBarOpacityDebounced = _.debounce((value: any) => {
     // Set to 99.99 because a value of 100 seems to have problems re-rendering
     if (value == 100) value = 99.99;
-    log.debug(`Setting opacity to ${value}`);
     setSideBarOpacity(value);
   }, SETTINGS_DEBOUNCE_TIME);
-  /* const [isIncognito, setIsIncognito] = useChromeStorage(
-   *   KEY_INCOGNITO_MODE,
-   *   DEFAULT_INCOGNITO_MODE
-   * );
-   */
-  if (
-    sideBarWidth === null ||
-    sideBarOpacity === null ||
-    hideContentButton === null ||
-    contentButtonPlacement === null ||
-    isLoadingStore
-  )
-    return null;
+
+  if (isLoadingStore) return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
       <div className="relative grid max-h-[80vh] gap-6 bg-white p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
@@ -267,7 +247,7 @@ export const SettingsPanel = () => {
           </div>
           <div className="grow" />
           <Toggle
-            checked={settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]}
+            checked={shouldColorForSubmittedBy}
             onCheck={handleShouldColorForSubmittedBy}
           />
         </div>
@@ -283,7 +263,7 @@ export const SettingsPanel = () => {
           </div>
           <div className="grow" />
           <Toggle
-            checked={settings[KEY_SIDEBAR_SQUEEZES_PAGE]}
+            checked={shouldSidebarSqueezePage}
             onCheck={handleSidebarSqueezePage}
           />
         </div>
@@ -297,7 +277,7 @@ export const SettingsPanel = () => {
           </div>
           <div className="grow" />
           <Toggle
-            checked={settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS]}
+            checked={shouldShowSidebarOnResults}
             onCheck={handleShouldShowSidebarOnResults}
           />
         </div>
@@ -310,10 +290,7 @@ export const SettingsPanel = () => {
             <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
-          <Toggle
-            checked={settings[KEY_INCOGNITO_MODE]}
-            onCheck={handleIncogChange}
-          />
+          <Toggle checked={isIncognitoMode} onCheck={handleIncogChange} />
         </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
