@@ -22,15 +22,21 @@ import {
   FONT_SIZE_OPTIONS,
 } from "../shared/options";
 import { useSettingsStore } from "../shared/settings";
+import { classNames } from "../utils/classNames";
 import { log } from "../utils/log";
 import HotkeysListenerButton from "./HotkeysListenerButton";
 import SelectMenu from "./SelectMenu";
 import Slider from "./Slider";
 import Toggle from "./Toggle";
 
-export const SettingsPanel = () => {
+interface Props {
+  scrollable?: boolean;
+}
+
+export const SettingsPanel = (props: Props) => {
   log.debug("Settings Panel rerender");
 
+  const { scrollable } = props;
   const [
     settings,
     setValueAll,
@@ -84,7 +90,12 @@ export const SettingsPanel = () => {
   if (isLoadingStore) return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-      <div className="relative grid max-h-[80vh] gap-6 bg-white p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
+      <div
+        className={classNames(
+          "relative grid gap-6 bg-white p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200",
+          scrollable ? "max-h-[80vh]" : ""
+        )}
+      >
         <div className="text-lg font-medium">Change settings</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
