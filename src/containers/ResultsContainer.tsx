@@ -29,7 +29,10 @@ const ResultsContainer = (props: Props) => {
             >
               Show {numberMoreToShow} More{" "}
             </button>
-            <ChevronDownIcon className="h-4 w-4 text-slate-500" />
+            <ChevronDownIcon
+              className="h-4 w-4 cursor-pointer text-slate-500"
+              onClick={() => setShouldShowMore(true)}
+            />
           </div>
         </div>
       )}
