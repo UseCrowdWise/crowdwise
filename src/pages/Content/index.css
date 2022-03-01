@@ -1,8 +1,8 @@
-.allUnset {
+.all-unset {
   all: unset;
 }
 
-.resetSpacing {
+.reset-spacing {
   margin: 0;
   padding: 0;
 }

@@ -27,7 +27,7 @@ log.debug("Content script works!");
 log.debug("Must reload extension for modifications to take effect.");
 
 let sidebarRoot = document.createElement("div");
-sidebarRoot.classList.add("allUnset");
+sidebarRoot.classList.add("all-unset");
 sidebarRoot.style["height"] = "100vh";
 sidebarRoot.style["top"] = 0;
 sidebarRoot.style["right"] = 0;
@@ -251,7 +251,7 @@ const App = () => {
         }[contentButtonPlacement.key];
 
   return (
-    <div className="allUnset">
+    <div className="all-unset">
       {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
       <iframe
         title="sidebar-iframe"
@@ -267,7 +267,7 @@ const App = () => {
       />
       {shouldShowContentButton && (
         <div
-          className="allUnset"
+          className="all-unset"
           style={{
             ...contentButtonPlacementCss,
             position: "fixed",
@@ -289,7 +289,7 @@ const App = () => {
           )}
           {!isLoadingResults && numResults > 0 && (
             <div
-              className="allUnset animate__animated animate__heartBeat"
+              className="all-unset animate__animated animate__heartBeat"
               style={{
                 position: "absolute",
                 right: "0",
@@ -319,7 +319,7 @@ const App = () => {
           />
           <p
             data-tip={contentButtonTooltip}
-            className="resetSpacing"
+            className="reset-spacing"
             style={{
               height: "64px",
               width: "64px",
