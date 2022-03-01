@@ -22,7 +22,12 @@ const HotkeysListenerButton = (props: Props) => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
+  // "+" and "," are special delimiters used by react-hotkeys-hook
+  // replaceAll here is to prettify the hotkeys before showing to user
   const currentHotkeyCombos: string[] = settings[settingsKey];
+  const hotkeysUserDisplay = currentHotkeyCombos
+    .join(", ")
+    .replaceAll("+", " + ");
 
   const [isHotkeyFocused, setIsHotkeyFocused] = useState<boolean>(false);
 
@@ -66,8 +71,7 @@ const HotkeysListenerButton = (props: Props) => {
         onClick={() => setIsHotkeyFocused((focus) => !focus)}
         onBlur={() => setIsHotkeyFocused(false)}
       >
-        {/*"+" and "," are special delimiters used by react-hotkeys-hook*/}
-        {currentHotkeyCombos.join(", ").replaceAll("+", " + ")}
+        {hotkeysUserDisplay}
       </button>
     </div>
   );
