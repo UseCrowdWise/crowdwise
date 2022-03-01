@@ -1,6 +1,5 @@
 import { Switch } from "@headlessui/react";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { classNames } from "../utils/classNames";
 import { log } from "../utils/log";

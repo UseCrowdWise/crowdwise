@@ -4,7 +4,7 @@
 
 import { callApi } from "./api";
 import { log } from "../utils/log";
-import toMilliseconds, { TimeDescriptor } from "@sindresorhus/to-milliseconds";
+import { TimeDescriptor } from "@sindresorhus/to-milliseconds";
 
 // https://www.npmjs.com/package/webext-storage-cache
 // import cache from 'webext-storage-cache';
