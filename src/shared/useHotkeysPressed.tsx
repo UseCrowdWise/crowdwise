@@ -19,6 +19,8 @@ const replaceHotkey = (key: string) => {
   }
 };
 
+// The ordering will be used to sort the hotkeys such that the later hotkeys
+// (e.g. ⌘) will take precedence over the earlier hotkeys (e.g. ⌥).
 const KEY_ORDER = [
   "⌥",
   "Alt",

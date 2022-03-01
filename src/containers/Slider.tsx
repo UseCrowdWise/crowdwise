@@ -11,7 +11,7 @@ interface SliderProps extends RadixSlider.SliderProps {
   onValueChange?(value: any): void;
 }
 
-export const Slider = (props: SliderProps) => {
+const Slider = (props: SliderProps) => {
   const { min, max, step, choices, defaultValue, onValueChange, className } =
     props;
 
@@ -47,3 +47,5 @@ export const Slider = (props: SliderProps) => {
     </RadixSlider.Root>
   );
 };
+
+export default Slider;
