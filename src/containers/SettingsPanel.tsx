@@ -1,5 +1,4 @@
 import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
-import * as Slider from "@radix-ui/react-slider";
 import _ from "lodash";
 import React, { useState } from "react";
 import ReactTooltip from "react-tooltip";
@@ -28,6 +27,7 @@ import { indexOfObjectArr } from "../utils/array";
 import { classNames } from "../utils/classNames";
 import { log } from "../utils/log";
 import SelectMenu from "./SelectMenu";
+import { Slider } from "./Slider";
 import Toggle from "./Toggle";
 
 const HotkeyButton = () => {
@@ -148,61 +148,31 @@ export const SettingsPanel = () => {
         <div className="text-lg font-medium">Change settings</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
-          <div className="flex w-full flex-col space-y-8">
-            <Slider.Root
-              min={300}
-              max={640}
-              step={4}
-              defaultValue={[sideBarWidth]}
-              className="relative flex h-4 select-none items-center"
-              onValueChange={setSideBarWidthDebounced}
-            >
-              <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
-                <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
-              </Slider.Track>
-              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-            </Slider.Root>
-          </div>
+          <Slider
+            min={300}
+            max={640}
+            step={4}
+            defaultValue={[sideBarWidth]}
+            onValueChange={setSideBarWidthDebounced}
+          />
         </div>
         <div className="space-y-2">
           <div>Sidebar Opacity</div>
-          <div className="flex w-full flex-col space-y-8">
-            <Slider.Root
-              min={20}
-              max={100}
-              step={1}
-              defaultValue={[sideBarOpacity]}
-              className="relative flex h-4 select-none items-center"
-              onValueChange={setSideBarOpacityDebounced}
-            >
-              <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
-                <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
-              </Slider.Track>
-              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-            </Slider.Root>
-          </div>
+          <Slider
+            min={20}
+            max={100}
+            step={1}
+            defaultValue={[sideBarOpacity]}
+            onValueChange={setSideBarOpacityDebounced}
+          />
         </div>
         <div className="space-y-2">
           <div>Font Size</div>
-          <div className="flex w-full flex-col space-y-8">
-            <Slider.Root
-              min={0}
-              max={FONT_SIZE_OPTIONS.length - 1}
-              step={1}
-              defaultValue={[
-                indexOfObjectArr(FONT_SIZE_OPTIONS, settings[KEY_FONT_SIZES]),
-              ]}
-              className="relative flex h-4 select-none items-center"
-              onValueChange={(sizeIds) =>
-                handleFontSizeChange(FONT_SIZE_OPTIONS[sizeIds[0]])
-              }
-            >
-              <Slider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
-                <Slider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
-              </Slider.Track>
-              <Slider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-            </Slider.Root>
-          </div>
+          <Slider
+            choices={FONT_SIZE_OPTIONS}
+            defaultValue={[settings[KEY_FONT_SIZES]]}
+            onValueChange={handleFontSizeChange}
+          />
         </div>
         <div className="flex flex-col space-y-2">
           <div>Extension Button Placement</div>
