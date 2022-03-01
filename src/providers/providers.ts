@@ -3,8 +3,16 @@
 // import { cleanUrl } from 'tracking-params';
 import { log } from "../utils/log";
 import { isBlacklisted } from "./blacklist";
-import * as hackernews from "./hackernews";
-import * as reddit from "./reddit";
+import { HnResultProvider } from "./hackernews";
+import { RedditResultProvider } from "./reddit";
+
+// All providers must implement these two functions for search
+export interface ResultProvider {
+  getProviderName(): string;
+  getExactUrlResults(url: string): Promise<ResultItem[]>;
+  getSiteUrlResults(url: string): Promise<ResultItem[]>;
+  getTitleResults(title: string): Promise<ResultItem[]>;
+}
 
 // All providers must return a list of resultitems
 export interface ResultItem {
@@ -25,10 +33,17 @@ export interface ResultItem {
   subSourceLink: string;
 }
 
+// General status of results
 export enum ProviderResultType {
   Ok = "OK",
   Blacklisted = "BLACKLISTED",
 }
+
+// Initialize all providers
+const reddit = new RedditResultProvider();
+const hackernews = new HnResultProvider();
+
+// export const Providers = {[PROVIDER_HN_NAME]: {}}
 
 // NOTE: if we add more providers, remember to update code that adds the length of these together
 //  to get total result counts.
@@ -43,9 +58,14 @@ export interface ProviderResults {
  * Parses the raw window location URL and collates conversation data across multiple providers.
  * */
 export async function fetchDataFromProviders(
-  rawUrl: string
+  rawUrl: string,
+  documentTitle: string
 ): Promise<ProviderResults> {
   log.debug("Starting to fetch provider data.");
+
+  // Get just the site from the URL for a wider search.
+  const siteUrl = new URL(rawUrl).hostname;
+  log.debug(`Site URL: ${siteUrl}`);
 
   // Remove tracking params that are definitely not relevant to the site URL
   const trackingCleanedUrl = rawUrl; // cleanUrl(rawUrl);
@@ -69,8 +89,8 @@ export async function fetchDataFromProviders(
   );
 
   // Return early if this URL is blacklisted
-  if (isBlacklisted(cleanedUrl)) {
-    log.warn(`URL ${cleanedUrl} is blacklisted!`);
+  if (isBlacklisted(cleanedUrl) || isBlacklisted(siteUrl)) {
+    log.warn(`URL ${cleanedUrl} or ${siteUrl} is blacklisted!`);
     return {
       resultType: ProviderResultType.Blacklisted,
       hackerNews: [],
@@ -80,14 +100,20 @@ export async function fetchDataFromProviders(
 
   log.debug(`URL ${cleanedUrl} is NOT blacklisted!`);
 
+  // Construct results
+  // const providers = [hackernews, reddit]
+  // const [hnExactResults, hnSiteResults, hnTitleResults, redditExactResults, redditSiteResults, reddit]= hackernews.getUrlResults(cleanedUrl);
+
   // Call each provider in turn
-  const hnResults = await hackernews.getResults(cleanedUrl);
+  const hnResults = await hackernews.getExactUrlResults(cleanedUrl);
   log.debug("HN results:");
   log.debug(hnResults);
 
-  const redditResults = await reddit.getResults(cleanedUrl);
+  const redditResults = await reddit.getExactUrlResults(cleanedUrl);
   log.debug("Reddit results:");
   log.debug(redditResults);
+
+  // TODO MUST DEDUPLICATE!
 
   return {
     resultType: ProviderResultType.Ok,
