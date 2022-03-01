@@ -1,4 +1,5 @@
 import React from "react";
+
 import { GITHUB_REPOSITORY_LINK } from "../shared/constants";
 
 export const HelpPanel = () => {

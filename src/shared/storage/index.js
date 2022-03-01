@@ -1,6 +1,6 @@
 // From: https://github.com/onikienko/use-chrome-storage
-import useChromeStorage from "./useChromeStorage";
 import createChromeStorageStateHook from "./createChromeStorageStateHook";
+import useChromeStorage from "./useChromeStorage";
 
 /**
  * Hook which will use `chrome.storage.local` to persist state.

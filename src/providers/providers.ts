@@ -1,13 +1,10 @@
 // Some code used from https://github.com/benwinding/newsit/
-
 // Fetches data from multiple providers given a base URL
 // import { cleanUrl } from 'tracking-params';
-
+import { log } from "../utils/log";
+import { isBlacklisted } from "./blacklist";
 import * as hackernews from "./hackernews";
 import * as reddit from "./reddit";
-import { isBlacklisted } from "./blacklist";
-
-import { log } from "../utils/log";
 
 // All providers must return a list of resultitems
 export interface ResultItem {

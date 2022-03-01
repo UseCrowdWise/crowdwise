@@ -1,5 +1,6 @@
 import log from "loglevel";
 import logprefix from "loglevel-plugin-prefix";
+
 /**
  * Project-wide logging
  * */

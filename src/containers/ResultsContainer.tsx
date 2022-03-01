@@ -1,7 +1,8 @@
+import { ChevronDownIcon } from "@heroicons/react/outline";
+import React, { useState } from "react";
+
 import { ResultItem } from "../providers/providers";
 import ResultCard from "./ResultCard";
-import React, { useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/outline";
 
 interface Props {
   results: ResultItem[];

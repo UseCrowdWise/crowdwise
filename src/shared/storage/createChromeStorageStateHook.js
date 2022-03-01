@@ -1,5 +1,6 @@
 // From: https://github.com/onikienko/use-chrome-storage
 import { useCallback, useEffect } from "react";
+
 import useChromeStorage from "./useChromeStorage";
 
 export default function createChromeStorageStateHook(

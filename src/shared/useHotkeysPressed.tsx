@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+
 import { log } from "../utils/log";
 
 interface hotkeyHistory {

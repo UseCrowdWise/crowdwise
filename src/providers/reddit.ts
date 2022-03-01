@@ -1,9 +1,9 @@
 // Some code used from https://github.com/benwinding/newsit/
-import { ResultItem } from "./providers";
+import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { replaceTimeStr } from "../utils/time";
-import { CACHE_URL_DURATION_SEC } from "../shared/constants";
+import { ResultItem } from "./providers";
 
 const cheerio = require("cheerio");
 

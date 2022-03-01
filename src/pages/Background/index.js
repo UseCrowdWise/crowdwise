@@ -1,13 +1,14 @@
 import { fetchDataFromProviders } from "../../providers/providers";
-import { log } from "../../utils/log";
-import { isExpiredCacheEntry } from "../../utils/cache";
 import {
-  CACHE_CLEAR_URL_ALARM_INTERVAL_MIN,
   CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN,
-  CACHE_CLEAR_URL_ALARM_NAME,
   CACHE_CLEAR_TABID_ALARM_NAME,
+  CACHE_CLEAR_URL_ALARM_INTERVAL_MIN,
+  CACHE_CLEAR_URL_ALARM_NAME,
   KEY_SIDEBAR_OPEN_TAB_STATE,
 } from "../../shared/constants";
+import { isExpiredCacheEntry } from "../../utils/cache";
+import { log } from "../../utils/log";
+
 /**
  * BACKGROUND SCRIPT.
  *

@@ -1,8 +1,9 @@
+import { Switch } from "@headlessui/react";
 import React from "react";
 import { useState } from "react";
-import { Switch } from "@headlessui/react";
-import { log } from "../utils/log";
+
 import { classNames } from "../utils/classNames";
+import { log } from "../utils/log";
 
 export interface Props {
   checked: boolean;

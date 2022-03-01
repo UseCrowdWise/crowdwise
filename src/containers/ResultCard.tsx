@@ -1,6 +1,7 @@
-import React from "react";
-import { ResultItem } from "../providers/providers";
 import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
+import React from "react";
+
+import { ResultItem } from "../providers/providers";
 import {
   COLOR_IF_OUTSIDE_HASH,
   KEY_FONT_SIZES,
