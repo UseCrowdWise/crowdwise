@@ -9,18 +9,15 @@ import { useHotkeys } from "react-hotkeys-hook";
 import ReactTooltip from "react-tooltip";
 
 import { HelpPanel } from "../../containers/HelpPanel";
-import ResultCard from "../../containers/ResultCard";
 import ResultsContainer from "../../containers/ResultsContainer";
 import { SettingsPanel } from "../../containers/SettingsPanel";
 import { ProviderResultType, ProviderResults } from "../../providers/providers";
 import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
-  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
 } from "../../shared/constants";
 import { useSettingsStore } from "../../shared/settings";
-import { useChromeStorage } from "../../shared/useChromeStorage";
 import { log } from "../../utils/log";
 import { sendMessageToCurrentTab } from "../../utils/tabs";
 import "./Sidebar.css";
