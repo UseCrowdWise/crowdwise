@@ -19,6 +19,7 @@ import {
   KEY_CONTENT_BUTTON_BACKGROUND,
   DEFAULT_CONTENT_BUTTON_BACKGROUND,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
+  KEY_SIDEBAR_SQUEEZES_PAGE,
 } from "../../shared/constants";
 import { log } from "../../utils/log";
 import { useChromeStorage } from "../../shared/useChromeStorage";
@@ -38,6 +39,8 @@ sidebarRoot.style["top"] = 0;
 sidebarRoot.style["right"] = 0;
 sidebarRoot.style["position"] = "fixed";
 sidebarRoot.style["zIndex"] = 999999999;
+
+const originalMarginRight = window.getComputedStyle(document.body).marginRight;
 
 document.body.appendChild(sidebarRoot);
 sidebarRoot.setAttribute("id", "vt-sidebar-root");
@@ -95,6 +98,7 @@ const App = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const sidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const showSidebarOnResults = settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
 
   const toggleSideBar = () => toggleUserOpenedSidebarStateWithStorage();
@@ -233,9 +237,16 @@ const App = () => {
   const shouldShowContentButton =
     !isFullscreen && !shouldShowSideBar && !hideContentButton;
 
+  const finalSideBarWidth = shouldShowSideBar ? `${sideBarWidth}px` : "0px";
   const contentButtonTooltip =
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
     "  (Go settings to hide button)";
+
+  if (sidebarSqueezePage) {
+    document.body.style.marginRight = `calc(${originalMarginRight} + ${finalSideBarWidth})`;
+  } else {
+    document.body.style.marginRight = originalMarginRight;
+  }
 
   // Hide content button when we have not fetched its position. If we gave
   // a default placement (e.g. bottom-right), then there will be "flashing"
@@ -270,7 +281,7 @@ const App = () => {
       <iframe
         title="sidebar-iframe"
         style={{
-          width: shouldShowSideBar ? `${sideBarWidth}px` : "0",
+          width: finalSideBarWidth,
           height: "100vh",
           border: "none",
           borderSizing: "border-box",
