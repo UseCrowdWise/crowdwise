@@ -23,6 +23,7 @@ import ReactTooltip from "react-tooltip";
 import "./Sidebar.css";
 import { useSettingsStore } from "../../shared/settings";
 import { HelpPanel } from "../../containers/HelpPanel";
+import ResultsContainer from "../../containers/ResultsContainer";
 
 const EmptyDiscussionsState = () => (
   <>
@@ -141,12 +142,6 @@ const Sidebar = () => {
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
   }, [settings[KEY_INCOGNITO_MODE], isLoadingStore]);
 
-  // Open the card in a new tab
-  const onCardClick = (url: string) => {
-    window.open(url, "_blank");
-  };
-  const setClickedUrl = () => {};
-
   // Send a message to the extension (alternative: use redux?) to close
   const closeSideBar = () => sendMessageToCurrentTab({ closeSideBar: true });
   const toggleSideBar = () => sendMessageToCurrentTab({ toggleSideBar: true });
@@ -259,41 +254,33 @@ const Sidebar = () => {
             {noDiscussions ? (
               <EmptyDiscussionsState />
             ) : (
-              <div className="space-y-2">
-                {providerData.hackerNews.length > 0 && (
-                  <div className="flex flex-row space-x-2 align-bottom">
-                    <img
-                      alt="Hacker News Icon"
-                      className="my-auto h-4 w-4"
-                      src={chrome.runtime.getURL("hackernews_icon.png")}
-                    />
-                    <p className="my-1 text-slate-500">Hacker News</p>
-                  </div>
-                )}
-                {providerData.hackerNews.map((result, index) => (
-                  <ResultCard
-                    key={index}
-                    result={result}
-                    onCardClick={onCardClick}
-                  />
-                ))}
-                {providerData.reddit.length > 0 && (
-                  <div className="flex flex-row space-x-2 align-bottom">
-                    <img
-                      alt="Reddit Icon"
-                      className="my-auto h-5 w-5"
-                      src={chrome.runtime.getURL("reddit_icon.png")}
-                    />
-                    <p className="my-1 text-slate-500">Reddit</p>
-                  </div>
-                )}
-                {providerData.reddit.map((result, index) => (
-                  <ResultCard
-                    key={index}
-                    result={result}
-                    onCardClick={onCardClick}
-                  />
-                ))}
+              <div className="space-y-4 py-1">
+                <div className="space-y-2">
+                  {providerData.hackerNews.length > 0 && (
+                    <div className="flex flex-row space-x-2 align-bottom">
+                      <img
+                        alt="Hacker News Icon"
+                        className="my-auto h-4 w-4"
+                        src={chrome.runtime.getURL("hackernews_icon.png")}
+                      />
+                      <p className="my-1 text-slate-500">Hacker News</p>
+                    </div>
+                  )}
+                  <ResultsContainer results={providerData.hackerNews} />
+                </div>
+                <div className="space-y-2">
+                  {providerData.reddit.length > 0 && (
+                    <div className="flex flex-row space-x-2 align-bottom">
+                      <img
+                        alt="Reddit Icon"
+                        className="my-auto h-5 w-5"
+                        src={chrome.runtime.getURL("reddit_icon.png")}
+                      />
+                      <p className="my-1 text-slate-500">Reddit</p>
+                    </div>
+                  )}
+                  <ResultsContainer results={providerData.reddit} />
+                </div>
               </div>
             )}
           </div>
