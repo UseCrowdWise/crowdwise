@@ -95,7 +95,7 @@ const Sidebar = () => {
     });
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
-      { getProviderData: true },
+      { getProviderData: true, documentTitle: document.title },
       (results: ProviderResults) => {
         // Received results from providers
         setIsLoadingProviderData(false);

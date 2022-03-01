@@ -133,7 +133,10 @@ async function handleOnMessage(request, sender) {
   if (sender.tab) {
     if (request.getProviderData) {
       // Ask providers for any relevant posts/comments
-      const data = await fetchDataFromProviders(sender.tab.url);
+      const data = await fetchDataFromProviders(
+        sender.tab.url,
+        request.documentTitle
+      );
       log.debug("Background script: printing provider data...");
       log.debug(data);
       return data;
