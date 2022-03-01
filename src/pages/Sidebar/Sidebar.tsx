@@ -13,6 +13,7 @@ import ResultsContainer from "../../containers/ResultsContainer";
 import { SettingsPanel } from "../../containers/SettingsPanel";
 import {
   AllProviderResults,
+  ProviderQueryType,
   ProviderResultType,
   SingleProviderResults,
 } from "../../providers/providers";
@@ -20,6 +21,8 @@ import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
+  PROVIDER_HN_NAME,
+  PROVIDER_REDDIT_NAME,
 } from "../../shared/constants";
 import { useSettingsStore } from "../../shared/settings";
 import { log } from "../../utils/log";
@@ -44,11 +47,7 @@ const EmptyDiscussionsState = () => (
 const Sidebar = () => {
   log.debug("Sidebar re-render");
 
-  const [providerData, setProviderData] = useState<ProviderResults>({
-    resultType: ProviderResultType.Ok,
-    hackerNews: [],
-    reddit: [],
-  });
+  const [providerData, setProviderData] = useState<AllProviderResults>();
   const [isLoadingProviderData, setIsLoadingProviderData] =
     useState<boolean>(false);
   const [hasFetchedDataForThisPage, setHasFetchedDataForThisPage] =
@@ -99,7 +98,7 @@ const Sidebar = () => {
     });
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
-      { getProviderData: true, documentTitle: document.title },
+      { getProviderData: true },
       (allProviderResults: AllProviderResults) => {
         // Received results from providers
         setIsLoadingProviderData(false);
@@ -107,12 +106,8 @@ const Sidebar = () => {
         log.debug("Printing provider data from background script...");
         log.debug(allProviderResults);
         setProviderData(allProviderResults);
-        // Inform content script about how much new data there is
-        const numResults = allProviderResults.providerResults
-          .map((v: SingleProviderResults) => v.results.length)
-          .reduce((a, b) => a + b, 0);
         sendMessageToCurrentTab({
-          newProviderDataCount: numResults,
+          newProviderDataCount: allProviderResults.numResults,
           loadingProviderData: false,
         });
       }
@@ -150,7 +145,7 @@ const Sidebar = () => {
   useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
   const noDiscussions =
-    providerData.hackerNews.length === 0 && providerData.reddit.length === 0;
+    providerData !== undefined ? providerData.numResults === 0 : true;
 
   // Must be incognito mode, no data fetched so far (click option to fetch), and not already loading results
   const shouldDisplayIncognitoOverlay =
@@ -169,12 +164,6 @@ const Sidebar = () => {
         </div>
       )}
 
-      {/*{clickedUrl && (*/}
-      {/*  <div className="h-full w-[50vw] bg-slate-100 flex flex-col">*/}
-      {/*    Hi*/}
-      {/*    /!*<iframe src={clickedUrl} title="Selected Article" />*!/*/}
-      {/*  </div>*/}
-      {/*)}*/}
       <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-slate-100">
         <div className="shrink-0 items-end border-b border-slate-300 bg-white pt-2 pb-1">
           <div className="flex flex-row space-x-2 px-2">
@@ -249,67 +238,165 @@ const Sidebar = () => {
 
           <div className="space-y-3 p-3 text-left">
             <p className="text-lg text-indigo-600">Discussions</p>
-            {noDiscussions ? (
+            {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
             ) : (
               <div className="space-y-4 py-1">
                 <div className="space-y-2">
-                  {providerData.hackerNews.length > 0 && (
-                    <div className="flex flex-row space-x-2 align-bottom">
-                      <img
-                        alt="Hacker News Icon"
-                        className="my-auto h-4 w-4"
-                        src={chrome.runtime.getURL("hackernews_icon.png")}
-                      />
-                      <p className="my-1 text-slate-500">Hacker News</p>
-                    </div>
-                  )}
+                  {providerData &&
+                    providerData.providerResults[PROVIDER_HN_NAME] && (
+                      <div className="flex flex-row space-x-2 align-bottom">
+                        <img
+                          alt="Hacker News Icon"
+                          className="my-auto h-4 w-4"
+                          src={chrome.runtime.getURL("hackernews_icon.png")}
+                        />
+                        <p className="my-1 text-slate-500">Hacker News</p>
+                      </div>
+                    )}
                   <div>
                     Results for{" "}
                     <span className="text-indigo-600 font-semibold">
                       current web page
                     </span>
                   </div>
-                  <ResultsContainer results={providerData.hackerNews} />
+                  <ResultsContainer
+                    results={
+                      providerData.providerResults[PROVIDER_HN_NAME][
+                        ProviderQueryType.EXACT_URL
+                      ]
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
-                  {providerData.reddit.length > 0 && (
-                    <div className="flex flex-row space-x-2 align-bottom">
-                      <img
-                        alt="Reddit Icon"
-                        className="my-auto h-5 w-5"
-                        src={chrome.runtime.getURL("reddit_icon.png")}
-                      />
-                      <p className="my-1 text-slate-500">Reddit</p>
-                    </div>
-                  )}
+                  {providerData &&
+                    providerData.providerResults[PROVIDER_HN_NAME] && (
+                      <div className="flex flex-row space-x-2 align-bottom">
+                        <img
+                          alt="Reddit Icon"
+                          className="my-auto h-5 w-5"
+                          src={chrome.runtime.getURL("reddit_icon.png")}
+                        />
+                        <p className="my-1 text-slate-500">Reddit</p>
+                      </div>
+                    )}
                   <div>
                     Results for{" "}
                     <span className="text-indigo-600 font-semibold">
                       current web page
                     </span>
                   </div>
-                  <ResultsContainer results={providerData.reddit} />
+                  <ResultsContainer
+                    results={
+                      providerData.providerResults[PROVIDER_REDDIT_NAME][
+                        ProviderQueryType.EXACT_URL
+                      ]
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
-                  {providerData.hackerNews.length > 0 && (
-                    <div className="flex flex-row space-x-2 align-bottom">
-                      <img
-                        alt="Hacker News Icon"
-                        className="my-auto h-4 w-4"
-                        src={chrome.runtime.getURL("hackernews_icon.png")}
-                      />
-                      <p className="my-1 text-slate-500">Hacker News</p>
-                    </div>
-                  )}
+                  {providerData &&
+                    providerData.providerResults[PROVIDER_HN_NAME] && (
+                      <div className="flex flex-row space-x-2 align-bottom">
+                        <img
+                          alt="Hacker News Icon"
+                          className="my-auto h-4 w-4"
+                          src={chrome.runtime.getURL("hackernews_icon.png")}
+                        />
+                        <p className="my-1 text-slate-500">Hacker News</p>
+                      </div>
+                    )}
                   <div>
                     Results for{" "}
                     <span className="text-indigo-600 font-semibold">
-                      “Turning the database out with Apache Samza - Martin
-                      Kleppmann's talks”
+                      site url
                     </span>
                   </div>
-                  <ResultsContainer results={providerData.hackerNews} />
+                  <ResultsContainer
+                    results={
+                      providerData.providerResults[PROVIDER_HN_NAME][
+                        ProviderQueryType.SITE_URL
+                      ]
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  {providerData &&
+                    providerData.providerResults[PROVIDER_REDDIT_NAME] && (
+                      <div className="flex flex-row space-x-2 align-bottom">
+                        <img
+                          alt="Hacker News Icon"
+                          className="my-auto h-4 w-4"
+                          src={chrome.runtime.getURL("reddit_icon.png")}
+                        />
+                        <p className="my-1 text-slate-500">Reddit</p>
+                      </div>
+                    )}
+                  <div>
+                    Results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      site url
+                    </span>
+                  </div>
+                  <ResultsContainer
+                    results={
+                      providerData.providerResults[PROVIDER_REDDIT_NAME][
+                        ProviderQueryType.SITE_URL
+                      ]
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  {providerData &&
+                    providerData.providerResults[PROVIDER_HN_NAME] && (
+                      <div className="flex flex-row space-x-2 align-bottom">
+                        <img
+                          alt="Hacker News Icon"
+                          className="my-auto h-4 w-4"
+                          src={chrome.runtime.getURL("hackernews_icon.png")}
+                        />
+                        <p className="my-1 text-slate-500">Hacker News</p>
+                      </div>
+                    )}
+                  <div>
+                    Results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      website title
+                    </span>
+                  </div>
+                  <ResultsContainer
+                    results={
+                      providerData.providerResults[PROVIDER_HN_NAME][
+                        ProviderQueryType.TITLE
+                      ]
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  {providerData &&
+                    providerData.providerResults[PROVIDER_REDDIT_NAME] && (
+                      <div className="flex flex-row space-x-2 align-bottom">
+                        <img
+                          alt="Hacker News Icon"
+                          className="my-auto h-4 w-4"
+                          src={chrome.runtime.getURL("reddit_icon.png")}
+                        />
+                        <p className="my-1 text-slate-500">Reddit</p>
+                      </div>
+                    )}
+                  <div>
+                    Results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      website title
+                    </span>
+                  </div>
+                  <ResultsContainer
+                    results={
+                      providerData.providerResults[PROVIDER_REDDIT_NAME][
+                        ProviderQueryType.TITLE
+                      ]
+                    }
+                  />
                 </div>
               </div>
             )}

@@ -1,6 +1,8 @@
 // Some code used from https://github.com/benwinding/newsit/
 // Fetches data from multiple providers given a base URL
 // import { cleanUrl } from 'tracking-params';
+import _ from "lodash";
+
 import { log } from "../utils/log";
 import { isBlacklisted } from "./blacklist";
 import { HnResultProvider } from "./hackernews";
@@ -56,14 +58,27 @@ export enum ProviderResultType {
 
 // NOTE: if we add more providers, remember to update code that adds the length of these together
 //  to get total result counts.
+// export interface AllProviderResults {
+//   resultType: ProviderResultType;
+//   providerResults: SingleProviderResults[];
+//   // hackerNews: ResultItem[];
+//   // reddit: ResultItem[];
+// }
+
+// We should probably define an enum, but can be deferred for now
+type ProviderName = string;
+// This is the format that the sidebar wants
 export interface AllProviderResults {
   resultType: ProviderResultType;
-  providerResults: SingleProviderResults[];
-  // hackerNews: ResultItem[];
-  // reddit: ResultItem[];
+  // Have to use a lodash dict because Typescript cannot infer it's a normal record?
+  // Dictionary is just Dictionary<T> {  [index: string]: T; }
+  providerResults: {
+    [key: ProviderName]: _.Dictionary<ResultItem[]>;
+  };
+  numResults: number;
 }
 
-// Initialize all providers
+// Init all providers
 const reddit = new RedditResultProvider();
 const hackernews = new HnResultProvider();
 
@@ -110,7 +125,8 @@ export async function fetchDataFromProviders(
     log.warn(`URL ${cleanedUrl} or ${siteUrl} is blacklisted!`);
     return {
       resultType: ProviderResultType.Blacklisted,
-      providerResults: [],
+      providerResults: {},
+      numResults: 0,
     };
   }
 
@@ -153,19 +169,26 @@ export async function fetchDataFromProviders(
     )
     .filter((result) => result !== undefined) as SingleProviderResults[];
 
-  // Call each provider in turn
-  // const hnResults = await hackernews.getExactUrlResults(cleanedUrl);
-  // log.debug("HN results:");
-  // log.debug(hnResults);
+  // TODO: De-duplicate here
 
-  // const redditResults = await reddit.getExactUrlResults(cleanedUrl);
-  // log.debug("Reddit results:");
-  // log.debug(redditResults);
 
-  // TODO MUST DEDUPLICATE!
+  // Group the results in a way that the sidebar can use
+  const providerResults = _.mapValues(
+    _.groupBy(allResults, "providerName"),
+    (v, k) => _.mapValues(_.groupBy(v, "queryType"), (spr) => spr[0].results)
+  );
+
+  // Pre-compute number of results so that our consumers don't have to iterate through this nested duct
+  // NOTE: this is a pretty complicated call.
+  const numResults = allResults
+    .map((v: SingleProviderResults) => v.results?.length || 0)
+    .reduce((a, b) => a + b, 0);
+
+
 
   return {
     resultType: ProviderResultType.Ok,
-    providerResults: allResults,
+    providerResults,
+    numResults,
   };
 }

@@ -44,6 +44,10 @@ export const CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN = 5;
 export const CACHE_CLEAR_URL_ALARM_NAME = "refresh_url_cache";
 export const CACHE_CLEAR_TABID_ALARM_NAME = "refresh_tabid_cache";
 
+// Provider names
+export const PROVIDER_HN_NAME = "Hacker News";
+export const PROVIDER_REDDIT_NAME = "Reddit";
+
 // Color settings
 const COLOR_MAP_FOR_STRINGS = {
   "text-red-600": "abc",
