@@ -16,7 +16,7 @@ interface Props {
   label?: string;
 }
 
-export const SelectMenu = (props: Props) => {
+const SelectMenu = (props: Props) => {
   const { defaultOption, options, onSelected, label } = props;
   const [selected, setSelected] = useState<Option>(defaultOption);
 

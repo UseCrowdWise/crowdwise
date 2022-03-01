@@ -1,6 +1,6 @@
 import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
 import _ from "lodash";
-import React, { useState } from "react";
+import React from "react";
 import ReactTooltip from "react-tooltip";
 
 import {
@@ -22,71 +22,11 @@ import {
   FONT_SIZE_OPTIONS,
 } from "../shared/options";
 import { useSettingsStore } from "../shared/settings";
-import { useHotkeysPressed } from "../shared/useHotkeysPressed";
-import { indexOfObjectArr } from "../utils/array";
-import { classNames } from "../utils/classNames";
 import { log } from "../utils/log";
+import HotkeysListenerButton from "./HotkeysListenerButton";
 import SelectMenu from "./SelectMenu";
-import { Slider } from "./Slider";
+import Slider from "./Slider";
 import Toggle from "./Toggle";
-
-const HotkeyButton = () => {
-  const [
-    settings,
-    setValueAll,
-    setKeyValue,
-    isPersistent,
-    error,
-    isLoadingStore,
-  ] = useSettingsStore();
-  const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
-  const setHotkeysToggleSidebar = (state: string[]) =>
-    setKeyValue(KEY_HOTKEYS_TOGGLE_SIDEBAR, state);
-
-  const [isHotkeyFocused, setIsHotkeyFocused] = useState<boolean>(false);
-
-  log.debug("Hotkey Button rerender", hotkeysToggleSidebar);
-
-  const onKeyPressed = _.debounce((keys: string[]) => {
-    log.debug("Key pressed", [keys.join("+")]);
-    if (keys.length >= 2) {
-      setHotkeysToggleSidebar([keys.join("+")]);
-      setIsHotkeyFocused(false);
-    }
-  }, SETTINGS_DEBOUNCE_TIME);
-
-  const { ref, hotkeysHistory } = useHotkeysPressed<HTMLButtonElement>(
-    200,
-    onKeyPressed,
-    isHotkeyFocused
-  );
-  log.debug(hotkeysHistory.map((h) => h.key));
-
-  if (isLoadingStore) return null;
-  return (
-    <div className="relative text-center">
-      {isHotkeyFocused && (
-        <div className="absolute -top-4 right-0 whitespace-nowrap text-[10px] text-slate-500">
-          Enter hotkey
-        </div>
-      )}
-      <button
-        ref={ref}
-        className={classNames(
-          "inline-flex items-center rounded border border-gray-300",
-          "px-2.5 py-1.5 text-xs font-medium shadow-sm",
-          isHotkeyFocused
-            ? "border-none bg-indigo-600 text-white"
-            : "bg-white text-gray-700"
-        )}
-        onClick={() => setIsHotkeyFocused((focus) => !focus)}
-        onBlur={() => setIsHotkeyFocused(false)}
-      >
-        {hotkeysToggleSidebar.join(", ").replaceAll("+", " + ")}
-      </button>
-    </div>
-  );
-};
 
 export const SettingsPanel = () => {
   log.debug("Settings Panel rerender");
@@ -272,7 +212,7 @@ export const SettingsPanel = () => {
           <div className="flex flex-row items-center">
             <div className="text-slate-600">Toggle Sidebar</div>
             <div className="grow" />
-            <HotkeyButton />
+            <HotkeysListenerButton settingsKey={KEY_HOTKEYS_TOGGLE_SIDEBAR} />
           </div>
         </div>
       </div>
