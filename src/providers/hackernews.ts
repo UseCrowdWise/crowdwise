@@ -3,7 +3,12 @@ import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { timeSince } from "../utils/time";
-import { ResultItem, ResultProvider } from "./providers";
+import {
+  ProviderQueryType,
+  ResultItem,
+  ResultProvider,
+  SingleProviderResults,
+} from "./providers";
 
 interface HnHit {
   url: string;
@@ -26,7 +31,7 @@ export class HnResultProvider implements ResultProvider {
   }
 
   // Main function to get all relevant results from HN
-  async getExactUrlResults(url: string): Promise<ResultItem[]> {
+  async getExactUrlResults(url: string): Promise<SingleProviderResults> {
     const encodedUrl = encodeURIComponent(url);
     const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url&typoTolerance=false`;
     const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
@@ -37,7 +42,11 @@ export class HnResultProvider implements ResultProvider {
     );
     if (res.nbHits === 0) {
       log.debug("Hacker News API: No urls found");
-      return [];
+      return {
+        providerName: this.getProviderName(),
+        queryType: ProviderQueryType.EXACT_URL,
+        results: [],
+      };
     }
     log.debug("HN Results Pre-translation:");
     log.debug(res.hits);
@@ -48,16 +57,23 @@ export class HnResultProvider implements ResultProvider {
       response: res,
       resultsTranslated: itemsAll,
     });
-    return itemsAll;
+    return {
+      providerName: this.getProviderName(),
+      queryType: ProviderQueryType.EXACT_URL,
+      results: itemsAll,
+    };
   }
 
   // Main function to get all relevant results from HN
-  async getSiteUrlResults(url: string): Promise<ResultItem[]> {
-    return this.getExactUrlResults(url);
+  async getSiteUrlResults(url: string): Promise<SingleProviderResults> {
+    return {
+      ...this.getExactUrlResults(url),
+      queryType: ProviderQueryType.SITE_URL,
+    };
   }
 
   // Main function to get all relevant results from HN
-  async getTitleResults(title: string): Promise<ResultItem[]> {
+  async getTitleResults(title: string): Promise<SingleProviderResults> {
     const encodedUrl = encodeURIComponent(title);
     const queryString = `query=${encodedUrl}&typoTolerance=false`;
     const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
@@ -68,7 +84,11 @@ export class HnResultProvider implements ResultProvider {
     );
     if (res.nbHits === 0) {
       log.debug("Hacker News API: No urls found");
-      return [];
+      return {
+        providerName: this.getProviderName(),
+        queryType: ProviderQueryType.TITLE,
+        results: [],
+      };
     }
     log.debug("HN Results Pre-translation:");
     log.debug(res.hits);
@@ -79,7 +99,11 @@ export class HnResultProvider implements ResultProvider {
       response: res,
       resultsTranslated: itemsAll,
     });
-    return itemsAll;
+    return {
+      providerName: this.getProviderName(),
+      queryType: ProviderQueryType.TITLE,
+      results: itemsAll,
+    };
   }
 }
 

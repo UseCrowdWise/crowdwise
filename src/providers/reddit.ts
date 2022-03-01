@@ -3,7 +3,12 @@ import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { replaceTimeStr } from "../utils/time";
-import { ResultItem, ResultProvider } from "./providers";
+import {
+  ProviderQueryType,
+  ResultItem,
+  ResultProvider,
+  SingleProviderResults,
+} from "./providers";
 
 const cheerio = require("cheerio");
 
@@ -13,8 +18,8 @@ export class RedditResultProvider implements ResultProvider {
   }
 
   // Main function to get all relevant results from Reddit
-  async getExactUrlResults(cleanedUrl: string): Promise<ResultItem[]> {
-    const queryString = "sort=top&q=" + encodeURIComponent("url:" + cleanedUrl);
+  async getExactUrlResults(url: string): Promise<SingleProviderResults> {
+    const queryString = "sort=top&q=" + encodeURIComponent("url:" + url);
     const requestUrl = "https://old.reddit.com/search?" + queryString;
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
@@ -25,14 +30,22 @@ export class RedditResultProvider implements ResultProvider {
 
     if (itemsAll.length === 0) {
       log.debug("Reddit API: No urls matches found");
-      return [];
+      return {
+        providerName: this.getProviderName(),
+        queryType: ProviderQueryType.EXACT_URL,
+        results: [],
+      };
     }
 
-    return itemsAll;
+    return {
+      providerName: this.getProviderName(),
+      queryType: ProviderQueryType.EXACT_URL,
+      results: itemsAll,
+    };
   }
 
-  async getSiteUrlResults(siteUrl: string): Promise<ResultItem[]> {
-    const queryString = "sort=top&q=" + encodeURIComponent("site:" + siteUrl);
+  async getSiteUrlResults(url: string): Promise<SingleProviderResults> {
+    const queryString = "sort=top&q=" + encodeURIComponent("site:" + url);
     const requestUrl = "https://old.reddit.com/search?" + queryString;
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
@@ -43,14 +56,22 @@ export class RedditResultProvider implements ResultProvider {
 
     if (itemsAll.length === 0) {
       log.debug("Reddit API: No urls matches found");
-      return [];
+      return {
+        providerName: this.getProviderName(),
+        queryType: ProviderQueryType.SITE_URL,
+        results: [],
+      };
     }
 
-    return itemsAll;
+    return {
+      providerName: this.getProviderName(),
+      queryType: ProviderQueryType.SITE_URL,
+      results: itemsAll,
+    };
   }
 
-  async getTitleResults(siteUrl: string): Promise<ResultItem[]> {
-    const queryString = "sort=top&q=" + encodeURIComponent("site:" + siteUrl);
+  async getTitleResults(title: string): Promise<SingleProviderResults> {
+    const queryString = "sort=top&q=" + encodeURIComponent("site:" + title);
     const requestUrl = "https://old.reddit.com/search?" + queryString;
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
@@ -61,10 +82,18 @@ export class RedditResultProvider implements ResultProvider {
 
     if (itemsAll.length === 0) {
       log.debug("Reddit API: No urls matches found");
-      return [];
+      return {
+        providerName: this.getProviderName(),
+        queryType: ProviderQueryType.TITLE,
+        results: [],
+      };
     }
 
-    return itemsAll;
+    return {
+      providerName: this.getProviderName(),
+      queryType: ProviderQueryType.TITLE,
+      results: itemsAll,
+    };
   }
 
   translateRedditToItem(html: string): ResultItem {

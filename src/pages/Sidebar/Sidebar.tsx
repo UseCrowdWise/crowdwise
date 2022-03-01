@@ -11,7 +11,11 @@ import ReactTooltip from "react-tooltip";
 import { HelpPanel } from "../../containers/HelpPanel";
 import ResultsContainer from "../../containers/ResultsContainer";
 import { SettingsPanel } from "../../containers/SettingsPanel";
-import { ProviderResultType, ProviderResults } from "../../providers/providers";
+import {
+  AllProviderResults,
+  ProviderResultType,
+  SingleProviderResults,
+} from "../../providers/providers";
 import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -96,17 +100,19 @@ const Sidebar = () => {
     log.debug("Sending message to background script to update provider info.");
     chrome.runtime.sendMessage(
       { getProviderData: true, documentTitle: document.title },
-      (results: ProviderResults) => {
+      (allProviderResults: AllProviderResults) => {
         // Received results from providers
         setIsLoadingProviderData(false);
         setHasFetchedDataForThisPage(true);
         log.debug("Printing provider data from background script...");
-        log.debug(results);
-        setProviderData(results);
+        log.debug(allProviderResults);
+        setProviderData(allProviderResults);
         // Inform content script about how much new data there is
+        const numResults = allProviderResults.providerResults
+          .map((v: SingleProviderResults) => v.results.length)
+          .reduce((a, b) => a + b, 0);
         sendMessageToCurrentTab({
-          newProviderDataCount:
-            results.hackerNews.length + results.reddit.length,
+          newProviderDataCount: numResults,
           loadingProviderData: false,
         });
       }
