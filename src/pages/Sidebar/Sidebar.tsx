@@ -1,29 +1,29 @@
-import React, { Fragment, useEffect, useState } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import {
   ChevronRightIcon,
   CogIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/outline";
-
-import { ProviderResults, ProviderResultType } from "../../providers/providers";
-import { log } from "../../utils/log";
-import ResultCard from "../../containers/ResultCard";
+import React, { Fragment, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { sendMessageToCurrentTab } from "../../utils/tabs";
+import ReactTooltip from "react-tooltip";
+
+import { HelpPanel } from "../../containers/HelpPanel";
+import ResultCard from "../../containers/ResultCard";
+import ResultsContainer from "../../containers/ResultsContainer";
+import { SettingsPanel } from "../../containers/SettingsPanel";
+import { ProviderResultType, ProviderResults } from "../../providers/providers";
 import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
 } from "../../shared/constants";
-import { SettingsPanel } from "../../containers/SettingsPanel";
-import { useChromeStorage } from "../../shared/useChromeStorage";
-import ReactTooltip from "react-tooltip";
-import "./Sidebar.css";
 import { useSettingsStore } from "../../shared/settings";
-import { HelpPanel } from "../../containers/HelpPanel";
-import ResultsContainer from "../../containers/ResultsContainer";
+import { useChromeStorage } from "../../shared/useChromeStorage";
+import { log } from "../../utils/log";
+import { sendMessageToCurrentTab } from "../../utils/tabs";
+import "./Sidebar.css";
 
 const EmptyDiscussionsState = () => (
   <>

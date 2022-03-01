@@ -1,5 +1,6 @@
-import React from "react";
 import { Switch } from "@headlessui/react";
+import React from "react";
+
 import Toggle, { Props as ToggleProps } from "./Toggle";
 
 interface Props extends ToggleProps {

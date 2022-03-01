@@ -1,6 +1,7 @@
-import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import React, { Fragment, useState } from "react";
+
 import { classNames } from "../utils/classNames";
 
 interface Option {

@@ -1,8 +1,8 @@
 import React from "react";
 import { render } from "react-dom";
 
-import Options from "./Options";
 import "../../assets/styles/tailwind.css";
+import Options from "./Options";
 
 render(
   <Options title={"Settings"} />,

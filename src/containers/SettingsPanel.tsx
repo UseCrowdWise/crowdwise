@@ -1,3 +1,9 @@
+import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
+import * as Slider from "@radix-ui/react-slider";
+import _ from "lodash";
+import React, { useState } from "react";
+import ReactTooltip from "react-tooltip";
+
 import {
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_PLACEMENT,
@@ -12,23 +18,17 @@ import {
   KEY_SIDEBAR_WIDTH,
   SETTINGS_DEBOUNCE_TIME,
 } from "../shared/constants";
-import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
-
-import * as Slider from "@radix-ui/react-slider";
-import _ from "lodash";
-import React, { useState } from "react";
-import { log } from "../utils/log";
-import { useHotkeysPressed } from "../shared/useHotkeysPressed";
-import Toggle from "./Toggle";
-import SelectMenu from "./SelectMenu";
 import {
   CONTENT_BUTTON_PLACEMENT_OPTIONS,
   FONT_SIZE_OPTIONS,
 } from "../shared/options";
 import { useSettingsStore } from "../shared/settings";
+import { useHotkeysPressed } from "../shared/useHotkeysPressed";
 import { indexOfObjectArr } from "../utils/array";
 import { classNames } from "../utils/classNames";
-import ReactTooltip from "react-tooltip";
+import { log } from "../utils/log";
+import SelectMenu from "./SelectMenu";
+import Toggle from "./Toggle";
 
 const HotkeyButton = () => {
   const [

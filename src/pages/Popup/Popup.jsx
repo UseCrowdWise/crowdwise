@@ -1,4 +1,5 @@
 import React from "react";
+
 import { SettingsPanel } from "../../containers/SettingsPanel";
 
 const Popup = () => {

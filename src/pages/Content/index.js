@@ -1,33 +1,34 @@
-import ReactDOM from "react-dom";
+import "animate.css";
 import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
+import DotLoader from "react-spinners/DotLoader";
+import ReactTooltip from "react-tooltip";
+
 import {
-  DEFAULT_SIDEBAR_OPACITY,
-  DEFAULT_SIDEBAR_WIDTH,
-  DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
-  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
-  KEY_HOTKEYS_TOGGLE_SIDEBAR,
-  KEY_SIDEBAR_OPACITY,
-  KEY_SIDEBAR_WIDTH,
-  KEY_HIDE_CONTENT_BUTTON,
-  DEFAULT_HIDE_CONTENT_BUTTON,
-  KEY_CONTENT_BUTTON_PLACEMENT,
+  DEFAULT_CONTENT_BUTTON_BACKGROUND,
   DEFAULT_CONTENT_BUTTON_PLACEMENT,
   DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
-  KEY_SIDEBAR_OPEN_TAB_STATE,
+  DEFAULT_HIDE_CONTENT_BUTTON,
+  DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
+  DEFAULT_HOTKEYS_TOGGLE_SIDEBAR,
+  DEFAULT_SIDEBAR_OPACITY,
   DEFAULT_SIDEBAR_OPEN_TAB_STATE,
+  DEFAULT_SIDEBAR_WIDTH,
   KEY_CONTENT_BUTTON_BACKGROUND,
-  DEFAULT_CONTENT_BUTTON_BACKGROUND,
+  KEY_CONTENT_BUTTON_PLACEMENT,
+  KEY_HIDE_CONTENT_BUTTON,
+  KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
+  KEY_SIDEBAR_OPACITY,
+  KEY_SIDEBAR_OPEN_TAB_STATE,
   KEY_SIDEBAR_SQUEEZES_PAGE,
+  KEY_SIDEBAR_WIDTH,
 } from "../../shared/constants";
-import { log } from "../../utils/log";
-import { useChromeStorage } from "../../shared/useChromeStorage";
 import { useSettingsStore } from "../../shared/settings";
-import ReactTooltip from "react-tooltip";
-import DotLoader from "react-spinners/DotLoader";
+import { useChromeStorage } from "../../shared/useChromeStorage";
+import { log } from "../../utils/log";
 import "./index.css";
-import "animate.css";
 
 log.debug("Content script works!");
 log.debug("Must reload extension for modifications to take effect.");

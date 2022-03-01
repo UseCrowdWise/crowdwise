@@ -1,8 +1,8 @@
 import React from "react";
 import { render } from "react-dom";
 
-import Sidebar from "./Sidebar";
 import "../../assets/styles/tailwind.css";
+import Sidebar from "./Sidebar";
 
 const App = () => {
   return <Sidebar />;
