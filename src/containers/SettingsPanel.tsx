@@ -232,24 +232,24 @@ export const SettingsPanel = () => {
             onSelected={setContentButtonPlacement}
           />
         </div>
-        <div className="flex flex-row items-center space-x-2">
+        <div
+          data-tip="Only shows sidebar when set to auto-open or opened with hotkeys."
+          className="flex flex-row items-center space-x-2"
+        >
           <div>
             <div className="mr-1 inline">Extension Button Hidden</div>
-            <QuestionMarkCircleIcon
-              data-tip="Only shows sidebar when set to auto-open or opened with hotkeys."
-              className="inline h-4 w-4 text-slate-500"
-            />
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
           <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
         </div>
-        <div className="flex flex-row items-center space-x-2">
+        <div
+          data-tip="Adds a solid background to the floating extension button for better visibility."
+          className="flex flex-row items-center space-x-2"
+        >
           <div>
             <div className="mr-1 inline">Extension Button Background</div>
-            <QuestionMarkCircleIcon
-              data-tip="Adds a solid background to the floating extension button for better visibility."
-              className="inline h-4 w-4 text-slate-500"
-            />
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
           <Toggle
@@ -257,13 +257,13 @@ export const SettingsPanel = () => {
             onCheck={setContentButtonBackground}
           />
         </div>
-        <div className="flex flex-row items-center space-x-2">
+        <div
+          data-tip="Color the name of each discussion author differently to identify different points of view. "
+          className="flex flex-row items-center space-x-2"
+        >
           <div>
             <div className="mr-1 inline">Color Author Names</div>
-            <QuestionMarkCircleIcon
-              data-tip="Color the name of each discussion author differently to identify different points of view. "
-              className="inline h-4 w-4 text-slate-500"
-            />
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
           <Toggle
@@ -271,15 +271,15 @@ export const SettingsPanel = () => {
             onCheck={handleShouldColorForSubmittedBy}
           />
         </div>
-        <div className="flex flex-row items-center space-x-2">
+        <div
+          data-tip="Attempts to squeeze the page to fit the sidebar and if it doesn't work, it will overlay on top of the page."
+          className="flex flex-row items-center space-x-2"
+        >
           <div>
             <div className="mr-1 inline">
               Sidebar Tries To Squeeze Page When Opened
             </div>
-            <QuestionMarkCircleIcon
-              data-tip="Attempts to squeeze the page to fit the sidebar and if it doesn't work, it will overlay on top of the page."
-              className="inline h-4 w-4 text-slate-500"
-            />
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
           <Toggle
@@ -287,15 +287,13 @@ export const SettingsPanel = () => {
             onCheck={handleSidebarSqueezePage}
           />
         </div>
-        <div className="flex flex-row items-center space-x-2">
+        <div
+          data-tip="Adds a more direct indication that results were found for a particular page."
+          className="flex flex-row items-center space-x-2"
+        >
           <div>
-            <div className="mr-1 inline">
-              Sidebar Opens When Results Found
-            </div>
-            <QuestionMarkCircleIcon
-              data-tip="Adds a more direct indication that results were found for a particular page."
-              className="inline h-4 w-4 text-slate-500"
-            />
+            <div className="mr-1 inline">Sidebar Opens When Results Found</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
           <Toggle
@@ -303,13 +301,13 @@ export const SettingsPanel = () => {
             onCheck={handleShouldShowSidebarOnResults}
           />
         </div>
-        <div className="flex flex-row items-center space-x-2">
+        <div
+          data-tip="Only start searching for discussions when the sidebar is clicked."
+          className="flex flex-row items-center space-x-2"
+        >
           <div>
             <div className="mr-1 inline">Incognito Mode</div>
-            <QuestionMarkCircleIcon
-              data-tip="Only start searching for discussions when the sidebar is clicked."
-              className="inline h-4 w-4 text-slate-500"
-            />
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
           <Toggle
