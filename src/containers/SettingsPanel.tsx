@@ -134,7 +134,7 @@ export const SettingsPanel = (props: Props) => {
           />
         </div>
         <div
-          data-tip="Only shows sidebar when set to auto-open or opened with hotkeys."
+          data-tip="Hide the extension button that is normally on the corners of the page."
           className="flex flex-row items-center space-x-2"
         >
           <div>
@@ -189,7 +189,7 @@ export const SettingsPanel = (props: Props) => {
           />
         </div>
         <div
-          data-tip="Adds a more direct indication that results were found for a particular page."
+          data-tip="Sidebar will automatically open when results are found for the current page."
           className="flex flex-row items-center space-x-2"
         >
           <div>

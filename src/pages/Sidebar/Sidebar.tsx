@@ -264,6 +264,12 @@ const Sidebar = () => {
                       <p className="my-1 text-slate-500">Hacker News</p>
                     </div>
                   )}
+                  <div>
+                    Results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      current web page
+                    </span>
+                  </div>
                   <ResultsContainer results={providerData.hackerNews} />
                 </div>
                 <div className="space-y-2">
@@ -277,7 +283,33 @@ const Sidebar = () => {
                       <p className="my-1 text-slate-500">Reddit</p>
                     </div>
                   )}
+                  <div>
+                    Results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      current web page
+                    </span>
+                  </div>
                   <ResultsContainer results={providerData.reddit} />
+                </div>
+                <div className="space-y-2">
+                  {providerData.hackerNews.length > 0 && (
+                    <div className="flex flex-row space-x-2 align-bottom">
+                      <img
+                        alt="Hacker News Icon"
+                        className="my-auto h-4 w-4"
+                        src={chrome.runtime.getURL("hackernews_icon.png")}
+                      />
+                      <p className="my-1 text-slate-500">Hacker News</p>
+                    </div>
+                  )}
+                  <div>
+                    Results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      “Turning the database out with Apache Samza - Martin
+                      Kleppmann's talks”
+                    </span>
+                  </div>
+                  <ResultsContainer results={providerData.hackerNews} />
                 </div>
               </div>
             )}
