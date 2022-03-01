@@ -11,11 +11,10 @@ import { hashStringToColor } from "../utils/color";
 
 interface Props {
   result: ResultItem;
-  onCardClick: (url: string) => void;
 }
 
 const ResultCard = (props: Props) => {
-  const { result, onCardClick } = props;
+  const { result } = props;
   const [
     settings,
     setValueAll,
@@ -24,6 +23,10 @@ const ResultCard = (props: Props) => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
+
+  const onCardClick = (url: string) => {
+    window.open(url, "_blank");
+  };
 
   const fontSizes = settings[KEY_FONT_SIZES];
   const colorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]
