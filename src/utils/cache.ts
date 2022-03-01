@@ -1,10 +1,8 @@
 /**
  * Handles in-memory caching, especially fetch API calls
  * */
-
-import { callApi } from "./api";
 import { log } from "../utils/log";
-import { TimeDescriptor } from "@sindresorhus/to-milliseconds";
+import { callApi } from "./api";
 
 // https://www.npmjs.com/package/webext-storage-cache
 // import cache from 'webext-storage-cache';
@@ -96,5 +94,3 @@ export function isExpiredCacheEntry(entry: any): boolean {
   const isExpired = timeDiffSec > entry.maxDuration;
   return isExpired;
 }
-
-export { type TimeDescriptor };
