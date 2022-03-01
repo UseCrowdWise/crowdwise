@@ -1,5 +1,5 @@
 // Some code used from https://github.com/benwinding/newsit/
-import { CACHE_URL_DURATION_SEC } from "../shared/constants";
+import { CACHE_URL_DURATION_SEC, PROVIDER_HN_NAME } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { timeSince } from "../utils/time";
@@ -27,7 +27,7 @@ interface HnJsonResult {
 
 export class HnResultProvider implements ResultProvider {
   getProviderName() {
-    return "Hacker News";
+    return PROVIDER_HN_NAME;
   }
 
   // Main function to get all relevant results from HN
@@ -67,7 +67,7 @@ export class HnResultProvider implements ResultProvider {
   // Main function to get all relevant results from HN
   async getSiteUrlResults(url: string): Promise<SingleProviderResults> {
     return {
-      ...this.getExactUrlResults(url),
+      ...(await this.getExactUrlResults(url)),
       queryType: ProviderQueryType.SITE_URL,
     };
   }

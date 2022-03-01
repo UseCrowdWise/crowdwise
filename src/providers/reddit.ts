@@ -1,5 +1,8 @@
 // Some code used from https://github.com/benwinding/newsit/
-import { CACHE_URL_DURATION_SEC } from "../shared/constants";
+import {
+  CACHE_URL_DURATION_SEC,
+  PROVIDER_REDDIT_NAME,
+} from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { replaceTimeStr } from "../utils/time";
@@ -14,7 +17,7 @@ const cheerio = require("cheerio");
 
 export class RedditResultProvider implements ResultProvider {
   getProviderName() {
-    return "Reddit";
+    return PROVIDER_REDDIT_NAME;
   }
 
   // Main function to get all relevant results from Reddit
