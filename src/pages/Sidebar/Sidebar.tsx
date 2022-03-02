@@ -153,6 +153,18 @@ const Sidebar = () => {
     hasFetchedDataForThisPage == false &&
     isLoadingProviderData === false;
 
+  // More UI display conditional variables
+  const hnResults = providerData?.providerResults[PROVIDER_HN_NAME] || {};
+  const redditResults = providerData?.providerResults[PROVIDER_HN_NAME] || {};
+  const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
+  const haveRedditExactResults =
+    redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
+  const haveHnSiteResults = hnResults[ProviderQueryType.SITE_URL]?.length > 0;
+  const haveRedditSiteResults =
+    redditResults[ProviderQueryType.SITE_URL]?.length > 0;
+  const haveHnTitleResults = hnResults[ProviderQueryType.TITLE]?.length > 0;
+  const haveRedditTitleResults =
+    redditResults[ProviderQueryType.TITLE]?.length > 0;
   return (
     <div className="flex h-full w-full flex-row">
       {isLoadingProviderData && (
@@ -238,150 +250,186 @@ const Sidebar = () => {
 
           <div className="space-y-3 p-3 text-left">
             <p className="text-lg font-semibold text-indigo-600">Discussions</p>
+            <hr />
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
             ) : (
               <div className="space-y-4 py-1">
-                <div className="text-base">
-                  Results for{" "}
-                  <span className="text-indigo-600 font-semibold">
-                    current web page
-                  </span>
-                </div>
+                {haveHnExactResults || haveRedditExactResults ? (
+                  <div>
+                    <div className="text-base py-1">
+                      Results for{" "}
+                      <span className="text-indigo-600 font-semibold">
+                        exact web page
+                      </span>
+                    </div>
 
-                <div className="space-y-2">
-                  {providerData &&
-                    providerData.providerResults[PROVIDER_HN_NAME] && (
-                      <div className="flex flex-row space-x-2 align-bottom">
-                        <img
-                          alt="Hacker News Icon"
-                          className="my-auto h-4 w-4"
-                          src={chrome.runtime.getURL("hackernews_icon.png")}
-                        />
-                        <p className="my-1 text-slate-500">Hacker News</p>
-                      </div>
-                    )}
-                  <ResultsContainer
-                    results={
-                      providerData.providerResults[PROVIDER_HN_NAME][
-                        ProviderQueryType.EXACT_URL
-                      ]
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  {providerData &&
-                    providerData.providerResults[PROVIDER_HN_NAME] && (
-                      <div className="flex flex-row space-x-2 align-bottom">
-                        <img
-                          alt="Reddit Icon"
-                          className="my-auto h-5 w-5"
-                          src={chrome.runtime.getURL("reddit_icon.png")}
-                        />
-                        <p className="my-1 text-slate-500">Reddit</p>
-                      </div>
-                    )}
-                  <ResultsContainer
-                    results={
-                      providerData.providerResults[PROVIDER_REDDIT_NAME][
-                        ProviderQueryType.EXACT_URL
-                      ]
-                    }
-                  />
-                </div>
-                <div className="text-base">
-                  Results for{" "}
-                  <span className="text-indigo-600 font-semibold">
-                    site URL
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {providerData &&
-                    providerData.providerResults[PROVIDER_HN_NAME] && (
-                      <div className="flex flex-row space-x-2 align-bottom">
-                        <img
-                          alt="Hacker News Icon"
-                          className="my-auto h-4 w-4"
-                          src={chrome.runtime.getURL("hackernews_icon.png")}
-                        />
-                        <p className="my-1 text-slate-500">Hacker News</p>
-                      </div>
-                    )}
-                  <ResultsContainer
-                    results={
-                      providerData.providerResults[PROVIDER_HN_NAME][
-                        ProviderQueryType.SITE_URL
-                      ]
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  {providerData &&
-                    providerData.providerResults[PROVIDER_REDDIT_NAME] && (
-                      <div className="flex flex-row space-x-2 align-bottom">
-                        <img
-                          alt="Hacker News Icon"
-                          className="my-auto h-4 w-4"
-                          src={chrome.runtime.getURL("reddit_icon.png")}
-                        />
-                        <p className="my-1 text-slate-500">Reddit</p>
-                      </div>
-                    )}
-                  <ResultsContainer
-                    results={
-                      providerData.providerResults[PROVIDER_REDDIT_NAME][
-                        ProviderQueryType.SITE_URL
-                      ]
-                    }
-                  />
-                </div>
-                <div className="text-base">
-                  Results for{" "}
-                  <span className="text-indigo-600 font-semibold">
-                    website title
-                  </span>
-                </div>
+                    <div className="space-y-2">
+                      {providerData &&
+                        providerData.providerResults[PROVIDER_HN_NAME] && (
+                          <div className="flex flex-row space-x-2 align-bottom">
+                            <img
+                              alt="Hacker News Icon"
+                              className="my-auto h-4 w-4"
+                              src={chrome.runtime.getURL("hackernews_icon.png")}
+                            />
+                            <p className="my-1 text-slate-500">Hacker News</p>
+                          </div>
+                        )}
+                      <ResultsContainer
+                        results={
+                          providerData.providerResults[PROVIDER_HN_NAME][
+                            ProviderQueryType.EXACT_URL
+                          ]
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      {providerData &&
+                        providerData.providerResults[PROVIDER_HN_NAME] && (
+                          <div className="flex flex-row space-x-2 align-bottom">
+                            <img
+                              alt="Reddit Icon"
+                              className="my-auto h-5 w-5"
+                              src={chrome.runtime.getURL("reddit_icon.png")}
+                            />
+                            <p className="my-1 text-slate-500">Reddit</p>
+                          </div>
+                        )}
+                      <ResultsContainer
+                        results={
+                          providerData.providerResults[PROVIDER_REDDIT_NAME][
+                            ProviderQueryType.EXACT_URL
+                          ]
+                        }
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-base">
+                    No results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      exact web page
+                    </span>
+                  </div>
+                )}
+                <hr />
+                {haveHnSiteResults || haveRedditSiteResults ? (
+                  <div>
+                    <div className="text-base  py-1">
+                      Results for{" "}
+                      <span className="text-indigo-600 font-semibold">
+                        site URL
+                      </span>
+                    </div>
+                    <div className="space-y-2">
+                      {providerData &&
+                        providerData.providerResults[PROVIDER_HN_NAME] && (
+                          <div className="flex flex-row space-x-2 align-bottom">
+                            <img
+                              alt="Hacker News Icon"
+                              className="my-auto h-4 w-4"
+                              src={chrome.runtime.getURL("hackernews_icon.png")}
+                            />
+                            <p className="my-1 text-slate-500">Hacker News</p>
+                          </div>
+                        )}
+                      <ResultsContainer
+                        results={
+                          providerData.providerResults[PROVIDER_HN_NAME][
+                            ProviderQueryType.SITE_URL
+                          ]
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      {providerData &&
+                        providerData.providerResults[PROVIDER_REDDIT_NAME] && (
+                          <div className="flex flex-row space-x-2 align-bottom">
+                            <img
+                              alt="Hacker News Icon"
+                              className="my-auto h-4 w-4"
+                              src={chrome.runtime.getURL("reddit_icon.png")}
+                            />
+                            <p className="my-1 text-slate-500">Reddit</p>
+                          </div>
+                        )}
+                      <ResultsContainer
+                        results={
+                          providerData.providerResults[PROVIDER_REDDIT_NAME][
+                            ProviderQueryType.SITE_URL
+                          ]
+                        }
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-base">
+                    No results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      site URL
+                    </span>
+                  </div>
+                )}
+                <hr />
+                {haveHnTitleResults || haveRedditTitleResults ? (
+                  <div>
+                    <div className="text-base py-1">
+                      Results for{" "}
+                      <span className="text-indigo-600 font-semibold">
+                        website title
+                      </span>
+                    </div>
 
-                <div className="space-y-2">
-                  {providerData &&
-                    providerData.providerResults[PROVIDER_HN_NAME] && (
-                      <div className="flex flex-row space-x-2 align-bottom">
-                        <img
-                          alt="Hacker News Icon"
-                          className="my-auto h-4 w-4"
-                          src={chrome.runtime.getURL("hackernews_icon.png")}
-                        />
-                        <p className="my-1 text-slate-500">Hacker News</p>
-                      </div>
-                    )}
-                  <ResultsContainer
-                    results={
-                      providerData.providerResults[PROVIDER_HN_NAME][
-                        ProviderQueryType.TITLE
-                      ]
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  {providerData &&
-                    providerData.providerResults[PROVIDER_REDDIT_NAME] && (
-                      <div className="flex flex-row space-x-2 align-bottom">
-                        <img
-                          alt="Hacker News Icon"
-                          className="my-auto h-4 w-4"
-                          src={chrome.runtime.getURL("reddit_icon.png")}
-                        />
-                        <p className="my-1 text-slate-500">Reddit</p>
-                      </div>
-                    )}
-                  <ResultsContainer
-                    results={
-                      providerData.providerResults[PROVIDER_REDDIT_NAME][
-                        ProviderQueryType.TITLE
-                      ]
-                    }
-                  />
-                </div>
+                    <div className="space-y-2">
+                      {providerData &&
+                        providerData.providerResults[PROVIDER_HN_NAME] && (
+                          <div className="flex flex-row space-x-2 align-bottom">
+                            <img
+                              alt="Hacker News Icon"
+                              className="my-auto h-4 w-4"
+                              src={chrome.runtime.getURL("hackernews_icon.png")}
+                            />
+                            <p className="my-1 text-slate-500">Hacker News</p>
+                          </div>
+                        )}
+                      <ResultsContainer
+                        results={
+                          providerData.providerResults[PROVIDER_HN_NAME][
+                            ProviderQueryType.TITLE
+                          ]
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      {providerData &&
+                        providerData.providerResults[PROVIDER_REDDIT_NAME] && (
+                          <div className="flex flex-row space-x-2 align-bottom">
+                            <img
+                              alt="Hacker News Icon"
+                              className="my-auto h-4 w-4"
+                              src={chrome.runtime.getURL("reddit_icon.png")}
+                            />
+                            <p className="my-1 text-slate-500">Reddit</p>
+                          </div>
+                        )}
+                      <ResultsContainer
+                        results={
+                          providerData.providerResults[PROVIDER_REDDIT_NAME][
+                            ProviderQueryType.TITLE
+                          ]
+                        }
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-base">
+                    No results for{" "}
+                    <span className="text-indigo-600 font-semibold">
+                      website title
+                    </span>
+                  </div>
+                )}
               </div>
             )}
           </div>
