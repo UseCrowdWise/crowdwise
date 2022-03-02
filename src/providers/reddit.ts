@@ -74,7 +74,12 @@ export class RedditResultProvider implements ResultProvider {
   }
 
   async getTitleResults(title: string): Promise<SingleProviderResults> {
-    const queryString = "sort=top&q=" + encodeURIComponent("site:" + title);
+    const queryString =
+      "q=" +
+      title
+        .split(" ")
+        .map((word) => encodeURIComponent(word))
+        .join("+");
     const requestUrl = "https://old.reddit.com/search?" + queryString;
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
