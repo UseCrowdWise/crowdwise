@@ -75,7 +75,7 @@ export class HnResultProvider implements ResultProvider {
   // Main function to get all relevant results from HN
   async getTitleResults(title: string): Promise<SingleProviderResults> {
     const encodedUrl = encodeURIComponent(title);
-    const queryString = `query=${encodedUrl}&typoTolerance=false`;
+    const queryString = `query=${encodedUrl}&typoTolerance=false&tags=story`;
     const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
     const res: HnJsonResult = await cachedApiCall(
       requestUrl,
