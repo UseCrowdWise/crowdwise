@@ -24,6 +24,8 @@ export enum ProviderQueryType {
 }
 
 // A list of results from a provider call should have this form
+// NOTE: if we ever change the names "providerName" or "queryType"
+//  we need to update the _.groupBy calls at the bottom (those use strings).
 export interface SingleProviderResults {
   providerName: string;
   queryType: ProviderQueryType;
@@ -54,16 +56,6 @@ export enum ProviderResultType {
   Ok = "OK",
   Blacklisted = "BLACKLISTED",
 }
-// export const Providers = {[PROVIDER_HN_NAME]: {}}
-
-// NOTE: if we add more providers, remember to update code that adds the length of these together
-//  to get total result counts.
-// export interface AllProviderResults {
-//   resultType: ProviderResultType;
-//   providerResults: SingleProviderResults[];
-//   // hackerNews: ResultItem[];
-//   // reddit: ResultItem[];
-// }
 
 // We should probably define an enum, but can be deferred for now
 type ProviderName = string;
@@ -132,10 +124,6 @@ export async function fetchDataFromProviders(
 
   log.debug(`URL ${cleanedUrl} is NOT blacklisted!`);
 
-  // Construct results
-  // const providers = [hackernews, reddit]
-  // const [hnExactResults, hnSiteResults, hnTitleResults, redditExactResults, redditSiteResults, reddit]= hackernews.getUrlResults(cleanedUrl);
-
   // Gather all the promises from all the providers
   // TODO if this order of calls changes, have to update the mapping function below
   const providerPromises: Promise<SingleProviderResults>[] = providers
@@ -150,8 +138,6 @@ export async function fetchDataFromProviders(
   const allProviderPromiseResults: PromiseSettledResult<SingleProviderResults>[] =
     await Promise.allSettled(providerPromises);
 
-  // We could have this be a constant, but this way we don't have to change it as we add more calls per provider.
-  const resultsPerProvider = providerPromises.length / providers.length;
   // Process the results (depends on whether promises were accepted or rejected
   const allResults: SingleProviderResults[] = allProviderPromiseResults
     .map(
@@ -171,8 +157,8 @@ export async function fetchDataFromProviders(
 
   // TODO: De-duplicate here
 
-
   // Group the results in a way that the sidebar can use
+  // Group first by the provider name, and then by the query type
   const providerResults = _.mapValues(
     _.groupBy(allResults, "providerName"),
     (v, k) => _.mapValues(_.groupBy(v, "queryType"), (spr) => spr[0].results)
@@ -183,8 +169,6 @@ export async function fetchDataFromProviders(
   const numResults = allResults
     .map((v: SingleProviderResults) => v.results?.length || 0)
     .reduce((a, b) => a + b, 0);
-
-
 
   return {
     resultType: ProviderResultType.Ok,
