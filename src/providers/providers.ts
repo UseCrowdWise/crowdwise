@@ -35,6 +35,7 @@ export interface SingleProviderResults {
 // All providers must return a list of resultitems
 export interface ResultItem {
   rawHtml?: string;
+  // NOTE: If we change submittedUrl name, we need to update the de-duplication code
   submittedUrl: string;
   submittedDate: string;
   submittedUpvotes: number;
@@ -155,8 +156,6 @@ export async function fetchDataFromProviders(
     )
     .filter((result) => result !== undefined) as SingleProviderResults[];
 
-  // TODO: De-duplicate here
-
   // Group the results in a way that the sidebar can use
   // Group first by the provider name, and then by the query type
   const providerResults = _.mapValues(
@@ -164,11 +163,37 @@ export async function fetchDataFromProviders(
     (v, k) => _.mapValues(_.groupBy(v, "queryType"), (spr) => spr[0].results)
   );
 
-  // Pre-compute number of results so that our consumers don't have to iterate through this nested duct
-  // NOTE: this is a pretty complicated call.
-  const numResults = allResults
-    .map((v: SingleProviderResults) => v.results?.length || 0)
-    .reduce((a, b) => a + b, 0);
+  // De-duplicate here
+  // Idea: for each /provider/, we want to make sure there are no duplicate results
+  // Prioritize keeping results in the order of the query types, so should be exact match > site > title for now.
+  // That is, if exact match and site have duplicates, the site duplicates are removed first.
+  Object.keys(providerResults).forEach((providerName: ProviderName) => {
+    // Don't filter ACROSS providers, just across query types
+    const thisProviderResults = providerResults[providerName];
+    const thisProviderQueryTypes = Object.keys(thisProviderResults);
+    // For each query type, "subtract" the results from the other query type results
+    thisProviderQueryTypes.forEach((queryType: string, idx: number) => {
+      // Get all other query types further down the list
+      const thisProviderRestQueryTypes = thisProviderQueryTypes.slice(idx + 1);
+      // Get the current provider query's results, so that we can subtract it from the other query results
+      const thisProviderQueryResults = thisProviderResults[queryType];
+      thisProviderRestQueryTypes.forEach((otherQueryType: string) => {
+        const otherQueryResults = thisProviderResults[otherQueryType];
+        const dedupedQueryResults = _.differenceBy(
+          otherQueryResults,
+          thisProviderQueryResults,
+          "submittedUrl"
+        );
+        thisProviderResults[otherQueryType] = dedupedQueryResults;
+      });
+    });
+  });
+
+  // Little complicate to compute num results since we have to iterate through two object key layers
+  let numResults = 0;
+  _.forEach(providerResults, (queryResults) =>
+    _.forEach(queryResults, (q) => (numResults += q.length))
+  );
 
   return {
     resultType: ProviderResultType.Ok,
