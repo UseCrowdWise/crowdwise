@@ -237,11 +237,18 @@ const Sidebar = () => {
           )}
 
           <div className="space-y-3 p-3 text-left">
-            <p className="text-lg text-indigo-600">Discussions</p>
+            <p className="text-lg font-semibold text-indigo-600">Discussions</p>
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
             ) : (
               <div className="space-y-4 py-1">
+                <div className="text-base">
+                  Results for{" "}
+                  <span className="text-indigo-600 font-semibold">
+                    current web page
+                  </span>
+                </div>
+
                 <div className="space-y-2">
                   {providerData &&
                     providerData.providerResults[PROVIDER_HN_NAME] && (
@@ -254,12 +261,6 @@ const Sidebar = () => {
                         <p className="my-1 text-slate-500">Hacker News</p>
                       </div>
                     )}
-                  <div>
-                    Results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      current web page
-                    </span>
-                  </div>
                   <ResultsContainer
                     results={
                       providerData.providerResults[PROVIDER_HN_NAME][
@@ -280,12 +281,6 @@ const Sidebar = () => {
                         <p className="my-1 text-slate-500">Reddit</p>
                       </div>
                     )}
-                  <div>
-                    Results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      current web page
-                    </span>
-                  </div>
                   <ResultsContainer
                     results={
                       providerData.providerResults[PROVIDER_REDDIT_NAME][
@@ -293,6 +288,12 @@ const Sidebar = () => {
                       ]
                     }
                   />
+                </div>
+                <div className="text-base">
+                  Results for{" "}
+                  <span className="text-indigo-600 font-semibold">
+                    site URL
+                  </span>
                 </div>
                 <div className="space-y-2">
                   {providerData &&
@@ -306,12 +307,6 @@ const Sidebar = () => {
                         <p className="my-1 text-slate-500">Hacker News</p>
                       </div>
                     )}
-                  <div>
-                    Results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      site url
-                    </span>
-                  </div>
                   <ResultsContainer
                     results={
                       providerData.providerResults[PROVIDER_HN_NAME][
@@ -332,12 +327,6 @@ const Sidebar = () => {
                         <p className="my-1 text-slate-500">Reddit</p>
                       </div>
                     )}
-                  <div>
-                    Results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      site url
-                    </span>
-                  </div>
                   <ResultsContainer
                     results={
                       providerData.providerResults[PROVIDER_REDDIT_NAME][
@@ -346,6 +335,13 @@ const Sidebar = () => {
                     }
                   />
                 </div>
+                <div className="text-base">
+                  Results for{" "}
+                  <span className="text-indigo-600 font-semibold">
+                    website title
+                  </span>
+                </div>
+
                 <div className="space-y-2">
                   {providerData &&
                     providerData.providerResults[PROVIDER_HN_NAME] && (
@@ -358,12 +354,6 @@ const Sidebar = () => {
                         <p className="my-1 text-slate-500">Hacker News</p>
                       </div>
                     )}
-                  <div>
-                    Results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      website title
-                    </span>
-                  </div>
                   <ResultsContainer
                     results={
                       providerData.providerResults[PROVIDER_HN_NAME][
@@ -384,12 +374,6 @@ const Sidebar = () => {
                         <p className="my-1 text-slate-500">Reddit</p>
                       </div>
                     )}
-                  <div>
-                    Results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      website title
-                    </span>
-                  </div>
                   <ResultsContainer
                     results={
                       providerData.providerResults[PROVIDER_REDDIT_NAME][
