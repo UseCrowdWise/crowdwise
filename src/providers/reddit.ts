@@ -27,11 +27,17 @@ export class RedditResultProvider implements ResultProvider {
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
     const $ = cheerio.load(data);
-    const itemsAll = $(".search-result")
+    const itemsAll: ResultItem[] = $(".search-result")
       .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
       .toArray();
-
-    if (itemsAll.length === 0) {
+    const itemsDeduped = itemsAll.filter(
+      (item) =>
+        (item.submittedUrl.endsWith(url) ||
+          item.submittedUrl.endsWith(url + "/")) &&
+        !item.submittedUrl.endsWith("=" + url) &&
+        !item.submittedUrl.endsWith("=" + url + "/")
+    );
+    if (itemsDeduped.length === 0) {
       log.debug("Reddit API: No urls matches found");
       return {
         providerName: this.getProviderName(),
@@ -43,7 +49,7 @@ export class RedditResultProvider implements ResultProvider {
     return {
       providerName: this.getProviderName(),
       queryType: ProviderQueryType.EXACT_URL,
-      results: itemsAll,
+      results: itemsDeduped,
     };
   }
 

@@ -118,9 +118,10 @@ export async function fetchDataFromProviders(
     `Tracking cleaned URL ${trackingCleanedUrl}\nNo fragment URL: ${noFragmentUrl}`
   );
 
-  // Remove http, https, www
+  // Remove http, https, www, and trailing slash
   let cleanedUrl = noFragmentUrl.replace(/^https?:\/\//, "");
   cleanedUrl = cleanedUrl.replace(/www\./, "");
+  cleanedUrl = cleanedUrl.replace(/\/$/, "");
   log.debug(
     `No fragment URL ${noFragmentUrl}\nFINAL Cleaned URL: ${cleanedUrl}`
   );
