@@ -11,6 +11,7 @@ import {
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
+  KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
   KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_SQUEEZES_PAGE,
@@ -55,6 +56,8 @@ export const SettingsPanel = (props: Props) => {
   const shouldSidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const shouldShowSidebarOnResults =
     settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
+  const shouldShowSidebarOnlyOnExactResults =
+    settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
 
   const setSideBarWidth = (state: number) =>
@@ -77,6 +80,8 @@ export const SettingsPanel = (props: Props) => {
     setKeyValue(KEY_SHOULD_COLOR_FOR_SUBMITTED_BY, state);
   const handleShouldShowSidebarOnResults = (state: boolean) =>
     setKeyValue(KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS, state);
+  const handleShouldShowSidebarOnlyOnExactResults = (state: boolean) =>
+    setKeyValue(KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS, state);
 
   const setSideBarWidthDebounced = _.debounce((value: any) => {
     setSideBarWidth(value);
@@ -200,6 +205,22 @@ export const SettingsPanel = (props: Props) => {
           <Toggle
             checked={shouldShowSidebarOnResults}
             onCheck={handleShouldShowSidebarOnResults}
+          />
+        </div>
+        <div
+          data-tip="Sidebar only opens when we find results for the exact page being browsed."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">
+              Sidebar Only Opens When Exact Results Found
+            </div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldShowSidebarOnlyOnExactResults}
+            onCheck={handleShouldShowSidebarOnlyOnExactResults}
           />
         </div>
         <div

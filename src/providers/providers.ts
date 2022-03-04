@@ -68,7 +68,10 @@ export interface AllProviderResults {
   providerResults: {
     [key: ProviderName]: _.Dictionary<ResultItem[]>;
   };
+  // Pre-compute this for consumers since it's annoying to traverse the providerResults structure
   numResults: number;
+  // For notifications: in case we only notify / do UI on exact results.
+  numExactResults: number;
 }
 
 // Init all providers
@@ -120,6 +123,7 @@ export async function fetchDataFromProviders(
       resultType: ProviderResultType.Blacklisted,
       providerResults: {},
       numResults: 0,
+      numExactResults: 0,
     };
   }
 
@@ -191,13 +195,20 @@ export async function fetchDataFromProviders(
 
   // Little complicate to compute num results since we have to iterate through two object key layers
   let numResults = 0;
+  let numExactResults = 0;
   _.forEach(providerResults, (queryResults) =>
-    _.forEach(queryResults, (q) => (numResults += q.length))
+    _.forEach(queryResults, (results, queryType) => {
+      numResults += results.length;
+      if (queryType === ProviderQueryType.EXACT_URL) {
+        numExactResults += results.length;
+      }
+    })
   );
 
   return {
     resultType: ProviderResultType.Ok,
     providerResults,
     numResults,
+    numExactResults,
   };
 }

@@ -13,6 +13,7 @@ import {
   KEY_CONTENT_BUTTON_PLACEMENT,
   KEY_HIDE_CONTENT_BUTTON,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
+  KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
   KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_OPEN_TAB_STATE,
@@ -48,6 +49,7 @@ const App = () => {
 
   const [isLoadingResults, setIsLoadingResults] = useState(null);
   const [numResults, setNumResults] = useState(null);
+  const [numExactResults, setNumExactResults] = useState(null);
   const [userOpenedSideBar, setUserOpenedSideBar] = useState(
     DEFAULT_SIDEBAR_OPEN_TAB_STATE
   );
@@ -75,6 +77,8 @@ const App = () => {
   const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
   const sidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const showSidebarOnResults = settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
+  const showSidebarOnlyOnExactResults =
+    settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
 
   const toggleSideBar = () => toggleUserOpenedSidebarStateWithStorage();
   const closeSideBar = () => setUserOpenedSidebarStateWithStorage(false);
@@ -91,6 +95,7 @@ const App = () => {
       // We can differentiate between having 0 results but the call completes (maybe to un-animate a loading icon)
       //  and having > 0 results from the call
       setNumResults(request.newProviderDataCount);
+      setNumExactResults(request.newProviderExactDataCount);
       // If we just got a new set of results, we reset the user's preference to close the auto-opening sidebar.
       if (request.newProviderDataCount > 0) {
         setUserClosedSidebarSinceLatestResults(false);
@@ -206,6 +211,7 @@ const App = () => {
     showSidebarOnResults &&
     !isLoadingResults &&
     numResults > 0 &&
+    (numExactResults > 0 || !showSidebarOnlyOnExactResults) &&
     !userClosedSidebarSinceLatestResults;
   const shouldShowSideBar =
     !isFullscreen && (userOpenedSideBar || shouldAutoOpenSideBar);
