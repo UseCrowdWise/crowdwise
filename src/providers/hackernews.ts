@@ -51,6 +51,50 @@ export class HnResultProvider implements ResultProvider {
     log.debug("HN Results Pre-translation:");
     log.debug(res.hits);
     const itemsAll = res.hits?.map(translateHnToItem) || [];
+    // <rest>..facebook.com and <rest>..facebook.com/ allowed, but
+    // <rest>..utm_source=facebook.com not allowed
+    const itemsDeduped = itemsAll.filter(
+      (item) =>
+        (item.submittedUrl.endsWith(url) ||
+          item.submittedUrl.endsWith(url + "/")) &&
+        !item.submittedUrl.endsWith("=" + url) &&
+        !item.submittedUrl.endsWith("=" + url + "/")
+    );
+    // Checks that the right URL is submitted
+    // const itemsResults = processResults(itemsAll, searchUrlStripped);
+    log.debug("Hacker News returned results:", {
+      response: res,
+      resultsWithoutDedup: itemsAll,
+      resultsTranslated: itemsDeduped,
+    });
+    return {
+      providerName: this.getProviderName(),
+      queryType: ProviderQueryType.EXACT_URL,
+      results: itemsDeduped,
+    };
+  }
+
+  // Main function to get all relevant results from HN
+  async getSiteUrlResults(url: string): Promise<SingleProviderResults> {
+    const encodedUrl = encodeURIComponent(url);
+    const queryString = `query=${encodedUrl}&restrictSearchableAttributes=url&typoTolerance=false`;
+    const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
+    const res: HnJsonResult = await cachedApiCall(
+      requestUrl,
+      true,
+      CACHE_URL_DURATION_SEC
+    );
+    if (res.nbHits === 0) {
+      log.debug("Hacker News API: No urls found");
+      return {
+        providerName: this.getProviderName(),
+        queryType: ProviderQueryType.EXACT_URL,
+        results: [],
+      };
+    }
+    log.debug("HN Results Pre-translation:");
+    log.debug(res.hits);
+    const itemsAll = res.hits?.map(translateHnToItem) || [];
     // Checks that the right URL is submitted
     // const itemsResults = processResults(itemsAll, searchUrlStripped);
     log.debug("Hacker News returned results:", {
@@ -59,16 +103,8 @@ export class HnResultProvider implements ResultProvider {
     });
     return {
       providerName: this.getProviderName(),
-      queryType: ProviderQueryType.EXACT_URL,
-      results: itemsAll,
-    };
-  }
-
-  // Main function to get all relevant results from HN
-  async getSiteUrlResults(url: string): Promise<SingleProviderResults> {
-    return {
-      ...(await this.getExactUrlResults(url)),
       queryType: ProviderQueryType.SITE_URL,
+      results: itemsAll,
     };
   }
 
