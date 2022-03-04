@@ -269,7 +269,7 @@ const Sidebar = () => {
                         className="text-indigo-600 font-semibold"
                         data-tip={searchExactUrl}
                       >
-                        {`exact search`}
+                        {`current page`}
                       </span>
                       <div
                         style={{
@@ -332,7 +332,7 @@ const Sidebar = () => {
                       className="text-indigo-600 font-semibold"
                       data-tip={searchExactUrl}
                     >
-                      {`exact search`}
+                      {`current page`}
                     </span>
                     <div
                       style={{
@@ -443,7 +443,7 @@ const Sidebar = () => {
                         className="text-indigo-600 font-semibold"
                         data-tip={searchTitle}
                       >
-                        {`webpage title`}
+                        {`current page title`}
                       </span>
                       <div
                         style={{
@@ -506,7 +506,7 @@ const Sidebar = () => {
                       className="text-indigo-600 font-semibold"
                       data-tip={searchTitle}
                     >
-                      {`webpage title`}
+                      {`current page title`}
                     </span>
                     <div
                       style={{
