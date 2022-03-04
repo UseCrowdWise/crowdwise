@@ -108,6 +108,7 @@ const Sidebar = () => {
         setProviderData(allProviderResults);
         sendMessageToCurrentTab({
           newProviderDataCount: allProviderResults.numResults,
+          newProviderExactDataCount: allProviderResults.numExactResults,
           loadingProviderData: false,
         });
       }
