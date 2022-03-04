@@ -58,10 +58,19 @@ export enum ProviderResultType {
   Blacklisted = "BLACKLISTED",
 }
 
+// Query that produced provider results
+export interface QueryInfo {
+  searchExactUrl: string;
+  searchSiteUrl: string;
+  searchTitle: string;
+}
+
 // We should probably define an enum, but can be deferred for now
 type ProviderName = string;
 // This is the format that the sidebar wants
 export interface AllProviderResults {
+  queryInfo: QueryInfo;
+  // Success / failure indication
   resultType: ProviderResultType;
   // Have to use a lodash dict because Typescript cannot infer it's a normal record?
   // Dictionary is just Dictionary<T> {  [index: string]: T; }
@@ -116,11 +125,18 @@ export async function fetchDataFromProviders(
     `No fragment URL ${noFragmentUrl}\nFINAL Cleaned URL: ${cleanedUrl}`
   );
 
+  const queryInfo = {
+    searchExactUrl: cleanedUrl,
+    searchSiteUrl: siteUrl,
+    searchTitle: documentTitle,
+  };
+
   // Return early if this URL is blacklisted
   if (isBlacklisted(cleanedUrl) || isBlacklisted(siteUrl)) {
     log.warn(`URL ${cleanedUrl} or ${siteUrl} is blacklisted!`);
     return {
       resultType: ProviderResultType.Blacklisted,
+      queryInfo,
       providerResults: {},
       numResults: 0,
       numExactResults: 0,
@@ -207,6 +223,7 @@ export async function fetchDataFromProviders(
 
   return {
     resultType: ProviderResultType.Ok,
+    queryInfo,
     providerResults,
     numResults,
     numExactResults,

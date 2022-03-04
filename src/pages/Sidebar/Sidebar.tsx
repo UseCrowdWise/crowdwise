@@ -15,6 +15,7 @@ import {
   AllProviderResults,
   ProviderQueryType,
   ProviderResultType,
+  QueryInfo,
   SingleProviderResults,
 } from "../../providers/providers";
 import {
@@ -166,6 +167,10 @@ const Sidebar = () => {
   const haveHnTitleResults = hnResults[ProviderQueryType.TITLE]?.length > 0;
   const haveRedditTitleResults =
     redditResults[ProviderQueryType.TITLE]?.length > 0;
+
+  // Query display
+  const { searchExactUrl, searchSiteUrl, searchTitle } =
+    providerData?.queryInfo || {};
   return (
     <div className="flex h-full w-full flex-row">
       {isLoadingProviderData && (
@@ -260,9 +265,23 @@ const Sidebar = () => {
                   <div>
                     <div className="text-base py-1">
                       Results for{" "}
-                      <span className="text-indigo-600 font-semibold">
-                        exact web page
+                      <span
+                        className="text-indigo-600 font-semibold"
+                        data-tip={searchExactUrl}
+                      >
+                        {`exact search`}
                       </span>
+                      <div
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        className="text-xs text-slate-500"
+                      >
+                        {" "}
+                        ({searchExactUrl}){" "}
+                      </div>
                     </div>
 
                     <div className="space-y-2">
@@ -307,22 +326,51 @@ const Sidebar = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-base">
+                  <div className="text-base py-1">
                     No results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      exact web page
+                    <span
+                      className="text-indigo-600 font-semibold"
+                      data-tip={searchExactUrl}
+                    >
+                      {`exact search`}
                     </span>
+                    <div
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                      className="text-xs text-slate-500"
+                    >
+                      {" "}
+                      ({searchExactUrl}){" "}
+                    </div>
                   </div>
                 )}
                 <hr />
                 {haveHnSiteResults || haveRedditSiteResults ? (
                   <div>
-                    <div className="text-base  py-1">
+                    <div className="text-base py-1">
                       Results for{" "}
-                      <span className="text-indigo-600 font-semibold">
-                        site URL
+                      <span
+                        className="text-indigo-600 font-semibold"
+                        data-tip={searchSiteUrl}
+                      >
+                        {`site URL`}
                       </span>
+                      <div
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        className="text-xs text-slate-500"
+                      >
+                        {" "}
+                        ({searchSiteUrl}){" "}
+                      </div>
                     </div>
+
                     <div className="space-y-2">
                       {providerData &&
                         providerData.providerResults[PROVIDER_HN_NAME] && (
@@ -365,11 +413,25 @@ const Sidebar = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-base">
+                  <div className="text-base py-1">
                     No results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      site URL
+                    <span
+                      className="text-indigo-600 font-semibold"
+                      data-tip={searchSiteUrl}
+                    >
+                      {`site URL`}
                     </span>
+                    <div
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                      className="text-xs text-slate-500"
+                    >
+                      {" "}
+                      ({searchSiteUrl}){" "}
+                    </div>
                   </div>
                 )}
                 <hr />
@@ -377,9 +439,23 @@ const Sidebar = () => {
                   <div>
                     <div className="text-base py-1">
                       Results for{" "}
-                      <span className="text-indigo-600 font-semibold">
-                        website title
+                      <span
+                        className="text-indigo-600 font-semibold"
+                        data-tip={searchTitle}
+                      >
+                        {`webpage title`}
                       </span>
+                      <div
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        className="text-xs text-slate-500"
+                      >
+                        {" "}
+                        ({searchTitle}){" "}
+                      </div>
                     </div>
 
                     <div className="space-y-2">
@@ -424,17 +500,33 @@ const Sidebar = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-base">
+                  <div className="text-base py-1">
                     No results for{" "}
-                    <span className="text-indigo-600 font-semibold">
-                      website title
+                    <span
+                      className="text-indigo-600 font-semibold"
+                      data-tip={searchTitle}
+                    >
+                      {`webpage title`}
                     </span>
+                    <div
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                      className="text-xs text-slate-500"
+                    >
+                      {" "}
+                      ({searchTitle}){" "}
+                    </div>
                   </div>
                 )}
               </div>
             )}
           </div>
         </div>
+
+        <ReactTooltip place="right" type="dark" effect="solid" />
       </div>
     </div>
   );
