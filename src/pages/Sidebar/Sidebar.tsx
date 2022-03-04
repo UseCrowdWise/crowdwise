@@ -287,47 +287,45 @@ const Sidebar = () => {
                         ({searchExactUrl}){" "}
                       </div>
                     </div>
+                    {haveHnExactResults && (
+                      <div className="space-y-2">
+                        <div className="flex flex-row space-x-2 align-bottom">
+                          <img
+                            alt="Hacker News Icon"
+                            className="my-auto h-4 w-4"
+                            src={chrome.runtime.getURL("hackernews_icon.png")}
+                          />
+                          <p className="my-1 text-slate-500">Hacker News</p>
+                        </div>
 
-                    <div className="space-y-2">
-                      {providerData &&
-                        providerData.providerResults[PROVIDER_HN_NAME] && (
-                          <div className="flex flex-row space-x-2 align-bottom">
-                            <img
-                              alt="Hacker News Icon"
-                              className="my-auto h-4 w-4"
-                              src={chrome.runtime.getURL("hackernews_icon.png")}
-                            />
-                            <p className="my-1 text-slate-500">Hacker News</p>
-                          </div>
-                        )}
-                      <ResultsContainer
-                        results={
-                          providerData.providerResults[PROVIDER_HN_NAME][
-                            ProviderQueryType.EXACT_URL
-                          ]
-                        }
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      {providerData &&
-                        providerData.providerResults[PROVIDER_HN_NAME] && (
-                          <div className="flex flex-row space-x-2 align-bottom">
-                            <img
-                              alt="Reddit Icon"
-                              className="my-auto h-5 w-5"
-                              src={chrome.runtime.getURL("reddit_icon.png")}
-                            />
-                            <p className="my-1 text-slate-500">Reddit</p>
-                          </div>
-                        )}
-                      <ResultsContainer
-                        results={
-                          providerData.providerResults[PROVIDER_REDDIT_NAME][
-                            ProviderQueryType.EXACT_URL
-                          ]
-                        }
-                      />
-                    </div>
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[PROVIDER_HN_NAME][
+                              ProviderQueryType.EXACT_URL
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
+                    {haveRedditExactResults && (
+                      <div className="space-y-2">
+                        <div className="flex flex-row space-x-2 align-bottom">
+                          <img
+                            alt="Reddit Icon"
+                            className="my-auto h-5 w-5"
+                            src={chrome.runtime.getURL("reddit_icon.png")}
+                          />
+                          <p className="my-1 text-slate-500">Reddit</p>
+                        </div>
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[PROVIDER_REDDIT_NAME][
+                              ProviderQueryType.EXACT_URL
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-base py-1">
@@ -374,47 +372,44 @@ const Sidebar = () => {
                         ({searchSiteUrl}){" "}
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      {providerData &&
-                        providerData.providerResults[PROVIDER_HN_NAME] && (
-                          <div className="flex flex-row space-x-2 align-bottom">
-                            <img
-                              alt="Hacker News Icon"
-                              className="my-auto h-4 w-4"
-                              src={chrome.runtime.getURL("hackernews_icon.png")}
-                            />
-                            <p className="my-1 text-slate-500">Hacker News</p>
-                          </div>
-                        )}
-                      <ResultsContainer
-                        results={
-                          providerData.providerResults[PROVIDER_HN_NAME][
-                            ProviderQueryType.SITE_URL
-                          ]
-                        }
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      {providerData &&
-                        providerData.providerResults[PROVIDER_REDDIT_NAME] && (
-                          <div className="flex flex-row space-x-2 align-bottom">
-                            <img
-                              alt="Hacker News Icon"
-                              className="my-auto h-4 w-4"
-                              src={chrome.runtime.getURL("reddit_icon.png")}
-                            />
-                            <p className="my-1 text-slate-500">Reddit</p>
-                          </div>
-                        )}
-                      <ResultsContainer
-                        results={
-                          providerData.providerResults[PROVIDER_REDDIT_NAME][
-                            ProviderQueryType.SITE_URL
-                          ]
-                        }
-                      />
-                    </div>
+                    {haveHnSiteResults && (
+                      <div className="space-y-2">
+                        <div className="flex flex-row space-x-2 align-bottom">
+                          <img
+                            alt="Hacker News Icon"
+                            className="my-auto h-4 w-4"
+                            src={chrome.runtime.getURL("hackernews_icon.png")}
+                          />
+                          <p className="my-1 text-slate-500">Hacker News</p>
+                        </div>
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[PROVIDER_HN_NAME][
+                              ProviderQueryType.SITE_URL
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
+                    {haveRedditSiteResults && (
+                      <div className="space-y-2">
+                        <div className="flex flex-row space-x-2 align-bottom">
+                          <img
+                            alt="Hacker News Icon"
+                            className="my-auto h-4 w-4"
+                            src={chrome.runtime.getURL("reddit_icon.png")}
+                          />
+                          <p className="my-1 text-slate-500">Reddit</p>
+                        </div>
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[PROVIDER_REDDIT_NAME][
+                              ProviderQueryType.SITE_URL
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-base py-1">
@@ -461,47 +456,45 @@ const Sidebar = () => {
                         ({searchTitle}){" "}
                       </div>
                     </div>
+                    {haveHnTitleResults && (
+                      <div className="space-y-2">
+                        <div className="flex flex-row space-x-2 align-bottom">
+                          <img
+                            alt="Hacker News Icon"
+                            className="my-auto h-4 w-4"
+                            src={chrome.runtime.getURL("hackernews_icon.png")}
+                          />
+                          <p className="my-1 text-slate-500">Hacker News</p>
+                        </div>
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[PROVIDER_HN_NAME][
+                              ProviderQueryType.TITLE
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
 
-                    <div className="space-y-2">
-                      {providerData &&
-                        providerData.providerResults[PROVIDER_HN_NAME] && (
-                          <div className="flex flex-row space-x-2 align-bottom">
-                            <img
-                              alt="Hacker News Icon"
-                              className="my-auto h-4 w-4"
-                              src={chrome.runtime.getURL("hackernews_icon.png")}
-                            />
-                            <p className="my-1 text-slate-500">Hacker News</p>
-                          </div>
-                        )}
-                      <ResultsContainer
-                        results={
-                          providerData.providerResults[PROVIDER_HN_NAME][
-                            ProviderQueryType.TITLE
-                          ]
-                        }
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      {providerData &&
-                        providerData.providerResults[PROVIDER_REDDIT_NAME] && (
-                          <div className="flex flex-row space-x-2 align-bottom">
-                            <img
-                              alt="Hacker News Icon"
-                              className="my-auto h-4 w-4"
-                              src={chrome.runtime.getURL("reddit_icon.png")}
-                            />
-                            <p className="my-1 text-slate-500">Reddit</p>
-                          </div>
-                        )}
-                      <ResultsContainer
-                        results={
-                          providerData.providerResults[PROVIDER_REDDIT_NAME][
-                            ProviderQueryType.TITLE
-                          ]
-                        }
-                      />
-                    </div>
+                    {haveRedditTitleResults && (
+                      <div className="space-y-2">
+                        <div className="flex flex-row space-x-2 align-bottom">
+                          <img
+                            alt="Hacker News Icon"
+                            className="my-auto h-4 w-4"
+                            src={chrome.runtime.getURL("reddit_icon.png")}
+                          />
+                          <p className="my-1 text-slate-500">Reddit</p>
+                        </div>
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[PROVIDER_REDDIT_NAME][
+                              ProviderQueryType.TITLE
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-base py-1">
