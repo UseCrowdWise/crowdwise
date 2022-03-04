@@ -157,10 +157,14 @@ const Sidebar = () => {
 
   // More UI display conditional variables
   const hnResults = providerData?.providerResults[PROVIDER_HN_NAME] || {};
-  const redditResults = providerData?.providerResults[PROVIDER_HN_NAME] || {};
+  const redditResults =
+    providerData?.providerResults[PROVIDER_REDDIT_NAME] || {};
   const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
   const haveRedditExactResults =
     redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
+  log.debug(
+    `Have HN exact: ${haveHnExactResults}, have Reddit exact: ${haveRedditExactResults}`
+  );
   const haveHnSiteResults = hnResults[ProviderQueryType.SITE_URL]?.length > 0;
   const haveRedditSiteResults =
     redditResults[ProviderQueryType.SITE_URL]?.length > 0;
