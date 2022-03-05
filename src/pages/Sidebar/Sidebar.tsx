@@ -267,10 +267,10 @@ const Sidebar = () => {
               <div className="space-y-4 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
                   <div>
-                    <div className="text-base py-1">
+                    <div className="py-1 text-base">
                       Results for{" "}
                       <span
-                        className="text-indigo-600 font-semibold"
+                        className="font-semibold text-indigo-600"
                         data-tip={searchExactUrl}
                       >
                         {`current page`}
@@ -328,10 +328,10 @@ const Sidebar = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="text-base py-1">
+                  <div className="py-1 text-base">
                     No results for{" "}
                     <span
-                      className="text-indigo-600 font-semibold"
+                      className="font-semibold text-indigo-600"
                       data-tip={searchExactUrl}
                     >
                       {`current page`}
@@ -352,10 +352,10 @@ const Sidebar = () => {
                 <hr />
                 {haveHnSiteResults || haveRedditSiteResults ? (
                   <div>
-                    <div className="text-base py-1">
+                    <div className="py-1 text-base">
                       Results for{" "}
                       <span
-                        className="text-indigo-600 font-semibold"
+                        className="font-semibold text-indigo-600"
                         data-tip={searchSiteUrl}
                       >
                         {`site URL`}
@@ -412,10 +412,10 @@ const Sidebar = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="text-base py-1">
+                  <div className="py-1 text-base">
                     No results for{" "}
                     <span
-                      className="text-indigo-600 font-semibold"
+                      className="font-semibold text-indigo-600"
                       data-tip={searchSiteUrl}
                     >
                       {`site URL`}
@@ -436,10 +436,10 @@ const Sidebar = () => {
                 <hr />
                 {haveHnTitleResults || haveRedditTitleResults ? (
                   <div>
-                    <div className="text-base py-1">
+                    <div className="py-1 text-base">
                       Results for{" "}
                       <span
-                        className="text-indigo-600 font-semibold"
+                        className="font-semibold text-indigo-600"
                         data-tip={searchTitle}
                       >
                         {`current page title`}
@@ -497,10 +497,10 @@ const Sidebar = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="text-base py-1">
+                  <div className="py-1 text-base">
                     No results for{" "}
                     <span
-                      className="text-indigo-600 font-semibold"
+                      className="font-semibold text-indigo-600"
                       data-tip={searchTitle}
                     >
                       {`current page title`}

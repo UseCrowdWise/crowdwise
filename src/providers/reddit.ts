@@ -27,7 +27,7 @@ export class RedditResultProvider implements ResultProvider {
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
     const $ = cheerio.load(data);
-    const itemsAll: ResultItem[] = $(".search-result")
+    const itemsAll: ResultItem[] = $(".search-result.search-result-link")
       .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
       .toArray();
     const itemsDeduped = itemsAll.filter(
@@ -59,7 +59,7 @@ export class RedditResultProvider implements ResultProvider {
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
     const $ = cheerio.load(data);
-    const itemsAll = $(".search-result")
+    const itemsAll = $(".search-result.search-result-link")
       .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
       .toArray();
 
@@ -90,7 +90,7 @@ export class RedditResultProvider implements ResultProvider {
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
     const $ = cheerio.load(data);
-    const itemsAll = $(".search-result")
+    const itemsAll = $(".search-result.search-result-link")
       .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
       .toArray();
 
