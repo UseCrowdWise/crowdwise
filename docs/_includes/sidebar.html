@@ -3,9 +3,9 @@
       <img src="/assets/icon-outline.svg"></img>
     <{% if page.layout == "index" %}h1{% else %}div{% endif %} class="site-title">
       <a href="{{ "/" | relative_url }}">
-        {% unless page.url == "/" %}
-          <span class="back-arrow icon">{% include svg/back-arrow.svg %}</span>
-        {% endunless %}
+          <!-- {% unless page.url == "/" %}
+               <span class="back-arrow icon">{% include svg/back-arrow.svg %}</span>
+               {% endunless %} -->
         {{ site.title }}
       </a>
     </{% if page.layout == "index" %}h1{% else %}div{% endif %}>
