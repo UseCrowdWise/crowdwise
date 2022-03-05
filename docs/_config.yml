@@ -4,7 +4,7 @@ highlighter: rouge
 
 # Setup
 title: CrowdWise
-# tagline: "A Jekyll theme"
+tagline: "What do other people think?"
 description: "CrowdWise is a <a target='_blank' href='https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip/related'>Chrome extension</a> that shows you discussions <br/> (from HN/Reddit) about the page you're browsing. <br/> What do other people think?"
 url: https://usecrowdwise.com
 # baseurl:
