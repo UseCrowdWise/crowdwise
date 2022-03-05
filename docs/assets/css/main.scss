@@ -1,0 +1,10 @@
+---
+# Use a comment to ensure Jekyll reads the file to be transformed into CSS later
+# only main files contain this front matter, not partials.
+---
+
+$sidebar-bg-color: #f1f5f9;
+$sidebar-fg-color: #4f46e5;
+$sidebar-text-color: rgba($sidebar-fg-color, 1);
+$sidebar-sticky: false;
+@import "hydeout";

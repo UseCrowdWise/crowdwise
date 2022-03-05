@@ -1,0 +1,38 @@
+# Dependencies
+markdown: kramdown
+highlighter: rouge
+
+# Setup
+title: CrowdWise
+# tagline: "A Jekyll theme"
+description: "CrowdWise is a <a target='_blank' href='https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip/related'>Chrome extension</a> that shows you discussions <br/> (from HN/Reddit) about the page you're browsing. <br/> What do other people think?"
+url: https://usecrowdwise.com
+# baseurl:
+#   "/hydeout"
+# the optional subpath of your site, e.g. "/blog"
+# NB: This applies to all pages in your Jekyll site.
+# If you want to move just the blog index pages but keep
+# other pages at root, see the paginate_path and
+# sidebar_blog_link below.
+remote_theme: fongandrew/hydeout
+google_analytics: G-T73QCMVS1F
+
+author:
+  name: "Sriram Sami and Tang Yew Siang"
+  url: https://usecrowdwise.com
+
+paginate: 5
+paginate_path: "/blog/page:num"
+# Or '/blog/page:num' if you want to move your index pages
+
+plugins:
+  - jekyll-feed
+  - jekyll-gist
+  - jekyll-paginate
+  - jekyll-target-blank
+# Sidebar link settings
+sidebar_home_link: true
+sidebar_blog_link: "/blog" # By default, your home page is your blog
+# page. If you change your paginate_path,
+# set this to the root of the paginate_path
+# to enable a separate blog link.
