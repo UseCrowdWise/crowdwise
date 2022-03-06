@@ -107,6 +107,16 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       changedUrl: changeInfo.url,
     });
   }
+  if (changeInfo.title) {
+    log.debug(
+      `Background script: Url title changed: tabId: ${tabId}, changeInfo: ${JSON.stringify(
+        changeInfo
+      )}, tab: ${JSON.stringify(tab)}`
+    );
+    chrome.tabs.sendMessage(tabId, {
+      changedTitle: changeInfo.title,
+    });
+  }
 });
 
 /**
