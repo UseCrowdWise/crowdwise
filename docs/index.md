@@ -3,11 +3,13 @@ layout: page
 title: CrowdWise
 ---
 
-[![Chrome Store Link](/assets/chromestore.png)](https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip){:target}
+[![Chrome Store Link](/assets/chromestore.png)](https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip)
 
 # What's CrowdWise?
 
 CrowdWise is a Google Chrome extension that adds to your browsing experience by showing you relevant discussions about your current web page from Hacker News and Reddit.
+
+[![Screenshot](/assets/screenshot-1.jpg)](https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip)
 
 ## Features
 
@@ -30,5 +32,4 @@ Adjust the sidebar to suit the look and feel that you like. You can customise th
 
 ### Open Source and Extensible
 
-Our source code is available on GitHub on a MIT license, allowing you to easily extend CrowdWise the way you want and be part of our community!
-GitHub link: https://github.com/frizensami/crowdwise
+Our source code is [available on GitHub](https://github.com/frizensami/crowdwise) with an MIT license, allowing you to easily extend CrowdWise the way you want!
