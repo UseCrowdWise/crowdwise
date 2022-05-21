@@ -55,8 +55,13 @@ const ResultCard = (props: Props) => {
         </div>
       )}
       <div
-        className={`${fontSizes.mainText} font-medium text-indigo-600 hover:underline`}
+        className={`${fontSizes.mainText} font-medium text-indigo-600 space-x-2 hover:underline`}
       >
+        <img
+          alt="Source Icon"
+          className="inline h-4 w-4"
+          src={chrome.runtime.getURL(result.sourceIconUrl)}
+        />
         <a
           href={result.commentsLink}
           target="_blank"
@@ -68,12 +73,12 @@ const ResultCard = (props: Props) => {
       </div>
       <div className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3`}>
         <div className="flex flex-row items-center space-x-1">
-          <strong className="text-slate-500">{result.submittedUpvotes}</strong>
-          <ThumbUpIcon className="h-3 w-3 text-slate-300" />
-        </div>
-        <div className="flex flex-row items-center space-x-1">
           <strong className="text-slate-500">{result.commentsCount}</strong>
           <ChatIcon className="h-3 w-3 text-slate-300" />
+        </div>
+        <div className="flex flex-row items-center space-x-1">
+          <strong className="text-slate-500">{result.submittedUpvotes}</strong>
+          <ThumbUpIcon className="h-3 w-3 text-slate-300" />
         </div>
         <div className="text-slate-600">{result.submittedDate}</div>
         <div className="grow" />

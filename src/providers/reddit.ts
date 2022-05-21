@@ -131,7 +131,8 @@ export class RedditResultProvider implements ResultProvider {
       postPointsText?.replace(",", "")?.split(" ")?.shift() || "0"
     );
 
-    const r: ResultItem = {
+    return {
+      sourceIconUrl: "reddit_icon.png",
       rawHtml: html,
       submittedUrl: url,
       submittedTitle: postTitle,
@@ -144,6 +145,5 @@ export class RedditResultProvider implements ResultProvider {
       subSourceName: subreddit,
       subSourceLink: subredditLink,
     };
-    return r;
   }
 }

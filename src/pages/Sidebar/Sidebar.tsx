@@ -19,6 +19,7 @@ import {
   SingleProviderResults,
 } from "../../providers/providers";
 import {
+  DEBUG_MODE,
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
@@ -159,6 +160,15 @@ const Sidebar = () => {
   const hnResults = providerData?.providerResults[PROVIDER_HN_NAME] || {};
   const redditResults =
     providerData?.providerResults[PROVIDER_REDDIT_NAME] || {};
+
+  const exactResults = (hnResults[ProviderQueryType.EXACT_URL] ?? [])
+    .concat(redditResults[ProviderQueryType.EXACT_URL] ?? [])
+    .sort((x, y) => y.commentsCount - x.commentsCount);
+  const titleResults = (hnResults[ProviderQueryType.TITLE] ?? [])
+    .concat(redditResults[ProviderQueryType.TITLE] ?? [])
+    .sort((x, y) => y.commentsCount - x.commentsCount);
+  const allResults = exactResults.concat(titleResults);
+
   const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
   const haveRedditExactResults =
     redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
@@ -170,8 +180,7 @@ const Sidebar = () => {
     redditResults[ProviderQueryType.TITLE]?.length > 0;
 
   // Query display
-  const { searchExactUrl, searchTitle } =
-    providerData?.queryInfo || {};
+  const { searchExactUrl, searchTitle } = providerData?.queryInfo || {};
   return (
     <div className="flex h-full w-full flex-row">
       {isLoadingProviderData && (
@@ -259,7 +268,7 @@ const Sidebar = () => {
             <p className="text-lg font-semibold text-indigo-600">Discussions</p>
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
-            ) : (
+            ) : DEBUG_MODE ? (
               <div className="space-y-4 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
                   <div>
@@ -285,15 +294,6 @@ const Sidebar = () => {
                     </div>
                     {haveHnExactResults && (
                       <div className="space-y-2">
-                        <div className="flex flex-row space-x-2 align-bottom">
-                          <img
-                            alt="Hacker News Icon"
-                            className="my-auto h-4 w-4"
-                            src={chrome.runtime.getURL("hackernews_icon.png")}
-                          />
-                          <p className="my-1 text-slate-500">Hacker News</p>
-                        </div>
-
                         <ResultsContainer
                           results={
                             providerData.providerResults[PROVIDER_HN_NAME][
@@ -305,14 +305,6 @@ const Sidebar = () => {
                     )}
                     {haveRedditExactResults && (
                       <div className="space-y-2">
-                        <div className="flex flex-row space-x-2 align-bottom">
-                          <img
-                            alt="Reddit Icon"
-                            className="my-auto h-5 w-5"
-                            src={chrome.runtime.getURL("reddit_icon.png")}
-                          />
-                          <p className="my-1 text-slate-500">Reddit</p>
-                        </div>
                         <ResultsContainer
                           results={
                             providerData.providerResults[PROVIDER_REDDIT_NAME][
@@ -430,6 +422,20 @@ const Sidebar = () => {
                     </div>
                   </div>
                 )}
+              </div>
+            ) : (
+              <div className="space-y-4 py-1">
+                <div>
+                  <div className="py-1 text-base">
+                    <span className="font-semibold text-indigo-600">
+                      {allResults.length}
+                    </span>
+                    {allResults.length > 1 ? " results found" : " result found"}
+                  </div>
+                  <div className="space-y-2">
+                    <ResultsContainer results={allResults} />
+                  </div>
+                </div>
               </div>
             )}
           </div>
