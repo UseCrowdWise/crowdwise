@@ -192,7 +192,7 @@ const Sidebar = () => {
         </div>
       )}
 
-      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-slate-100">
+      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-white">
         <div className="shrink-0 items-end border-b border-slate-300 bg-white pt-2 pb-1">
           <div className="flex flex-row space-x-2 px-2">
             <div className="cursor-pointer" onClick={closeSideBar}>
@@ -265,11 +265,13 @@ const Sidebar = () => {
           )}
 
           <div className="space-y-3 p-3 text-left">
-            <p className="text-lg font-semibold text-indigo-600">Discussions</p>
+            <p className="text-xl pl-2 font-semibold text-indigo-600">
+              Discussions
+            </p>
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
             ) : DEBUG_MODE ? (
-              <div className="space-y-4 py-1">
+              <div className="space-y-6 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
                   <div>
                     <div className="py-1 text-base">
@@ -424,9 +426,9 @@ const Sidebar = () => {
                 )}
               </div>
             ) : (
-              <div className="space-y-4 py-1">
+              <div className="space-y-6 py-1">
                 <div>
-                  <div className="py-1 text-base">
+                  <div className="pl-2 py-1 text-base">
                     <span className="font-semibold text-indigo-600">
                       {allResults.length}
                     </span>
