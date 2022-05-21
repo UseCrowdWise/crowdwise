@@ -4,7 +4,7 @@ export const DEBUG_MODE = false;
 export const GITHUB_REPOSITORY_LINK = "https://github.com/frizensami/crowdwise";
 
 export const SETTINGS_DEBOUNCE_TIME = 100;
-export const DEFAULT_SIDEBAR_SQUEEZES_PAGE = false;
+export const DEFAULT_SIDEBAR_SQUEEZES_PAGE = true;
 export const DEFAULT_SIDEBAR_WIDTH = 360; // px
 export const DEFAULT_SIDEBAR_OPACITY = 100; // Divided by 100
 export const DEFAULT_FONT_SIZES = FONT_SIZE_OPTIONS[6];
@@ -16,8 +16,8 @@ export const DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET = "16px";
 export const DEFAULT_SIDEBAR_OPEN_TAB_STATE = false;
 export const DEFAULT_INCOGNITO_MODE = false;
 export const DEFAULT_SHOULD_COLOR_FOR_SUBMITTED_BY = true;
-export const DEFAULT_SHOULD_SHOW_SIDEBAR_ON_RESULTS = true;
-export const DEFAULT_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS = true;
+export const DEFAULT_SHOULD_SHOW_SIDEBAR_ON_RESULTS = false;
+export const DEFAULT_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS = false;
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
