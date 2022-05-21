@@ -4,11 +4,13 @@ import React from "react";
 import { ResultItem } from "../providers/providers";
 import {
   COLOR_IF_OUTSIDE_HASH,
+  KEY_BOLD_INITIAL_CHARS_OF_WORDS,
   KEY_FONT_SIZES,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
 } from "../shared/constants";
 import { useSettingsStore } from "../shared/settings";
 import { hashStringToColor } from "../utils/color";
+import { boldFrontPortionOfWords } from "../utils/formatText";
 
 interface Props {
   result: ResultItem;
@@ -29,6 +31,7 @@ const ResultCard = (props: Props) => {
     window.open(url, "_blank");
   };
 
+  const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const fontSizes = settings[KEY_FONT_SIZES];
   const colorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]
     ? hashStringToColor(result.submittedBy)
@@ -68,7 +71,9 @@ const ResultCard = (props: Props) => {
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
         >
-          {result.submittedTitle}
+          {boldInitialCharsOfWords
+            ? boldFrontPortionOfWords(result.submittedTitle)
+            : result.submittedTitle}
         </a>
       </div>
       <div className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3`}>
