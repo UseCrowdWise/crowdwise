@@ -4,6 +4,7 @@ import React from "react";
 import ReactTooltip from "react-tooltip";
 
 import {
+  KEY_BOLD_INITIAL_CHARS_OF_WORDS,
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_PLACEMENT,
   KEY_FONT_SIZES,
@@ -52,6 +53,8 @@ export const SettingsPanel = (props: Props) => {
   const hideContentButton = settings[KEY_HIDE_CONTENT_BUTTON];
   const contentButtonBackground = settings[KEY_CONTENT_BUTTON_BACKGROUND];
   const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
+  const shouldBoldInitialCharsOfWords =
+    settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const shouldColorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY];
   const shouldSidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const shouldShowSidebarOnResults =
@@ -76,6 +79,8 @@ export const SettingsPanel = (props: Props) => {
     setKeyValue(KEY_FONT_SIZES, state);
   const handleIncogChange = (state: boolean) =>
     setKeyValue(KEY_INCOGNITO_MODE, state);
+  const handleShouldBoldInitialCharsOfWords = (state: boolean) =>
+    setKeyValue(KEY_BOLD_INITIAL_CHARS_OF_WORDS, state);
   const handleShouldColorForSubmittedBy = (state: boolean) =>
     setKeyValue(KEY_SHOULD_COLOR_FOR_SUBMITTED_BY, state);
   const handleShouldShowSidebarOnResults = (state: boolean) =>
@@ -161,6 +166,22 @@ export const SettingsPanel = (props: Props) => {
           <Toggle
             checked={contentButtonBackground}
             onCheck={setContentButtonBackground}
+          />
+        </div>
+        <div
+          data-tip="Bold the initial characters of words in order to enhance your reading experience."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">
+              Bold Initial Characters of Words To Enhance Reading
+            </div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldBoldInitialCharsOfWords}
+            onCheck={handleShouldBoldInitialCharsOfWords}
           />
         </div>
         <div
