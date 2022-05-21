@@ -151,8 +151,9 @@ export async function fetchDataFromProviders(
   const providerPromises: Promise<SingleProviderResults>[] = providers
     .map((provider) => [
       provider.getExactUrlResults(cleanedUrl),
-      provider.getSiteUrlResults(siteUrl),
       provider.getTitleResults(documentTitle),
+      // Disabled for now because the results are very irrelevant
+      // provider.getSiteUrlResults(siteUrl),
     ])
     .flat();
 

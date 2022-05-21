@@ -165,15 +165,12 @@ const Sidebar = () => {
   log.debug(
     `Have HN exact: ${haveHnExactResults}, have Reddit exact: ${haveRedditExactResults}`
   );
-  const haveHnSiteResults = hnResults[ProviderQueryType.SITE_URL]?.length > 0;
-  const haveRedditSiteResults =
-    redditResults[ProviderQueryType.SITE_URL]?.length > 0;
   const haveHnTitleResults = hnResults[ProviderQueryType.TITLE]?.length > 0;
   const haveRedditTitleResults =
     redditResults[ProviderQueryType.TITLE]?.length > 0;
 
   // Query display
-  const { searchExactUrl, searchSiteUrl, searchTitle } =
+  const { searchExactUrl, searchTitle } =
     providerData?.queryInfo || {};
   return (
     <div className="flex h-full w-full flex-row">
@@ -260,7 +257,6 @@ const Sidebar = () => {
 
           <div className="space-y-3 p-3 text-left">
             <p className="text-lg font-semibold text-indigo-600">Discussions</p>
-            <hr />
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
             ) : (
@@ -346,90 +342,6 @@ const Sidebar = () => {
                     >
                       {" "}
                       ({searchExactUrl}){" "}
-                    </div>
-                  </div>
-                )}
-                <hr />
-                {haveHnSiteResults || haveRedditSiteResults ? (
-                  <div>
-                    <div className="py-1 text-base">
-                      Results for{" "}
-                      <span
-                        className="font-semibold text-indigo-600"
-                        data-tip={searchSiteUrl}
-                      >
-                        {`site URL`}
-                      </span>
-                      <div
-                        style={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                        className="text-xs text-slate-500"
-                      >
-                        {" "}
-                        ({searchSiteUrl}){" "}
-                      </div>
-                    </div>
-                    {haveHnSiteResults && (
-                      <div className="space-y-2">
-                        <div className="flex flex-row space-x-2 align-bottom">
-                          <img
-                            alt="Hacker News Icon"
-                            className="my-auto h-4 w-4"
-                            src={chrome.runtime.getURL("hackernews_icon.png")}
-                          />
-                          <p className="my-1 text-slate-500">Hacker News</p>
-                        </div>
-                        <ResultsContainer
-                          results={
-                            providerData.providerResults[PROVIDER_HN_NAME][
-                              ProviderQueryType.SITE_URL
-                            ]
-                          }
-                        />
-                      </div>
-                    )}
-                    {haveRedditSiteResults && (
-                      <div className="space-y-2">
-                        <div className="flex flex-row space-x-2 align-bottom">
-                          <img
-                            alt="Hacker News Icon"
-                            className="my-auto h-4 w-4"
-                            src={chrome.runtime.getURL("reddit_icon.png")}
-                          />
-                          <p className="my-1 text-slate-500">Reddit</p>
-                        </div>
-                        <ResultsContainer
-                          results={
-                            providerData.providerResults[PROVIDER_REDDIT_NAME][
-                              ProviderQueryType.SITE_URL
-                            ]
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="py-1 text-base">
-                    No results for{" "}
-                    <span
-                      className="font-semibold text-indigo-600"
-                      data-tip={searchSiteUrl}
-                    >
-                      {`site URL`}
-                    </span>
-                    <div
-                      style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                      className="text-xs text-slate-500"
-                    >
-                      {" "}
-                      ({searchSiteUrl}){" "}
                     </div>
                   </div>
                 )}
