@@ -34,6 +34,7 @@ export interface SingleProviderResults {
 
 // All providers must return a list of resultitems
 export interface ResultItem {
+  sourceIconUrl: string;
   rawHtml?: string;
   // NOTE: If we change submittedUrl name, we need to update the de-duplication code
   submittedUrl: string;

@@ -42,7 +42,7 @@ const ResultsContainer = (props: Props) => {
 };
 
 ResultsContainer.defaultProps = {
-  numResults: 2,
+  numResults: 8,
 };
 
 export default ResultsContainer;

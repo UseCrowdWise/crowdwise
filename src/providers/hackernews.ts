@@ -147,6 +147,7 @@ function translateHnToItem(h: HnHit): ResultItem {
   const fromNowStr = timeSince(h.created_at);
   // const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
   return {
+    sourceIconUrl: "hackernews_icon.png",
     submittedUrl: h.url,
     submittedDate: fromNowStr,
     submittedUpvotes: h.points,
