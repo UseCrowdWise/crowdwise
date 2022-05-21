@@ -36,13 +36,13 @@ const ResultCard = (props: Props) => {
 
   return (
     <div
-      className="flex cursor-pointer flex-col space-y-2 rounded border border-slate-300 bg-white p-3"
+      className="flex cursor-pointer flex-col space-y-2 p-3"
       onClick={() => onCardClick(result.commentsLink)}
     >
       {result.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
           <div
-            className={`${fontSizes.subText} font-medium text-slate-500 hover:underline`}
+            className={`${fontSizes.subText} font-medium text-indigo-500 hover:underline`}
           >
             <a
               href={result.subSourceLink}
@@ -55,7 +55,7 @@ const ResultCard = (props: Props) => {
         </div>
       )}
       <div
-        className={`${fontSizes.mainText} font-medium text-indigo-600 space-x-2 hover:underline`}
+        className={`${fontSizes.mainText} font-normal text-black space-x-2 hover:underline`}
       >
         <img
           alt="Source Icon"

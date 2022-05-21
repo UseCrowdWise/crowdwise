@@ -6,15 +6,15 @@ export const FONT_SIZE_OPTIONS = [
   { mainText: "text-sm", subText: "text-xs" },
   { mainText: "text-sm", subText: "text-sm" },
   { mainText: "text-sm", subText: "text-base" },
+  { mainText: "text-[1.4rem]", subText: "text-xs" },
+  { mainText: "text-[1.4rem]", subText: "text-sm" },
+  { mainText: "text-[1.4rem]", subText: "text-base" },
   { mainText: "text-base", subText: "text-xs" },
   { mainText: "text-base", subText: "text-sm" },
   { mainText: "text-base", subText: "text-base" },
   { mainText: "text-lg", subText: "text-xs" },
   { mainText: "text-lg", subText: "text-sm" },
   { mainText: "text-lg", subText: "text-base" },
-  { mainText: "text-xl", subText: "text-xs" },
-  { mainText: "text-xl", subText: "text-sm" },
-  { mainText: "text-xl", subText: "text-base" },
 ];
 
 export const CONTENT_BUTTON_PLACEMENT_OPTIONS = [
