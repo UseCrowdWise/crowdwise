@@ -7,6 +7,7 @@ import { log } from "../utils/log";
 import { isBlacklisted } from "./blacklist";
 import { HnResultProvider } from "./hackernews";
 import { RedditResultProvider } from "./reddit";
+import { filterDocuments } from "./scoring";
 
 // All providers must implement these two functions for search
 export interface ResultProvider {
@@ -147,12 +148,44 @@ export async function fetchDataFromProviders(
 
   log.debug(`URL ${cleanedUrl} is NOT blacklisted!`);
 
+  const filterIrrelevantResults = async (
+    query: string,
+    resultsPromise: Promise<SingleProviderResults>
+  ): Promise<SingleProviderResults> => {
+    const singleProviderResults = await resultsPromise;
+    try {
+      const queryDocumentPairs = singleProviderResults.results.map((result) =>
+        Array(query, result.submittedTitle)
+      );
+      const areDocumentsRelevant = await filterDocuments(queryDocumentPairs);
+      const newProviderResults = {
+        providerName: singleProviderResults.providerName,
+        queryType: singleProviderResults.queryType,
+        results: singleProviderResults.results.filter(
+          (res, i) => areDocumentsRelevant[i]
+        ),
+      };
+      log.debug("Filtering provider results, before vs after:");
+      log.debug(singleProviderResults.results);
+      log.debug(newProviderResults.results);
+      return newProviderResults;
+    } catch (e) {
+      log.error(
+        `Error while filtering results, returning original. Message: ${e}`
+      );
+      return singleProviderResults;
+    }
+  };
+
   // Gather all the promises from all the providers
   // TODO if this order of calls changes, have to update the mapping function below
   const providerPromises: Promise<SingleProviderResults>[] = providers
     .map((provider) => [
       provider.getExactUrlResults(cleanedUrl),
-      provider.getTitleResults(documentTitle),
+      filterIrrelevantResults(
+        documentTitle,
+        provider.getTitleResults(documentTitle)
+      ),
       // Disabled for now because the results are very irrelevant
       // provider.getSiteUrlResults(siteUrl),
     ])
