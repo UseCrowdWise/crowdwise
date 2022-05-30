@@ -19,6 +19,7 @@ import {
   KEY_SIDEBAR_WIDTH,
   SETTINGS_DEBOUNCE_TIME,
 } from "../shared/constants";
+import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import {
   CONTENT_BUTTON_PLACEMENT_OPTIONS,
   FONT_SIZE_OPTIONS,
@@ -47,6 +48,14 @@ export const SettingsPanel = (props: Props) => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
+  const setKeyValueWithEvents = (key: string, value: any) => {
+    setKeyValue(key, value);
+    sendEventsToServerViaWorker({
+      eventType: EventType.CHANGE_SETTING,
+      settingKey: key,
+      settingValue: value,
+    });
+  };
 
   const sideBarWidth = settings[KEY_SIDEBAR_WIDTH];
   const sideBarOpacity = settings[KEY_SIDEBAR_OPACITY];
@@ -64,29 +73,29 @@ export const SettingsPanel = (props: Props) => {
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
 
   const setSideBarWidth = (state: number) =>
-    setKeyValue(KEY_SIDEBAR_WIDTH, state);
+    setKeyValueWithEvents(KEY_SIDEBAR_WIDTH, state);
   const setSideBarOpacity = (state: number) =>
-    setKeyValue(KEY_SIDEBAR_OPACITY, state);
+    setKeyValueWithEvents(KEY_SIDEBAR_OPACITY, state);
   const setHideContentButton = (state: boolean) =>
-    setKeyValue(KEY_HIDE_CONTENT_BUTTON, state);
+    setKeyValueWithEvents(KEY_HIDE_CONTENT_BUTTON, state);
   const setContentButtonBackground = (state: boolean) =>
-    setKeyValue(KEY_CONTENT_BUTTON_BACKGROUND, state);
+    setKeyValueWithEvents(KEY_CONTENT_BUTTON_BACKGROUND, state);
   const setContentButtonPlacement = (state: any) =>
-    setKeyValue(KEY_CONTENT_BUTTON_PLACEMENT, state);
+    setKeyValueWithEvents(KEY_CONTENT_BUTTON_PLACEMENT, state);
   const handleSidebarSqueezePage = (state: boolean) =>
-    setKeyValue(KEY_SIDEBAR_SQUEEZES_PAGE, state);
+    setKeyValueWithEvents(KEY_SIDEBAR_SQUEEZES_PAGE, state);
   const handleFontSizeChange = (state: Record<string, string>) =>
-    setKeyValue(KEY_FONT_SIZES, state);
+    setKeyValueWithEvents(KEY_FONT_SIZES, state);
   const handleIncogChange = (state: boolean) =>
-    setKeyValue(KEY_INCOGNITO_MODE, state);
+    setKeyValueWithEvents(KEY_INCOGNITO_MODE, state);
   const handleShouldBoldInitialCharsOfWords = (state: boolean) =>
-    setKeyValue(KEY_BOLD_INITIAL_CHARS_OF_WORDS, state);
+    setKeyValueWithEvents(KEY_BOLD_INITIAL_CHARS_OF_WORDS, state);
   const handleShouldColorForSubmittedBy = (state: boolean) =>
-    setKeyValue(KEY_SHOULD_COLOR_FOR_SUBMITTED_BY, state);
+    setKeyValueWithEvents(KEY_SHOULD_COLOR_FOR_SUBMITTED_BY, state);
   const handleShouldShowSidebarOnResults = (state: boolean) =>
-    setKeyValue(KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS, state);
+    setKeyValueWithEvents(KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS, state);
   const handleShouldShowSidebarOnlyOnExactResults = (state: boolean) =>
-    setKeyValue(KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS, state);
+    setKeyValueWithEvents(KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS, state);
 
   const setSideBarWidthDebounced = _.debounce((value: any) => {
     setSideBarWidth(value);

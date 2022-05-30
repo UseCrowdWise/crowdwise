@@ -26,6 +26,7 @@ import {
   PROVIDER_HN_NAME,
   PROVIDER_REDDIT_NAME,
 } from "../../shared/constants";
+import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
 import { useSettingsStore } from "../../shared/settings";
 import { log } from "../../utils/log";
 import { sendMessageToCurrentTab } from "../../utils/tabs";
@@ -161,14 +162,18 @@ const Sidebar = () => {
   const redditResults =
     providerData?.providerResults[PROVIDER_REDDIT_NAME] || {};
 
+  // Combining results from different sources
   const exactResults = (hnResults[ProviderQueryType.EXACT_URL] ?? [])
     .concat(redditResults[ProviderQueryType.EXACT_URL] ?? [])
     .sort((x, y) => y.commentsCount - x.commentsCount);
+
   const titleResults = (hnResults[ProviderQueryType.TITLE] ?? [])
     .concat(redditResults[ProviderQueryType.TITLE] ?? [])
     .sort((x, y) => y.commentsCount - x.commentsCount);
+
   const allResults = exactResults.concat(titleResults);
 
+  // Split results into the different sources when under debug mode
   const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
   const haveRedditExactResults =
     redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
@@ -210,7 +215,14 @@ const Sidebar = () => {
               {({ open }) => (
                 <>
                   <Popover.Button>
-                    <CogIcon className="h-5 w-5 text-slate-500" />
+                    <CogIcon
+                      className="h-5 w-5 text-slate-500"
+                      onClick={() =>
+                        sendEventsToServerViaWorker({
+                          eventType: EventType.CLICK_SIDEBAR_SETTING_ICON,
+                        })
+                      }
+                    />
                   </Popover.Button>
                   <Transition
                     as={Fragment}
@@ -232,7 +244,14 @@ const Sidebar = () => {
               {({ open }) => (
                 <>
                   <Popover.Button>
-                    <QuestionMarkCircleIcon className="h-5 w-5 text-slate-500" />
+                    <QuestionMarkCircleIcon
+                      className="h-5 w-5 text-slate-500"
+                      onClick={() =>
+                        sendEventsToServerViaWorker({
+                          eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
+                        })
+                      }
+                    />
                   </Popover.Button>
                   <Transition
                     as={Fragment}

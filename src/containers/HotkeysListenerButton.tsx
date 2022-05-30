@@ -1,6 +1,7 @@
 import _ from "lodash";
 import React, { useState } from "react";
 
+import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import { useSettingsStore } from "../shared/settings";
 import { useHotkeysPressed } from "../shared/useHotkeysPressed";
 import { classNames } from "../utils/classNames";
@@ -22,6 +23,15 @@ const HotkeysListenerButton = (props: Props) => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
+  const setKeyValueWithEvents = (key: string, value: any) => {
+    setKeyValue(key, value);
+    sendEventsToServerViaWorker({
+      eventType: EventType.CHANGE_SETTING,
+      settingKey: key,
+      settingValue: value,
+    });
+  };
+
   // "+" and "," are special delimiters used by react-hotkeys-hook
   // replaceAll here is to prettify the hotkeys before showing to user
   const currentHotkeyCombos: string[] = settings[settingsKey];
@@ -40,7 +50,7 @@ const HotkeysListenerButton = (props: Props) => {
     log.debug("Key pressed", newHotkeyCombo);
 
     if (keys.length >= minNumHotkeys) {
-      setKeyValue(settingsKey, newHotkeyCombo);
+      setKeyValueWithEvents(settingsKey, newHotkeyCombo);
       setIsHotkeyFocused(false);
     }
   }, debounceTime);
