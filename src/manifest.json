@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CrowdWise",
   "description": "CrowdWise shows you discussions (from HN/Reddit) about the page you're browsing. What do other people think?",
-  "permissions": ["storage", "tabs", "alarms"],
+  "permissions": ["storage", "tabs", "alarms", "identity", "identity.email"],
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "action": {

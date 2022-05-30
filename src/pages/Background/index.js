@@ -6,6 +6,7 @@ import {
   CACHE_CLEAR_URL_ALARM_NAME,
   KEY_SIDEBAR_OPEN_TAB_STATE,
 } from "../../shared/constants";
+import { sendEventsToServer } from "../../shared/events";
 import { isExpiredCacheEntry } from "../../utils/cache";
 import { log } from "../../utils/log";
 
@@ -143,6 +144,26 @@ async function handleOnMessage(request, sender) {
     } else if (request.getTabId) {
       // Tab wants to know if it should be open or closed (last open/close action by the user in this tab)
       return sender.tab.id;
+    } else if (request.eventPayload) {
+      try {
+        chrome.identity.getProfileUserInfo((userInfo) => {
+          if (userInfo.id) {
+            // Add additional details
+            const guestId = `chrome_${userInfo.id}`;
+            const appVersion = chrome.runtime.getManifest().version;
+            const eventPayload = {
+              ...request.eventPayload,
+              guestId,
+              appVersion,
+            };
+            sendEventsToServer(eventPayload);
+          } else {
+            log.error(`There's no user id: ${userInfo}`);
+          }
+        });
+      } catch (e) {
+        log.debug(e.message);
+      }
     }
   }
   return {};

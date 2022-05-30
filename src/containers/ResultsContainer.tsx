@@ -19,7 +19,7 @@ const ResultsContainer = (props: Props) => {
   return (
     <div className="space-y-2">
       {filteredResults.map((result, index) => (
-        <ResultCard key={index} result={result} />
+        <ResultCard key={index} cardPosition={index} result={result} />
       ))}
       {numberMoreToShow > 0 && (
         <div className="flex justify-center">

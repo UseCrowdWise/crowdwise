@@ -8,16 +8,39 @@ import {
   KEY_FONT_SIZES,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
 } from "../shared/constants";
+import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import { useSettingsStore } from "../shared/settings";
 import { hashStringToColor } from "../utils/color";
 import { boldFrontPortionOfWords } from "../utils/formatText";
 
 interface Props {
+  cardPosition: number;
   result: ResultItem;
 }
 
+const logForumResultEvent = (
+  eventType: EventType,
+  cardPosition: number,
+  result: ResultItem
+) => {
+  sendEventsToServerViaWorker({
+    eventType,
+    resultCardPosition: cardPosition,
+    resultSubmittedUrl: result.submittedUrl,
+    resultSubmittedDate: result.submittedDate,
+    resultSubmittedUpvotes: result.submittedUpvotes,
+    resultSubmittedTitle: result.submittedTitle,
+    resultSubmittedBy: result.submittedBy,
+    resultSubmittedByLink: result.submittedByLink,
+    resultCommentsCount: result.commentsCount,
+    resultCommentsLink: result.commentsLink,
+    resultSubSourceName: result.subSourceName,
+    resultSubSourceLink: result.subSourceLink,
+  });
+};
+
 const ResultCard = (props: Props) => {
-  const { result } = props;
+  const { result, cardPosition } = props;
   const [
     settings,
     setValueAll,
@@ -40,7 +63,14 @@ const ResultCard = (props: Props) => {
   return (
     <div
       className="flex cursor-pointer flex-col space-y-2 p-3"
-      onClick={() => onCardClick(result.commentsLink)}
+      onClick={() => {
+        logForumResultEvent(
+          EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
+          cardPosition,
+          result
+        );
+        onCardClick(result.commentsLink);
+      }}
     >
       {result.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
@@ -50,7 +80,14 @@ const ResultCard = (props: Props) => {
             <a
               href={result.subSourceLink}
               target="_blank"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                logForumResultEvent(
+                  EventType.CLICK_SIDEBAR_FORUM_RESULT_SUB_SOURCE,
+                  cardPosition,
+                  result
+                );
+                e.stopPropagation();
+              }}
             >
               {result.subSourceName}
             </a>
@@ -69,7 +106,14 @@ const ResultCard = (props: Props) => {
           href={result.commentsLink}
           target="_blank"
           rel="noreferrer"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            logForumResultEvent(
+              EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
+              cardPosition,
+              result
+            );
+            e.stopPropagation();
+          }}
         >
           {boldInitialCharsOfWords
             ? boldFrontPortionOfWords(result.submittedTitle)
