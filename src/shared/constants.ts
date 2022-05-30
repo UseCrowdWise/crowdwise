@@ -1,10 +1,14 @@
 import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
 
+export const EVENTS_HOST = "https://crowdwise-web.vercel.app/api/events";
+export const EVENTS_HOST_STAGING = "http://localhost:3000/api/events";
+
 export const DEBUG_MODE = false;
-export const GITHUB_REPOSITORY_LINK = "https://github.com/frizensami/crowdwise";
+export const GITHUB_REPOSITORY_LINK =
+  "https://github.com/usecrowdwise/crowdwise";
 
 export const SETTINGS_DEBOUNCE_TIME = 100;
-export const DEFAULT_SIDEBAR_SQUEEZES_PAGE = true;
+export const DEFAULT_SIDEBAR_SQUEEZES_PAGE = false;
 export const DEFAULT_SIDEBAR_WIDTH = 360; // px
 export const DEFAULT_SIDEBAR_OPACITY = 100; // Divided by 100
 export const DEFAULT_FONT_SIZES = FONT_SIZE_OPTIONS[6];
