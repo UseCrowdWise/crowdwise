@@ -3,6 +3,11 @@ import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
 export const EVENTS_HOST = "https://crowdwise-web.vercel.app/api/events";
 export const EVENTS_HOST_STAGING = "http://localhost:3000/api/events";
 
+export const ML_HOST =
+  "https://crowdwise-ml-jhhom.ondigitalocean.app/api/score_documents";
+export const ML_API_KEY = "5b58147b-d869-465a-ab43-41c2ffc29ae0";
+export const ML_FILTER_THRESHOLD = -5.0;
+
 export const DEBUG_MODE = false;
 export const GITHUB_REPOSITORY_LINK =
   "https://github.com/usecrowdwise/crowdwise";
