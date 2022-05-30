@@ -66,6 +66,7 @@ const Sidebar = () => {
   ] = useSettingsStore();
 
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
+  const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
 
   // Handles message from background script that our URL changed.
   // We receive this message only when we are in a SPA and the link changes without full-page reload.
@@ -218,9 +219,12 @@ const Sidebar = () => {
                     <CogIcon
                       className="h-5 w-5 text-slate-500"
                       onClick={() =>
-                        sendEventsToServerViaWorker({
-                          eventType: EventType.CLICK_SIDEBAR_SETTING_ICON,
-                        })
+                        sendEventsToServerViaWorker(
+                          {
+                            eventType: EventType.CLICK_SIDEBAR_SETTING_ICON,
+                          },
+                          isIncognitoMode
+                        )
                       }
                     />
                   </Popover.Button>
@@ -247,9 +251,12 @@ const Sidebar = () => {
                     <QuestionMarkCircleIcon
                       className="h-5 w-5 text-slate-500"
                       onClick={() =>
-                        sendEventsToServerViaWorker({
-                          eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
-                        })
+                        sendEventsToServerViaWorker(
+                          {
+                            eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
+                          },
+                          isIncognitoMode
+                        )
                       }
                     />
                   </Popover.Button>
