@@ -48,14 +48,6 @@ export const SettingsPanel = (props: Props) => {
     error,
     isLoadingStore,
   ] = useSettingsStore();
-  const setKeyValueWithEvents = (key: string, value: any) => {
-    setKeyValue(key, value);
-    sendEventsToServerViaWorker({
-      eventType: EventType.CHANGE_SETTING,
-      settingKey: key,
-      settingValue: value,
-    });
-  };
 
   const sideBarWidth = settings[KEY_SIDEBAR_WIDTH];
   const sideBarOpacity = settings[KEY_SIDEBAR_OPACITY];
@@ -71,6 +63,18 @@ export const SettingsPanel = (props: Props) => {
   const shouldShowSidebarOnlyOnExactResults =
     settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
+
+  const setKeyValueWithEvents = (key: string, value: any) => {
+    setKeyValue(key, value);
+    sendEventsToServerViaWorker(
+      {
+        eventType: EventType.CHANGE_SETTING,
+        settingKey: key,
+        settingValue: value,
+      },
+      isIncognitoMode
+    );
+  };
 
   const setSideBarWidth = (state: number) =>
     setKeyValueWithEvents(KEY_SIDEBAR_WIDTH, state);

@@ -1,6 +1,7 @@
 import _ from "lodash";
 import React, { useState } from "react";
 
+import { KEY_INCOGNITO_MODE } from "../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import { useSettingsStore } from "../shared/settings";
 import { useHotkeysPressed } from "../shared/useHotkeysPressed";
@@ -25,11 +26,14 @@ const HotkeysListenerButton = (props: Props) => {
   ] = useSettingsStore();
   const setKeyValueWithEvents = (key: string, value: any) => {
     setKeyValue(key, value);
-    sendEventsToServerViaWorker({
-      eventType: EventType.CHANGE_SETTING,
-      settingKey: key,
-      settingValue: value,
-    });
+    sendEventsToServerViaWorker(
+      {
+        eventType: EventType.CHANGE_SETTING,
+        settingKey: key,
+        settingValue: value,
+      },
+      settings[KEY_INCOGNITO_MODE]
+    );
   };
 
   // "+" and "," are special delimiters used by react-hotkeys-hook

@@ -6,7 +6,11 @@
 
 CrowdWise is a Google Chrome extension that adds to your browsing experience by showing you relevant discussions about your current web page from Hacker News and Reddit.
 
-[![Screenshot](assets/screenshot-1.jpeg)](https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip)
+<p align="center" >
+  <a href="https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip">
+    <img src="assets/screenshot-1.png">
+  </a>
+</p>
 
 ## Features
 

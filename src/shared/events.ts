@@ -1,5 +1,6 @@
 import { log } from "../utils/log";
-import { EVENTS_HOST } from "./constants";
+import { EVENTS_HOST, KEY_INCOGNITO_MODE } from "./constants";
+import { useSettingsStore } from "./settings";
 
 export enum EventType {
   CLICK_SIDEBAR_FORUM_RESULT_TITLE = "click_sidebar_forum_result_title",
@@ -23,6 +24,11 @@ export const sendEventsToServer = async (payload: Map<string, any>) => {
   }
 };
 
-export const sendEventsToServerViaWorker = (payload: any) => {
-  chrome.runtime.sendMessage({ eventPayload: payload });
+export const sendEventsToServerViaWorker = (
+  payload: any,
+  isIncognitoMode: boolean
+) => {
+  if (!isIncognitoMode) {
+    chrome.runtime.sendMessage({ eventPayload: payload });
+  }
 };

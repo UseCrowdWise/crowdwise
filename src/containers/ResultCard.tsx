@@ -6,6 +6,7 @@ import {
   COLOR_IF_OUTSIDE_HASH,
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
   KEY_FONT_SIZES,
+  KEY_INCOGNITO_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
 } from "../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../shared/events";
@@ -21,22 +22,26 @@ interface Props {
 const logForumResultEvent = (
   eventType: EventType,
   cardPosition: number,
-  result: ResultItem
+  result: ResultItem,
+  isIncognitoMode: boolean
 ) => {
-  sendEventsToServerViaWorker({
-    eventType,
-    resultCardPosition: cardPosition,
-    resultSubmittedUrl: result.submittedUrl,
-    resultSubmittedDate: result.submittedDate,
-    resultSubmittedUpvotes: result.submittedUpvotes,
-    resultSubmittedTitle: result.submittedTitle,
-    resultSubmittedBy: result.submittedBy,
-    resultSubmittedByLink: result.submittedByLink,
-    resultCommentsCount: result.commentsCount,
-    resultCommentsLink: result.commentsLink,
-    resultSubSourceName: result.subSourceName,
-    resultSubSourceLink: result.subSourceLink,
-  });
+  sendEventsToServerViaWorker(
+    {
+      eventType,
+      resultCardPosition: cardPosition,
+      resultSubmittedUrl: result.submittedUrl,
+      resultSubmittedDate: result.submittedDate,
+      resultSubmittedUpvotes: result.submittedUpvotes,
+      resultSubmittedTitle: result.submittedTitle,
+      resultSubmittedBy: result.submittedBy,
+      resultSubmittedByLink: result.submittedByLink,
+      resultCommentsCount: result.commentsCount,
+      resultCommentsLink: result.commentsLink,
+      resultSubSourceName: result.subSourceName,
+      resultSubSourceLink: result.subSourceLink,
+    },
+    isIncognitoMode
+  );
 };
 
 const ResultCard = (props: Props) => {
@@ -56,6 +61,7 @@ const ResultCard = (props: Props) => {
 
   const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const fontSizes = settings[KEY_FONT_SIZES];
+  const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
   const colorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]
     ? hashStringToColor(result.submittedBy)
     : COLOR_IF_OUTSIDE_HASH;
@@ -67,7 +73,8 @@ const ResultCard = (props: Props) => {
         logForumResultEvent(
           EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
           cardPosition,
-          result
+          result,
+          isIncognitoMode
         );
         onCardClick(result.commentsLink);
       }}
@@ -84,7 +91,8 @@ const ResultCard = (props: Props) => {
                 logForumResultEvent(
                   EventType.CLICK_SIDEBAR_FORUM_RESULT_SUB_SOURCE,
                   cardPosition,
-                  result
+                  result,
+                  isIncognitoMode
                 );
                 e.stopPropagation();
               }}
@@ -110,7 +118,8 @@ const ResultCard = (props: Props) => {
             logForumResultEvent(
               EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
               cardPosition,
-              result
+              result,
+              isIncognitoMode
             );
             e.stopPropagation();
           }}
