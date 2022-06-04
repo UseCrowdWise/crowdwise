@@ -1,7 +1,8 @@
 import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
 import React from "react";
+import ReactTooltip from "react-tooltip";
 
-import { ResultItem } from "../providers/providers";
+import { ProviderQueryType, ResultItem } from "../providers/providers";
 import {
   COLOR_IF_OUTSIDE_HASH,
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
@@ -13,6 +14,7 @@ import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import { useSettingsStore } from "../shared/settings";
 import { hashStringToColor } from "../utils/color";
 import { boldFrontPortionOfWords } from "../utils/formatText";
+import Badge from "./Badge";
 
 interface Props {
   cardPosition: number;
@@ -29,6 +31,10 @@ const logForumResultEvent = (
     {
       eventType,
       resultCardPosition: cardPosition,
+      resultProviderType: result.providerType,
+      resultProviderQueryType: result.providerQueryType,
+      resultCleanedTriggerUrl: result.cleanedTriggerUrl,
+      resultProviderRequestUrl: result.providerRequestUrl,
       resultSubmittedUrl: result.submittedUrl,
       resultSubmittedDate: result.submittedDate,
       resultSubmittedUpvotes: result.submittedUpvotes,
@@ -66,6 +72,13 @@ const ResultCard = (props: Props) => {
     ? hashStringToColor(result.submittedBy)
     : COLOR_IF_OUTSIDE_HASH;
 
+  const createOnClickLogForumEvent = (eventType: EventType) => {
+    return (e: React.MouseEvent<HTMLAnchorElement>) => {
+      logForumResultEvent(eventType, cardPosition, result, isIncognitoMode);
+      e.stopPropagation();
+    };
+  };
+
   return (
     <div
       className="flex cursor-pointer flex-col space-y-2 p-3"
@@ -79,6 +92,15 @@ const ResultCard = (props: Props) => {
         onCardClick(result.commentsLink);
       }}
     >
+      {result.providerQueryType === ProviderQueryType.EXACT_URL && (
+        // data-iscapture="true" allow us to immediately dismiss tooltip on user scroll
+        <div
+          data-tip="This result contains an exact link to your current page."
+          data-iscapture="true"
+        >
+          <Badge>EXACT MATCH</Badge>
+        </div>
+      )}
       {result.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
           <div
@@ -87,15 +109,9 @@ const ResultCard = (props: Props) => {
             <a
               href={result.subSourceLink}
               target="_blank"
-              onClick={(e) => {
-                logForumResultEvent(
-                  EventType.CLICK_SIDEBAR_FORUM_RESULT_SUB_SOURCE,
-                  cardPosition,
-                  result,
-                  isIncognitoMode
-                );
-                e.stopPropagation();
-              }}
+              onClick={createOnClickLogForumEvent(
+                EventType.CLICK_SIDEBAR_FORUM_RESULT_SUB_SOURCE
+              )}
             >
               {result.subSourceName}
             </a>
@@ -108,21 +124,15 @@ const ResultCard = (props: Props) => {
         <img
           alt="Source Icon"
           className="inline h-4 w-4"
-          src={chrome.runtime.getURL(result.sourceIconUrl)}
+          src={chrome.runtime.getURL(result.providerIconUrl)}
         />
         <a
           href={result.commentsLink}
           target="_blank"
           rel="noreferrer"
-          onClick={(e) => {
-            logForumResultEvent(
-              EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
-              cardPosition,
-              result,
-              isIncognitoMode
-            );
-            e.stopPropagation();
-          }}
+          onClick={createOnClickLogForumEvent(
+            EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE
+          )}
         >
           {boldInitialCharsOfWords
             ? boldFrontPortionOfWords(result.submittedTitle)
@@ -144,11 +154,20 @@ const ResultCard = (props: Props) => {
           <a
             href={result.submittedByLink}
             target="_blank"
-            onClick={(e) => e.stopPropagation()}
+            onClick={createOnClickLogForumEvent(
+              EventType.CLICK_SIDEBAR_FORUM_RESULT_AUTHOR
+            )}
           >
             {result.submittedBy}
           </a>
         </div>
+        <ReactTooltip
+          arrowColor="transparent"
+          place="top"
+          type="dark"
+          effect="solid"
+          delayShow={500}
+        />
       </div>
     </div>
   );

@@ -1,13 +1,11 @@
 // Some code used from https://github.com/benwinding/newsit/
-import {
-  CACHE_URL_DURATION_SEC,
-  PROVIDER_REDDIT_NAME,
-} from "../shared/constants";
+import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { replaceTimeStr } from "../utils/time";
 import {
   ProviderQueryType,
+  ProviderType,
   ResultItem,
   ResultProvider,
   SingleProviderResults,
@@ -16,10 +14,6 @@ import {
 const cheerio = require("cheerio");
 
 export class RedditResultProvider implements ResultProvider {
-  getProviderName() {
-    return PROVIDER_REDDIT_NAME;
-  }
-
   // Main function to get all relevant results from Reddit
   async getExactUrlResults(url: string): Promise<SingleProviderResults> {
     const queryString = "sort=top&q=" + encodeURIComponent("url:" + url);
@@ -28,7 +22,14 @@ export class RedditResultProvider implements ResultProvider {
 
     const $ = cheerio.load(data);
     const itemsAll: ResultItem[] = $(".search-result.search-result-link")
-      .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
+      .map((i: number, el: Element) =>
+        this.translateRedditToItem(
+          $(el).html(),
+          ProviderQueryType.EXACT_URL,
+          url,
+          requestUrl
+        )
+      )
       .toArray();
     const itemsDeduped = itemsAll.filter(
       (item) =>
@@ -40,14 +41,14 @@ export class RedditResultProvider implements ResultProvider {
     if (itemsDeduped.length === 0) {
       log.debug("Reddit API: No urls matches found");
       return {
-        providerName: this.getProviderName(),
+        providerName: ProviderType.REDDIT,
         queryType: ProviderQueryType.EXACT_URL,
         results: [],
       };
     }
 
     return {
-      providerName: this.getProviderName(),
+      providerName: ProviderType.REDDIT,
       queryType: ProviderQueryType.EXACT_URL,
       results: itemsDeduped,
     };
@@ -60,26 +61,36 @@ export class RedditResultProvider implements ResultProvider {
 
     const $ = cheerio.load(data);
     const itemsAll = $(".search-result.search-result-link")
-      .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
+      .map((i: number, el: Element) =>
+        this.translateRedditToItem(
+          $(el).html(),
+          ProviderQueryType.SITE_URL,
+          url,
+          requestUrl
+        )
+      )
       .toArray();
 
     if (itemsAll.length === 0) {
       log.debug("Reddit API: No urls matches found");
       return {
-        providerName: this.getProviderName(),
+        providerName: ProviderType.REDDIT,
         queryType: ProviderQueryType.SITE_URL,
         results: [],
       };
     }
 
     return {
-      providerName: this.getProviderName(),
+      providerName: ProviderType.REDDIT,
       queryType: ProviderQueryType.SITE_URL,
       results: itemsAll,
     };
   }
 
-  async getTitleResults(title: string): Promise<SingleProviderResults> {
+  async getTitleResults(
+    url: string,
+    title: string
+  ): Promise<SingleProviderResults> {
     const queryString =
       "q=" +
       title
@@ -91,26 +102,38 @@ export class RedditResultProvider implements ResultProvider {
 
     const $ = cheerio.load(data);
     const itemsAll = $(".search-result.search-result-link")
-      .map((i: number, el: Element) => this.translateRedditToItem($(el).html()))
+      .map((i: number, el: Element) =>
+        this.translateRedditToItem(
+          $(el).html(),
+          ProviderQueryType.TITLE,
+          url,
+          requestUrl
+        )
+      )
       .toArray();
 
     if (itemsAll.length === 0) {
       log.debug("Reddit API: No urls matches found");
       return {
-        providerName: this.getProviderName(),
+        providerName: ProviderType.REDDIT,
         queryType: ProviderQueryType.TITLE,
         results: [],
       };
     }
 
     return {
-      providerName: this.getProviderName(),
+      providerName: ProviderType.REDDIT,
       queryType: ProviderQueryType.TITLE,
       results: itemsAll,
     };
   }
 
-  translateRedditToItem(html: string): ResultItem {
+  translateRedditToItem(
+    html: string,
+    providerQueryType: ProviderQueryType,
+    cleanedTriggerUrl: string,
+    providerRequestUrl: string
+  ): ResultItem {
     const $ = cheerio.load(html);
 
     const url = $(".search-link").attr("href");
@@ -132,7 +155,11 @@ export class RedditResultProvider implements ResultProvider {
     );
 
     return {
-      sourceIconUrl: "reddit_icon.png",
+      providerType: ProviderType.REDDIT,
+      providerQueryType,
+      cleanedTriggerUrl,
+      providerRequestUrl,
+      providerIconUrl: "reddit_icon.png",
       rawHtml: html,
       submittedUrl: url,
       submittedTitle: postTitle,

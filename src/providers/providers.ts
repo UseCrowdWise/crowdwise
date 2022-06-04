@@ -11,31 +11,39 @@ import { filterIrrelevantResults } from "./scoring";
 
 // All providers must implement these two functions for search
 export interface ResultProvider {
-  getProviderName(): string;
   getExactUrlResults(url: string): Promise<SingleProviderResults>;
   getSiteUrlResults(url: string): Promise<SingleProviderResults>;
-  getTitleResults(title: string): Promise<SingleProviderResults>;
+  getTitleResults(url: string, title: string): Promise<SingleProviderResults>;
+}
+
+export enum ProviderType {
+  HACKER_NEWS = "hacker_news",
+  REDDIT = "reddit",
 }
 
 // To indicate inside the result structure, so we know where in the UI to place it
 export enum ProviderQueryType {
-  EXACT_URL = "ExactUrl",
-  SITE_URL = "SiteUrl",
-  TITLE = "Title",
+  EXACT_URL = "exact_url",
+  SITE_URL = "site_url",
+  TITLE = "title",
 }
 
 // A list of results from a provider call should have this form
 // NOTE: if we ever change the names "providerName" or "queryType"
 //  we need to update the _.groupBy calls at the bottom (those use strings).
 export interface SingleProviderResults {
-  providerName: string;
+  providerName: ProviderType;
   queryType: ProviderQueryType;
   results: ResultItem[];
 }
 
 // All providers must return a list of resultitems
 export interface ResultItem {
-  sourceIconUrl: string;
+  providerType: ProviderType;
+  providerQueryType: ProviderQueryType;
+  cleanedTriggerUrl: string;
+  providerRequestUrl: string;
+  providerIconUrl: string;
   rawHtml?: string;
   // NOTE: If we change submittedUrl name, we need to update the de-duplication code
   submittedUrl: string;
@@ -155,7 +163,7 @@ export async function fetchDataFromProviders(
       provider.getExactUrlResults(cleanedUrl),
       filterIrrelevantResults(
         documentTitle,
-        provider.getTitleResults(documentTitle)
+        provider.getTitleResults(cleanedUrl, documentTitle)
       ),
       // Disabled for now because the results are very irrelevant
       // provider.getSiteUrlResults(siteUrl),
