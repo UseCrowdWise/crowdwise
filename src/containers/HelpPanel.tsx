@@ -5,11 +5,13 @@ import { GITHUB_REPOSITORY_LINK } from "../shared/constants";
 export const HelpPanel = () => {
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-      <div className="prose relative grid gap-6 bg-white p-6">
-        <div className="text-lg font-medium">Information</div>
+      <div className="prose relative grid gap-6 bg-white dark:bg-gray-800 p-6">
+        <div className="text-lg text-black dark:text-zinc-300 font-medium">
+          Information
+        </div>
         <div className="space-y-2">
           <div className="text-base text-indigo-600">How does it work?</div>
-          <div>
+          <div className="text-black dark:text-zinc-300">
             When you navigate to a web page, CrowdWise pulls relevant
             discussions about this web page from Hacker News and Reddit. You can
             click on these discussions and it will open in a new tab, where you
@@ -20,7 +22,7 @@ export const HelpPanel = () => {
           <div className="text-base text-indigo-600">
             Open source and extensible
           </div>
-          <div>
+          <div className="text-black dark:text-zinc-300">
             To submit bugs or contribute to CrowdWise, visit our{" "}
             <a
               className="text-indigo-600 hover:underline"

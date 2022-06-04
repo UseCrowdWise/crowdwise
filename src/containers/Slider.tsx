@@ -40,8 +40,8 @@ const Slider = (props: SliderProps) => {
         className ?? ""
       )}
     >
-      <RadixSlider.Track className="dark:bg-whiteAlpha-300 flex-grow-1 relative h-1 w-full bg-neutral-200">
-        <RadixSlider.Range className="absolute h-full rounded-full bg-indigo-500 dark:bg-indigo-200" />
+      <RadixSlider.Track className="flex-grow-1 relative h-1 w-full bg-neutral-200 dark:bg-gray-900">
+        <RadixSlider.Range className="absolute h-full rounded-full bg-indigo-500" />
       </RadixSlider.Track>
       <RadixSlider.Thumb className="block h-5 w-5 rounded-full border border-neutral-300 bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
     </RadixSlider.Root>

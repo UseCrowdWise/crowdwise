@@ -11,6 +11,7 @@ import {
   KEY_HIDE_CONTENT_BUTTON,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
+  KEY_IS_DARK_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
   KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
@@ -112,10 +113,10 @@ export const SettingsPanel = (props: Props) => {
 
   if (isLoadingStore) return null;
   return (
-    <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+    <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:text-zinc-300">
       <div
         className={classNames(
-          "relative grid gap-6 bg-white p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200",
+          "relative grid gap-6 bg-white dark:bg-gray-800 p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600",
           scrollable ? "max-h-[80vh]" : ""
         )}
       >

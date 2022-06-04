@@ -7,6 +7,7 @@ module.exports = {
     // For styling scroll bars
     require("tailwind-scrollbar"),
   ],
+  darkMode: "class",
   variants: {
     scrollbar: ["rounded"],
   },

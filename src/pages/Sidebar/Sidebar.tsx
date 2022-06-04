@@ -2,6 +2,8 @@ import { Popover, Transition } from "@headlessui/react";
 import {
   ChevronRightIcon,
   CogIcon,
+  LightBulbIcon,
+  MoonIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/outline";
 import React, { Fragment, useEffect, useState } from "react";
@@ -24,9 +26,11 @@ import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
+  KEY_IS_DARK_MODE,
 } from "../../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
 import { useSettingsStore } from "../../shared/settings";
+import { classNames } from "../../utils/classNames";
 import { log } from "../../utils/log";
 import { sendMessageToCurrentTab } from "../../utils/tabs";
 import "./Sidebar.css";
@@ -64,6 +68,19 @@ const Sidebar = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const setKeyValueWithEvents = (key: string, value: any) => {
+    setKeyValue(key, value);
+    sendEventsToServerViaWorker(
+      {
+        eventType: EventType.CHANGE_SETTING,
+        settingKey: key,
+        settingValue: value,
+      },
+      isIncognitoMode
+    );
+  };
+
+  const isDarkMode = settings[KEY_IS_DARK_MODE];
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
 
@@ -188,7 +205,12 @@ const Sidebar = () => {
   // Query display
   const { searchExactUrl, searchTitle } = providerData?.queryInfo || {};
   return (
-    <div className="flex h-full w-full flex-row">
+    <div
+      className={classNames(
+        "flex h-full w-full flex-row",
+        isDarkMode ? "dark" : ""
+      )}
+    >
       {isLoadingProviderData && (
         <div className="fixed top-0 left-0 right-0 bottom-0 z-50 flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-700 opacity-75">
           <div className="loader mb-4 h-12 w-12 rounded-full border-4 border-t-4 ease-linear" />
@@ -198,8 +220,8 @@ const Sidebar = () => {
         </div>
       )}
 
-      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-white">
-        <div className="shrink-0 items-end border-b border-slate-300 bg-white pt-2 pb-1">
+      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-white dark:bg-gray-900">
+        <div className="shrink-0 items-end border-b border-slate-300 dark:border-slate-600 bg-white dark:bg-gray-900 pt-2 pb-1">
           <div className="flex flex-row space-x-2 px-2">
             <div className="cursor-pointer" onClick={closeSideBar}>
               <p
@@ -276,9 +298,24 @@ const Sidebar = () => {
                 </>
               )}
             </Popover>
+            {isDarkMode ? (
+              <LightBulbIcon
+                className="h-5 w-5 text-slate-500 cursor-pointer"
+                onClick={() =>
+                  setKeyValueWithEvents(KEY_IS_DARK_MODE, !isDarkMode)
+                }
+              />
+            ) : (
+              <MoonIcon
+                className="h-5 w-5 text-slate-500 cursor-pointer"
+                onClick={() =>
+                  setKeyValueWithEvents(KEY_IS_DARK_MODE, !isDarkMode)
+                }
+              />
+            )}
           </div>
         </div>
-        <div className="grow scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200">
+        <div className="grow scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600">
           {shouldDisplayIncognitoOverlay && (
             <div
               className="opacity-99 fixed z-20 flex h-screen w-full cursor-pointer flex-col items-center justify-center overflow-hidden bg-gray-700"
@@ -454,7 +491,7 @@ const Sidebar = () => {
             ) : (
               <div className="space-y-6 py-1">
                 <div>
-                  <div className="pl-2 py-1 text-base">
+                  <div className="pl-2 py-1 text-base dark:text-zinc-300">
                     <span className="font-semibold text-indigo-600">
                       {allResults.length}
                     </span>

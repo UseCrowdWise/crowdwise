@@ -119,7 +119,7 @@ const ResultCard = (props: Props) => {
         </div>
       )}
       <div
-        className={`${fontSizes.mainText} font-normal text-black space-x-2 hover:underline`}
+        className={`${fontSizes.mainText} font-normal text-black dark:text-zinc-300 space-x-2 hover:underline`}
       >
         <img
           alt="Source Icon"
