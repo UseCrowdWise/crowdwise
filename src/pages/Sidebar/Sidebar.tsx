@@ -220,7 +220,7 @@ const Sidebar = () => {
         </div>
       )}
 
-      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 bg-white dark:bg-gray-900">
+      <div className="flex h-screen w-full flex-col border-x border-b border-slate-300 dark:border-slate-600 bg-white dark:bg-gray-900">
         <div className="shrink-0 items-end border-b border-slate-300 dark:border-slate-600 bg-white dark:bg-gray-900 pt-2 pb-1">
           <div className="flex flex-row space-x-2 px-2">
             <div className="cursor-pointer" onClick={closeSideBar}>
