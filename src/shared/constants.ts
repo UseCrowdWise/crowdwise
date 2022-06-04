@@ -1,7 +1,11 @@
 import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
 
-export const EVENTS_HOST = "https://crowdwise-web.vercel.app/api/events";
+export const EVENTS_HOST_PROD = "https://crowdwise-web.vercel.app/api/events";
 export const EVENTS_HOST_STAGING = "http://localhost:3000/api/events";
+export const EVENTS_HOST =
+  process.env.NODE_ENV === "production"
+    ? EVENTS_HOST_PROD
+    : EVENTS_HOST_STAGING;
 
 export const ML_HOST =
   "https://crowdwise-ml-jhhom.ondigitalocean.app/api/score_documents";
@@ -58,10 +62,6 @@ export const CACHE_CLEAR_URL_ALARM_INTERVAL_MIN = 1;
 export const CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN = 5;
 export const CACHE_CLEAR_URL_ALARM_NAME = "refresh_url_cache";
 export const CACHE_CLEAR_TABID_ALARM_NAME = "refresh_tabid_cache";
-
-// Provider names
-export const PROVIDER_HN_NAME = "Hacker News";
-export const PROVIDER_REDDIT_NAME = "Reddit";
 
 // Color settings
 const COLOR_MAP_FOR_STRINGS = {

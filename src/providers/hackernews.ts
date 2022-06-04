@@ -1,10 +1,11 @@
 // Some code used from https://github.com/benwinding/newsit/
-import { CACHE_URL_DURATION_SEC, PROVIDER_HN_NAME } from "../shared/constants";
+import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { timeSince } from "../utils/time";
 import {
   ProviderQueryType,
+  ProviderType,
   ResultItem,
   ResultProvider,
   SingleProviderResults,
@@ -26,10 +27,6 @@ interface HnJsonResult {
 }
 
 export class HnResultProvider implements ResultProvider {
-  getProviderName() {
-    return PROVIDER_HN_NAME;
-  }
-
   // Main function to get all relevant results from HN
   async getExactUrlResults(url: string): Promise<SingleProviderResults> {
     const encodedUrl = encodeURIComponent(url);
@@ -43,14 +40,17 @@ export class HnResultProvider implements ResultProvider {
     if (res.nbHits === 0) {
       log.debug("Hacker News API: No urls found");
       return {
-        providerName: this.getProviderName(),
+        providerName: ProviderType.HACKER_NEWS,
         queryType: ProviderQueryType.EXACT_URL,
         results: [],
       };
     }
     log.debug("HN Results Pre-translation:");
     log.debug(res.hits);
-    const itemsAll = res.hits?.map(translateHnToItem) || [];
+    const itemsAll =
+      res.hits?.map((hnHit) =>
+        translateHnToItem(hnHit, ProviderQueryType.EXACT_URL, url, requestUrl)
+      ) || [];
     // <rest>..facebook.com and <rest>..facebook.com/ allowed, but
     // <rest>..utm_source=facebook.com not allowed
     const itemsDeduped = itemsAll.filter(
@@ -68,7 +68,7 @@ export class HnResultProvider implements ResultProvider {
       resultsTranslated: itemsDeduped,
     });
     return {
-      providerName: this.getProviderName(),
+      providerName: ProviderType.HACKER_NEWS,
       queryType: ProviderQueryType.EXACT_URL,
       results: itemsDeduped,
     };
@@ -87,14 +87,17 @@ export class HnResultProvider implements ResultProvider {
     if (res.nbHits === 0) {
       log.debug("Hacker News API: No urls found");
       return {
-        providerName: this.getProviderName(),
+        providerName: ProviderType.HACKER_NEWS,
         queryType: ProviderQueryType.EXACT_URL,
         results: [],
       };
     }
     log.debug("HN Results Pre-translation:");
     log.debug(res.hits);
-    const itemsAll = res.hits?.map(translateHnToItem) || [];
+    const itemsAll =
+      res.hits?.map((hnHit) =>
+        translateHnToItem(hnHit, ProviderQueryType.SITE_URL, url, requestUrl)
+      ) || [];
     // Checks that the right URL is submitted
     // const itemsResults = processResults(itemsAll, searchUrlStripped);
     log.debug("Hacker News returned results:", {
@@ -102,14 +105,17 @@ export class HnResultProvider implements ResultProvider {
       resultsTranslated: itemsAll,
     });
     return {
-      providerName: this.getProviderName(),
+      providerName: ProviderType.HACKER_NEWS,
       queryType: ProviderQueryType.SITE_URL,
       results: itemsAll,
     };
   }
 
   // Main function to get all relevant results from HN
-  async getTitleResults(title: string): Promise<SingleProviderResults> {
+  async getTitleResults(
+    url: string,
+    title: string
+  ): Promise<SingleProviderResults> {
     const encodedUrl = encodeURIComponent(title);
     const queryString = `query=${encodedUrl}&typoTolerance=false&tags=story`;
     const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
@@ -121,14 +127,17 @@ export class HnResultProvider implements ResultProvider {
     if (res.nbHits === 0) {
       log.debug("Hacker News API: No urls found");
       return {
-        providerName: this.getProviderName(),
+        providerName: ProviderType.HACKER_NEWS,
         queryType: ProviderQueryType.TITLE,
         results: [],
       };
     }
     log.debug("HN Results Pre-translation:");
     log.debug(res.hits);
-    const itemsAll = res.hits?.map(translateHnToItem) || [];
+    const itemsAll =
+      res.hits?.map((hnHit) =>
+        translateHnToItem(hnHit, ProviderQueryType.TITLE, url, requestUrl)
+      ) || [];
     // Checks that the right URL is submitted
     // const itemsResults = processResults(itemsAll, searchUrlStripped);
     log.debug("Hacker News returned results:", {
@@ -136,18 +145,27 @@ export class HnResultProvider implements ResultProvider {
       resultsTranslated: itemsAll,
     });
     return {
-      providerName: this.getProviderName(),
+      providerName: ProviderType.HACKER_NEWS,
       queryType: ProviderQueryType.TITLE,
       results: itemsAll,
     };
   }
 }
 
-function translateHnToItem(h: HnHit): ResultItem {
+function translateHnToItem(
+  h: HnHit,
+  providerQueryType: ProviderQueryType,
+  cleanedTriggerUrl: string,
+  providerRequestUrl: string
+): ResultItem {
   const fromNowStr = timeSince(h.created_at);
   // const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
   return {
-    sourceIconUrl: "hackernews_icon.png",
+    providerType: ProviderType.HACKER_NEWS,
+    providerQueryType,
+    cleanedTriggerUrl,
+    providerRequestUrl,
+    providerIconUrl: "hackernews_icon.png",
     submittedUrl: h.url,
     submittedDate: fromNowStr,
     submittedUpvotes: h.points,

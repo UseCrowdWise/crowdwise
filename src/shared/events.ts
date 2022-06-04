@@ -5,6 +5,7 @@ import { useSettingsStore } from "./settings";
 export enum EventType {
   CLICK_SIDEBAR_FORUM_RESULT_TITLE = "click_sidebar_forum_result_title",
   CLICK_SIDEBAR_FORUM_RESULT_SUB_SOURCE = "click_sidebar_forum_result_sub_source",
+  CLICK_SIDEBAR_FORUM_RESULT_AUTHOR = "click_sidebar_forum_result_author",
   CLICK_SIDEBAR_SETTING_ICON = "click_sidebar_setting_icon",
   CLICK_SIDEBAR_HELP_ICON = "click_sidebar_help_icon",
   CHANGE_SETTING = "change_setting",

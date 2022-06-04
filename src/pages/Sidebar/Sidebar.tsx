@@ -15,6 +15,7 @@ import {
   AllProviderResults,
   ProviderQueryType,
   ProviderResultType,
+  ProviderType,
   QueryInfo,
   SingleProviderResults,
 } from "../../providers/providers";
@@ -23,8 +24,6 @@ import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
-  PROVIDER_HN_NAME,
-  PROVIDER_REDDIT_NAME,
 } from "../../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
 import { useSettingsStore } from "../../shared/settings";
@@ -159,9 +158,10 @@ const Sidebar = () => {
     isLoadingProviderData === false;
 
   // More UI display conditional variables
-  const hnResults = providerData?.providerResults[PROVIDER_HN_NAME] || {};
+  const hnResults =
+    providerData?.providerResults[ProviderType.HACKER_NEWS] || {};
   const redditResults =
-    providerData?.providerResults[PROVIDER_REDDIT_NAME] || {};
+    providerData?.providerResults[ProviderType.REDDIT] || {};
 
   // Combining results from different sources
   const exactResults = (hnResults[ProviderQueryType.EXACT_URL] ?? [])
@@ -324,9 +324,9 @@ const Sidebar = () => {
                       <div className="space-y-2">
                         <ResultsContainer
                           results={
-                            providerData.providerResults[PROVIDER_HN_NAME][
-                              ProviderQueryType.EXACT_URL
-                            ]
+                            providerData.providerResults[
+                              ProviderType.HACKER_NEWS
+                            ][ProviderQueryType.EXACT_URL]
                           }
                         />
                       </div>
@@ -335,7 +335,7 @@ const Sidebar = () => {
                       <div className="space-y-2">
                         <ResultsContainer
                           results={
-                            providerData.providerResults[PROVIDER_REDDIT_NAME][
+                            providerData.providerResults[ProviderType.REDDIT][
                               ProviderQueryType.EXACT_URL
                             ]
                           }
@@ -400,9 +400,9 @@ const Sidebar = () => {
                         </div>
                         <ResultsContainer
                           results={
-                            providerData.providerResults[PROVIDER_HN_NAME][
-                              ProviderQueryType.TITLE
-                            ]
+                            providerData.providerResults[
+                              ProviderType.HACKER_NEWS
+                            ][ProviderQueryType.TITLE]
                           }
                         />
                       </div>
@@ -420,7 +420,7 @@ const Sidebar = () => {
                         </div>
                         <ResultsContainer
                           results={
-                            providerData.providerResults[PROVIDER_REDDIT_NAME][
+                            providerData.providerResults[ProviderType.REDDIT][
                               ProviderQueryType.TITLE
                             ]
                           }
