@@ -12,7 +12,7 @@ const Badge = (props: Props) => {
   return (
     <span
       className={classNames(
-        "items-center px-2 py-0.5 -ml-1 rounded-full text-[11px] font-medium bg-gray-100 text-gray-800",
+        "items-center px-2 py-0.5 -ml-1 rounded-full text-[11px] font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-zinc-300",
         className || ""
       )}
     >
