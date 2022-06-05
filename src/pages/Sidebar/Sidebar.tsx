@@ -27,6 +27,7 @@ import {
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
   KEY_IS_DARK_MODE,
+  SLACK_INVITE_LINK,
 } from "../../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
 import { useSettingsStore } from "../../shared/settings";
@@ -259,7 +260,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute -right-16 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-20 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel scrollable={true} />
                     </Popover.Panel>
                   </Transition>
@@ -291,7 +292,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute right-0 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-10 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <HelpPanel />
                     </Popover.Panel>
                   </Transition>
@@ -313,6 +314,24 @@ const Sidebar = () => {
                 }
               />
             )}
+            <div
+              className="cursor-pointer"
+              onClick={(_) => {
+                sendEventsToServerViaWorker(
+                  {
+                    eventType: EventType.CLICK_SIDEBAR_SLACK_ICON,
+                  },
+                  isIncognitoMode
+                );
+                window.open(SLACK_INVITE_LINK, "_blank");
+              }}
+            >
+              <img
+                alt="Join Slack Community"
+                className="h-4 w-4 mt-0.5"
+                src={chrome.runtime.getURL("slack_icon.png")}
+              />
+            </div>
           </div>
         </div>
         <div className="grow scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600">

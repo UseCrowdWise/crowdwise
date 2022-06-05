@@ -8,6 +8,7 @@ export enum EventType {
   CLICK_SIDEBAR_FORUM_RESULT_AUTHOR = "click_sidebar_forum_result_author",
   CLICK_SIDEBAR_SETTING_ICON = "click_sidebar_setting_icon",
   CLICK_SIDEBAR_HELP_ICON = "click_sidebar_help_icon",
+  CLICK_SIDEBAR_SLACK_ICON = "click_sidebar_slack_icon",
   CHANGE_SETTING = "change_setting",
 }
 

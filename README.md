@@ -1,6 +1,15 @@
 # CrowdWise
 
-[![Chrome Store Link](assets/chromestore.png)](https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip)
+<p align="center">
+  <a href="https://chrome.google.com/webstore/detail/crowdwise/hogoebkpcnajkkjdidfhojkljppfalip">
+    <img alt="Extension available in the Chrome Web Store" src="assets/chromestore.png">
+  </a>
+</p>
+<p align="center" style="margin-top: -12px">
+  <a href="https://join.slack.com/t/crowdwise-community/shared_invite/zt-1a8nno7ci-1FcU8o3z_JiBGqd2vyuc9A">
+    <img alt="Join our Slack Community" src="https://img.shields.io/badge/Slack-Join_our_Community-blueviolet?logo=slack&amp;logoColor=white&style=flat-square">
+  </a>
+</p>
 
 # What's CrowdWise?
 

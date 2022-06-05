@@ -15,6 +15,8 @@ export const ML_FILTER_THRESHOLD = -5.0;
 export const DEBUG_MODE = false;
 export const GITHUB_REPOSITORY_LINK =
   "https://github.com/usecrowdwise/crowdwise";
+export const SLACK_INVITE_LINK =
+  "https://join.slack.com/t/crowdwise-community/shared_invite/zt-1a8nno7ci-1FcU8o3z_JiBGqd2vyuc9A";
 
 export const SETTINGS_DEBOUNCE_TIME = 100;
 export const DEFAULT_IS_DARK_MODE = false;
