@@ -12,13 +12,14 @@ export const ML_HOST =
 export const ML_API_KEY = "5b58147b-d869-465a-ab43-41c2ffc29ae0";
 export const ML_FILTER_THRESHOLD = -5.0;
 
-export const DEBUG_MODE = false;
 export const GITHUB_REPOSITORY_LINK =
   "https://github.com/usecrowdwise/crowdwise";
 export const SLACK_INVITE_LINK =
   "https://join.slack.com/t/crowdwise-community/shared_invite/zt-1a8nno7ci-1FcU8o3z_JiBGqd2vyuc9A";
 
+export const SHOULD_SHOW_DEBUG_BUTTON = process.env.NODE_ENV === "development";
 export const SETTINGS_DEBOUNCE_TIME = 100;
+export const DEFAULT_IS_DEBUG_MODE = false;
 export const DEFAULT_IS_DARK_MODE = false;
 export const DEFAULT_SIDEBAR_SQUEEZES_PAGE = false;
 export const DEFAULT_SIDEBAR_WIDTH = 360; // px
@@ -43,6 +44,7 @@ export const DEFAULT_HOTKEYS_TOGGLE_SIDEBAR = ["ctrl+.", "⌘+."];
 export const DEFAULT_HOTKEYS_CLOSE_SIDEBAR = ["esc"];
 
 // Chrome storage keys
+export const KEY_IS_DEBUG_MODE = "is-debug-mode";
 export const KEY_IS_DARK_MODE = "is-dark-mode";
 export const KEY_HOTKEYS_TOGGLE_SIDEBAR = "hotkeys-toggle-sidebar";
 export const KEY_SIDEBAR_SQUEEZES_PAGE = "sidebar-squeeze-page";

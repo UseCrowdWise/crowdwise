@@ -8,11 +8,14 @@ import {
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
   KEY_FONT_SIZES,
   KEY_INCOGNITO_MODE,
+  KEY_IS_DEBUG_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
   KEY_SHOULD_USE_OLD_REDDIT_LINK,
+  ML_FILTER_THRESHOLD,
 } from "../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import { useSettingsStore } from "../shared/settings";
+import { classNames } from "../utils/classNames";
 import { hashStringToColor } from "../utils/color";
 import { boldFrontPortionOfWords } from "../utils/formatText";
 import Badge from "./Badge";
@@ -52,9 +55,10 @@ const logForumResultEvent = (
 };
 
 const replaceRedditLink = (
-  url: string,
+  url: string | undefined,
   shouldUseOldRedditLink: boolean
 ): string => {
+  if (!url) return "";
   return shouldUseOldRedditLink
     ? url
     : url.replace("old.reddit.com", "reddit.com");
@@ -96,6 +100,7 @@ const ResultCard = (props: Props) => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const isDebugMode = settings[KEY_IS_DEBUG_MODE];
   const shouldUseOldRedditLink = settings[KEY_SHOULD_USE_OLD_REDDIT_LINK];
   const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const fontSizes = settings[KEY_FONT_SIZES];
@@ -125,6 +130,10 @@ const ResultCard = (props: Props) => {
     };
   };
 
+  const isFiltered = result.relevanceScore
+    ? result.relevanceScore < ML_FILTER_THRESHOLD
+    : false;
+
   return (
     <div
       className="flex cursor-pointer flex-col space-y-2 p-3"
@@ -138,6 +147,12 @@ const ResultCard = (props: Props) => {
         onCardClick(resultWithReplacedLink.commentsLink);
       }}
     >
+      {isDebugMode && result.relevanceScore && (
+        <div className="text-base font-bold">
+          Score: {result.relevanceScore.toFixed(1)}{" "}
+          {isFiltered ? "(Filtered)" : ""}
+        </div>
+      )}
       {resultWithReplacedLink.providerQueryType ===
         ProviderQueryType.EXACT_URL && (
         // data-iscapture="true" allow us to immediately dismiss tooltip on user scroll
@@ -166,7 +181,13 @@ const ResultCard = (props: Props) => {
         </div>
       )}
       <div
-        className={`${fontSizes.mainText} font-normal text-black dark:text-zinc-300 space-x-2 hover:underline`}
+        className={classNames(
+          fontSizes.mainText,
+          isFiltered
+            ? "text-zinc-600 dark:text-zinc-500"
+            : "text-black dark:text-zinc-300",
+          "font-normal space-x-2 hover:underline"
+        )}
       >
         <img
           alt="Source Icon"
