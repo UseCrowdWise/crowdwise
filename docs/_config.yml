@@ -15,7 +15,10 @@ url: https://usecrowdwise.com
 # other pages at root, see the paginate_path and
 # sidebar_blog_link below.
 remote_theme: fongandrew/hydeout
-google_analytics: G-T73QCMVS1F
+analytics:
+  provider: "google-gtag"
+  google:
+    measurement_id: "G-T73QCMVS1F"
 
 author:
   name: "Sriram Sami and Tang Yew Siang"
