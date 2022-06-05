@@ -2,6 +2,8 @@ import { ChevronDownIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 
 import { ResultItem } from "../providers/providers";
+import { KEY_IS_DEBUG_MODE, ML_FILTER_THRESHOLD } from "../shared/constants";
+import { useSettingsStore } from "../shared/settings";
 import ResultCard from "./ResultCard";
 
 interface Props {
@@ -12,13 +14,33 @@ interface Props {
 const ResultsContainer = (props: Props) => {
   const { results, numResults } = props;
   const [shouldShowMore, setShouldShowMore] = useState<boolean>(false);
-  const filteredResults = shouldShowMore
-    ? results
-    : results.slice(0, numResults);
-  const numberMoreToShow = results.length - filteredResults.length;
+  const [
+    settings,
+    setSettings,
+    setKeyValue,
+    isPersistent,
+    error,
+    isLoadingStore,
+  ] = useSettingsStore();
+  const isDebugMode = settings[KEY_IS_DEBUG_MODE];
+
+  // In debug mode, we want to see all results
+  const filteredResults = isDebugMode
+    ? results.filter((result) =>
+        result.relevanceScore
+          ? result.relevanceScore > ML_FILTER_THRESHOLD
+          : true
+      )
+    : results;
+
+  const partialResults = shouldShowMore
+    ? filteredResults
+    : filteredResults.slice(0, numResults);
+  const numberMoreToShow = filteredResults.length - partialResults.length;
+
   return (
     <div className="space-y-2">
-      {filteredResults.map((result, index) => (
+      {partialResults.map((result, index) => (
         <ResultCard key={index} cardPosition={index} result={result} />
       ))}
       {numberMoreToShow > 0 && (

@@ -7,7 +7,7 @@ import { log } from "../utils/log";
 import { isBlacklisted } from "./blacklist";
 import { HnResultProvider } from "./hackernews";
 import { RedditResultProvider } from "./reddit";
-import { filterIrrelevantResults } from "./scoring";
+import { scoreResultsRelevance } from "./scoring";
 
 // All providers must implement these two functions for search
 export interface ResultProvider {
@@ -44,6 +44,7 @@ export interface ResultItem {
   cleanedTriggerUrl: string;
   providerRequestUrl: string;
   providerIconUrl: string;
+  relevanceScore?: number;
   rawHtml?: string;
   // NOTE: If we change submittedUrl name, we need to update the de-duplication code
   submittedUrl: string;
@@ -161,7 +162,7 @@ export async function fetchDataFromProviders(
   const providerPromises: Promise<SingleProviderResults>[] = providers
     .map((provider) => [
       provider.getExactUrlResults(cleanedUrl),
-      filterIrrelevantResults(
+      scoreResultsRelevance(
         documentTitle,
         provider.getTitleResults(cleanedUrl, documentTitle)
       ),

@@ -11,10 +11,10 @@ import {
   KEY_HIDE_CONTENT_BUTTON,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
-  KEY_IS_DARK_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
   KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS,
   KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS,
+  KEY_SHOULD_USE_OLD_REDDIT_LINK,
   KEY_SIDEBAR_OPACITY,
   KEY_SIDEBAR_SQUEEZES_PAGE,
   KEY_SIDEBAR_WIDTH,
@@ -55,6 +55,7 @@ export const SettingsPanel = (props: Props) => {
   const hideContentButton = settings[KEY_HIDE_CONTENT_BUTTON];
   const contentButtonBackground = settings[KEY_CONTENT_BUTTON_BACKGROUND];
   const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
+  const shouldUseOldRedditLink = settings[KEY_SHOULD_USE_OLD_REDDIT_LINK];
   const shouldBoldInitialCharsOfWords =
     settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const shouldColorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY];
@@ -93,6 +94,8 @@ export const SettingsPanel = (props: Props) => {
     setKeyValueWithEvents(KEY_FONT_SIZES, state);
   const handleIncogChange = (state: boolean) =>
     setKeyValueWithEvents(KEY_INCOGNITO_MODE, state);
+  const handleShouldUseOldRedditLink = (state: boolean) =>
+    setKeyValueWithEvents(KEY_SHOULD_USE_OLD_REDDIT_LINK, state);
   const handleShouldBoldInitialCharsOfWords = (state: boolean) =>
     setKeyValueWithEvents(KEY_BOLD_INITIAL_CHARS_OF_WORDS, state);
   const handleShouldColorForSubmittedBy = (state: boolean) =>
@@ -180,6 +183,22 @@ export const SettingsPanel = (props: Props) => {
           <Toggle
             checked={contentButtonBackground}
             onCheck={setContentButtonBackground}
+          />
+        </div>
+        <div
+          data-tip="Links from Reddit go to old.reddit.com instead of reddit.com."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">
+              Use old.reddit.com instead of reddit.com
+            </div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldUseOldRedditLink}
+            onCheck={handleShouldUseOldRedditLink}
           />
         </div>
         <div

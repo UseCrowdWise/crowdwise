@@ -1,5 +1,6 @@
 import { Popover, Transition } from "@headlessui/react";
 import {
+  BeakerIcon,
   ChevronRightIcon,
   CogIcon,
   LightBulbIcon,
@@ -22,11 +23,13 @@ import {
   SingleProviderResults,
 } from "../../providers/providers";
 import {
-  DEBUG_MODE,
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_INCOGNITO_MODE,
   KEY_IS_DARK_MODE,
+  KEY_IS_DEBUG_MODE,
+  SHOULD_SHOW_DEBUG_BUTTON,
+  SLACK_INVITE_LINK,
 } from "../../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
 import { useSettingsStore } from "../../shared/settings";
@@ -42,8 +45,10 @@ const EmptyDiscussionsState = () => (
       className="mx-auto w-3/4 p-4 opacity-80"
       src={chrome.runtime.getURL("undraw_group_chat.svg")}
     />
-    <div className="text-center text-base font-semibold">No discussions</div>
-    <div className="text-center text-slate-500">
+    <div className="text-center text-base dark:text-zinc-300 font-semibold">
+      No discussions
+    </div>
+    <div className="text-center text-slate-500 dark:text-slate-400">
       We can't find any relevant discussions on this web page, try going to a
       different web page.
     </div>
@@ -80,6 +85,7 @@ const Sidebar = () => {
     );
   };
 
+  const isDebugMode = settings[KEY_IS_DEBUG_MODE];
   const isDarkMode = settings[KEY_IS_DARK_MODE];
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
@@ -233,6 +239,14 @@ const Sidebar = () => {
               </p>
               <ReactTooltip place="right" type="dark" effect="solid" />
             </div>
+            {SHOULD_SHOW_DEBUG_BUTTON && (
+              <BeakerIcon
+                className="h-5 w-5 text-slate-500 cursor-pointer"
+                onClick={() =>
+                  setKeyValueWithEvents(KEY_IS_DEBUG_MODE, !isDebugMode)
+                }
+              />
+            )}
             <div className="grow" />
             <Popover className="relative">
               {({ open }) => (
@@ -259,7 +273,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute -right-8 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-20 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel scrollable={true} />
                     </Popover.Panel>
                   </Transition>
@@ -291,7 +305,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute right-0 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-10 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <HelpPanel />
                     </Popover.Panel>
                   </Transition>
@@ -313,6 +327,24 @@ const Sidebar = () => {
                 }
               />
             )}
+            <div
+              className="cursor-pointer"
+              onClick={(_) => {
+                sendEventsToServerViaWorker(
+                  {
+                    eventType: EventType.CLICK_SIDEBAR_SLACK_ICON,
+                  },
+                  isIncognitoMode
+                );
+                window.open(SLACK_INVITE_LINK, "_blank");
+              }}
+            >
+              <img
+                alt="Join Slack Community"
+                className="h-4 w-4 mt-0.5"
+                src={chrome.runtime.getURL("slack_icon.png")}
+              />
+            </div>
           </div>
         </div>
         <div className="grow scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600">
@@ -333,7 +365,7 @@ const Sidebar = () => {
             </p>
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
-            ) : DEBUG_MODE ? (
+            ) : isDebugMode ? (
               <div className="space-y-6 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
                   <div>
@@ -366,6 +398,7 @@ const Sidebar = () => {
                             ][ProviderQueryType.EXACT_URL]
                           }
                         />
+                        <hr />
                       </div>
                     )}
                     {haveRedditExactResults && (
@@ -427,14 +460,6 @@ const Sidebar = () => {
                     </div>
                     {haveHnTitleResults && (
                       <div className="space-y-2">
-                        <div className="flex flex-row space-x-2 align-bottom">
-                          <img
-                            alt="Hacker News Icon"
-                            className="my-auto h-4 w-4"
-                            src={chrome.runtime.getURL("hackernews_icon.png")}
-                          />
-                          <p className="my-1 text-slate-500">Hacker News</p>
-                        </div>
                         <ResultsContainer
                           results={
                             providerData.providerResults[
@@ -442,19 +467,11 @@ const Sidebar = () => {
                             ][ProviderQueryType.TITLE]
                           }
                         />
+                        <hr />
                       </div>
                     )}
-
                     {haveRedditTitleResults && (
                       <div className="space-y-2">
-                        <div className="flex flex-row space-x-2 align-bottom">
-                          <img
-                            alt="Hacker News Icon"
-                            className="my-auto h-4 w-4"
-                            src={chrome.runtime.getURL("reddit_icon.png")}
-                          />
-                          <p className="my-1 text-slate-500">Reddit</p>
-                        </div>
                         <ResultsContainer
                           results={
                             providerData.providerResults[ProviderType.REDDIT][
