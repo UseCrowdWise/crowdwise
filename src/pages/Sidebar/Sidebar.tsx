@@ -259,7 +259,7 @@ const Sidebar = () => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute -right-8 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                    <Popover.Panel className="absolute -right-16 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
                       <SettingsPanel scrollable={true} />
                     </Popover.Panel>
                   </Transition>

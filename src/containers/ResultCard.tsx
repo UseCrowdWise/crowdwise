@@ -9,6 +9,7 @@ import {
   KEY_FONT_SIZES,
   KEY_INCOGNITO_MODE,
   KEY_SHOULD_COLOR_FOR_SUBMITTED_BY,
+  KEY_SHOULD_USE_OLD_REDDIT_LINK,
 } from "../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../shared/events";
 import { useSettingsStore } from "../shared/settings";
@@ -50,6 +51,40 @@ const logForumResultEvent = (
   );
 };
 
+const replaceRedditLink = (
+  url: string,
+  shouldUseOldRedditLink: boolean
+): string => {
+  return shouldUseOldRedditLink
+    ? url
+    : url.replace("old.reddit.com", "reddit.com");
+};
+
+const replaceRedditLinksInResult = (
+  result: ResultItem,
+  shouldUseOldRedditLink: boolean
+): ResultItem => {
+  return {
+    ...result,
+    submittedUrl: replaceRedditLink(
+      result.submittedUrl,
+      shouldUseOldRedditLink
+    ),
+    submittedByLink: replaceRedditLink(
+      result.submittedByLink,
+      shouldUseOldRedditLink
+    ),
+    commentsLink: replaceRedditLink(
+      result.commentsLink,
+      shouldUseOldRedditLink
+    ),
+    subSourceLink: replaceRedditLink(
+      result.subSourceLink,
+      shouldUseOldRedditLink
+    ),
+  };
+};
+
 const ResultCard = (props: Props) => {
   const { result, cardPosition } = props;
   const [
@@ -61,10 +96,7 @@ const ResultCard = (props: Props) => {
     isLoadingStore,
   ] = useSettingsStore();
 
-  const onCardClick = (url: string) => {
-    window.open(url, "_blank");
-  };
-
+  const shouldUseOldRedditLink = settings[KEY_SHOULD_USE_OLD_REDDIT_LINK];
   const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const fontSizes = settings[KEY_FONT_SIZES];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
@@ -72,9 +104,23 @@ const ResultCard = (props: Props) => {
     ? hashStringToColor(result.submittedBy)
     : COLOR_IF_OUTSIDE_HASH;
 
+  const resultWithReplacedLink = replaceRedditLinksInResult(
+    result,
+    shouldUseOldRedditLink
+  );
+
+  const onCardClick = (url: string) => {
+    window.open(url, "_blank");
+  };
+
   const createOnClickLogForumEvent = (eventType: EventType) => {
     return (e: React.MouseEvent<HTMLAnchorElement>) => {
-      logForumResultEvent(eventType, cardPosition, result, isIncognitoMode);
+      logForumResultEvent(
+        eventType,
+        cardPosition,
+        resultWithReplacedLink,
+        isIncognitoMode
+      );
       e.stopPropagation();
     };
   };
@@ -86,13 +132,14 @@ const ResultCard = (props: Props) => {
         logForumResultEvent(
           EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
           cardPosition,
-          result,
+          resultWithReplacedLink,
           isIncognitoMode
         );
-        onCardClick(result.commentsLink);
+        onCardClick(resultWithReplacedLink.commentsLink);
       }}
     >
-      {result.providerQueryType === ProviderQueryType.EXACT_URL && (
+      {resultWithReplacedLink.providerQueryType ===
+        ProviderQueryType.EXACT_URL && (
         // data-iscapture="true" allow us to immediately dismiss tooltip on user scroll
         <div
           data-tip="This result contains an exact link to your current page."
@@ -101,19 +148,19 @@ const ResultCard = (props: Props) => {
           <Badge>EXACT MATCH</Badge>
         </div>
       )}
-      {result.subSourceName !== "" && (
+      {resultWithReplacedLink.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
           <div
             className={`${fontSizes.subText} font-medium text-indigo-500 hover:underline`}
           >
             <a
-              href={result.subSourceLink}
+              href={resultWithReplacedLink.subSourceLink}
               target="_blank"
               onClick={createOnClickLogForumEvent(
                 EventType.CLICK_SIDEBAR_FORUM_RESULT_SUB_SOURCE
               )}
             >
-              {result.subSourceName}
+              {resultWithReplacedLink.subSourceName}
             </a>
           </div>
         </div>
@@ -124,10 +171,10 @@ const ResultCard = (props: Props) => {
         <img
           alt="Source Icon"
           className="inline h-4 w-4"
-          src={chrome.runtime.getURL(result.providerIconUrl)}
+          src={chrome.runtime.getURL(resultWithReplacedLink.providerIconUrl)}
         />
         <a
-          href={result.commentsLink}
+          href={resultWithReplacedLink.commentsLink}
           target="_blank"
           rel="noreferrer"
           onClick={createOnClickLogForumEvent(
@@ -135,30 +182,36 @@ const ResultCard = (props: Props) => {
           )}
         >
           {boldInitialCharsOfWords
-            ? boldFrontPortionOfWords(result.submittedTitle)
-            : result.submittedTitle}
+            ? boldFrontPortionOfWords(resultWithReplacedLink.submittedTitle)
+            : resultWithReplacedLink.submittedTitle}
         </a>
       </div>
       <div className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3`}>
         <div className="flex flex-row items-center space-x-1">
-          <strong className="text-slate-500">{result.commentsCount}</strong>
+          <strong className="text-slate-500">
+            {resultWithReplacedLink.commentsCount}
+          </strong>
           <ChatIcon className="h-3 w-3 text-slate-300" />
         </div>
         <div className="flex flex-row items-center space-x-1">
-          <strong className="text-slate-500">{result.submittedUpvotes}</strong>
+          <strong className="text-slate-500">
+            {resultWithReplacedLink.submittedUpvotes}
+          </strong>
           <ThumbUpIcon className="h-3 w-3 text-slate-300" />
         </div>
-        <div className="text-slate-600">{result.submittedDate}</div>
+        <div className="text-slate-600">
+          {resultWithReplacedLink.submittedDate}
+        </div>
         <div className="grow" />
         <div className={`text-[11px] ${colorForSubmittedBy} hover:underline`}>
           <a
-            href={result.submittedByLink}
+            href={resultWithReplacedLink.submittedByLink}
             target="_blank"
             onClick={createOnClickLogForumEvent(
               EventType.CLICK_SIDEBAR_FORUM_RESULT_AUTHOR
             )}
           >
-            {result.submittedBy}
+            {resultWithReplacedLink.submittedBy}
           </a>
         </div>
         <ReactTooltip
