@@ -130,9 +130,10 @@ const ResultCard = (props: Props) => {
     };
   };
 
-  const isFiltered = result.relevanceScore
-    ? result.relevanceScore < ML_FILTER_THRESHOLD
-    : false;
+  const isFiltered =
+    result.relevanceScore !== undefined
+      ? result.relevanceScore < ML_FILTER_THRESHOLD
+      : false;
 
   return (
     <div
@@ -147,7 +148,7 @@ const ResultCard = (props: Props) => {
         onCardClick(resultWithReplacedLink.commentsLink);
       }}
     >
-      {isDebugMode && result.relevanceScore && (
+      {isDebugMode && result.relevanceScore !== undefined && (
         <div className="text-base font-bold">
           Score: {result.relevanceScore.toFixed(1)}{" "}
           {isFiltered ? "(Filtered)" : ""}
