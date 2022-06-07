@@ -28,6 +28,7 @@ import {
   KEY_INCOGNITO_MODE,
   KEY_IS_DARK_MODE,
   KEY_IS_DEBUG_MODE,
+  ML_FILTER_THRESHOLD,
   SHOULD_SHOW_DEBUG_BUTTON,
   SLACK_INVITE_LINK,
 } from "../../shared/constants";
@@ -171,9 +172,6 @@ const Sidebar = () => {
   useHotkeys(hotkeysToggleSidebar.join(","), toggleSideBar);
   useHotkeys(DEFAULT_HOTKEYS_CLOSE_SIDEBAR.join(","), closeSideBar);
 
-  const noDiscussions =
-    providerData !== undefined ? providerData.numResults === 0 : true;
-
   // Must be incognito mode, no data fetched so far (click option to fetch), and not already loading results
   const shouldDisplayIncognitoOverlay =
     settings[KEY_INCOGNITO_MODE] &&
@@ -196,6 +194,17 @@ const Sidebar = () => {
     .sort((x, y) => y.commentsCount - x.commentsCount);
 
   const allResults = exactResults.concat(titleResults);
+
+  // In debug mode, we want to see all results
+  const filteredResults = isDebugMode
+    ? allResults
+    : allResults.filter((result) =>
+        result.relevanceScore
+          ? result.relevanceScore > ML_FILTER_THRESHOLD
+          : true
+      );
+  const noDiscussions =
+    filteredResults !== undefined ? filteredResults.length === 0 : true;
 
   // Split results into the different sources when under debug mode
   const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
@@ -510,12 +519,14 @@ const Sidebar = () => {
                 <div>
                   <div className="pl-2 py-1 text-base dark:text-zinc-300">
                     <span className="font-semibold text-indigo-600">
-                      {allResults.length}
+                      {filteredResults.length}
                     </span>
-                    {allResults.length > 1 ? " results found" : " result found"}
+                    {filteredResults.length > 1
+                      ? " results found"
+                      : " result found"}
                   </div>
                   <div className="space-y-2">
-                    <ResultsContainer results={allResults} />
+                    <ResultsContainer results={filteredResults} />
                   </div>
                 </div>
               </div>
