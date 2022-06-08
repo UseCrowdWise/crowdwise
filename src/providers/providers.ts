@@ -63,6 +63,13 @@ export interface ResultItem {
   subSourceLink: string;
 }
 
+export interface Comment {
+  text: string;
+  author: string;
+  createdDate: string;
+  children: Comment[];
+}
+
 // General status of results
 export enum ProviderResultType {
   Ok = "OK",
@@ -213,6 +220,20 @@ export async function fetchDataFromProviders(
       const thisProviderRestQueryTypes = thisProviderQueryTypes.slice(idx + 1);
       // Get the current provider query's results, so that we can subtract it from the other query results
       const thisProviderQueryResults = thisProviderResults[queryType];
+      console.log("Checking providerName: " + providerName + "and query res:");
+      console.log(thisProviderQueryResults);
+      // Test code to get comments
+      // if (providerName === "hacker_news" && thisProviderQueryResults.length > 0) {
+      //   const commentsUrl = thisProviderQueryResults[0]?.commentsLink
+      //   console.log("Getting comments for commentsUrl: " + commentsUrl)
+      //   hackernews.getComments(commentsUrl);
+      // }
+      // if (providerName === "reddit" && thisProviderQueryResults.length > 0) {
+      //   const commentsUrl = thisProviderQueryResults[0]?.commentsLink
+      //   console.log("Getting comments for commentsUrl: " + commentsUrl)
+      //   reddit.getComments(commentsUrl);
+      // }
+
       thisProviderRestQueryTypes.forEach((otherQueryType: string) => {
         const otherQueryResults = thisProviderResults[otherQueryType];
         const dedupedQueryResults = _.differenceBy(
@@ -225,7 +246,7 @@ export async function fetchDataFromProviders(
     });
   });
 
-  // Little complicate to compute num results since we have to iterate through two object key layers
+  // Little complicated to compute num results since we have to iterate through two object key layers
   let numResults = 0;
   let numExactResults = 0;
   _.forEach(providerResults, (queryResults) =>

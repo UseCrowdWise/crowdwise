@@ -4,6 +4,7 @@ import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { timeSince } from "../utils/time";
 import {
+  Comment,
   ProviderQueryType,
   ProviderType,
   ResultItem,
@@ -25,6 +26,22 @@ interface HnJsonResult {
   nbHits: number;
   hits: HnHit[];
 }
+
+interface HnComment {
+  author: string;
+  text: string;
+  created_at: string;
+  children: HnComment[];
+}
+
+interface HnCommentsResults {
+  children: HnComment[];
+}
+
+// NOTE: critical to prevent us from processing all possible comments
+const MAX_COMMENTS = 3;
+// 2 refers to a reply chain 2 replies long (main -> reply -> replyback)
+const MAX_COMMENT_REPLIES = 2;
 
 export class HnResultProvider implements ResultProvider {
   // Main function to get all relevant results from HN
@@ -149,6 +166,57 @@ export class HnResultProvider implements ResultProvider {
       queryType: ProviderQueryType.TITLE,
       results: itemsAll,
     };
+  }
+
+  // Gets all comments for a HN post ("story") on request
+  // Requires that the url is a comments link for a post (.commentsLink from a HN result)
+  async getComments(url: string): Promise<Comment[]> {
+    const storyId = new URL(url).searchParams.get("id");
+    // If somehow this is an invalid URL, don't continue
+    if (storyId === null) return [];
+    // Otherwise, we make a call to the HN API
+    const requestUrl = "https://hn.algolia.com/api/v1/items/" + storyId;
+    const res = await cachedApiCall(requestUrl, true, CACHE_URL_DURATION_SEC);
+    if (!res) return [];
+    // NOTE: we assume all children here are of type 'comment'
+    // Seems reasonable since all children of a 'story' should be comment, right?
+    const hnComments: HnComment[] = res.children;
+    // No comments
+    if (hnComments === null || hnComments.length === 0) return [];
+
+    const hnCommentToGenericCommentMapper = (
+      hnComment: HnComment,
+      depth: number
+    ): Comment => {
+      let children: Comment[] = [];
+      // Only look for child comments if we haven't exceeded our recursion depth
+      if (depth <= MAX_COMMENT_REPLIES) {
+        const nextLevelComments = hnComment.children;
+        nextLevelComments.length = Math.min(
+          nextLevelComments.length,
+          MAX_COMMENTS
+        );
+        children = nextLevelComments.map((hnComment) =>
+          hnCommentToGenericCommentMapper(hnComment, depth + 1)
+        );
+      }
+      return {
+        author: hnComment.author || "",
+        text: hnComment.text ? hnComment.text.slice(3, -4) : "", // We need to remove the <p> tag
+        createdDate: hnComment.created_at,
+        // Recursively map on the comment children
+        children,
+      };
+    };
+
+    hnComments.length = Math.min(hnComments.length, MAX_COMMENTS);
+    const comments = hnComments.map((hnComment) =>
+      hnCommentToGenericCommentMapper(hnComment, 1)
+    );
+    // log.warn("HN Comments")
+    // log.warn(comments)
+
+    return comments;
   }
 }
 
