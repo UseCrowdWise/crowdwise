@@ -39,6 +39,12 @@ interface HnCommentsResults {
   children: HnComment[]
 }
 
+// NOTE: critical to prevent us from processing all possible comments
+const MAX_COMMENTS = 3;
+// 2 refers to a reply chain 2 replies long (main -> reply -> replyback)
+const MAX_COMMENT_REPLIES = 2;
+
+
 export class HnResultProvider implements ResultProvider {
   // Main function to get all relevant results from HN
   async getExactUrlResults(url: string): Promise<SingleProviderResults> {
@@ -181,20 +187,29 @@ export class HnResultProvider implements ResultProvider {
     // Seems reasonable since all children of a 'story' should be comment, right?
     const hnComments: HnComment[] = res.children;
     // No comments
-    log.warn("HN Comments: ")
-    log.warn(hnComments)
     if (hnComments === null || hnComments.length === 0) return []
 
-    const hnCommentToGenericCommentMapper = (hnComment: HnComment): Comment => {
+    const hnCommentToGenericCommentMapper = (hnComment: HnComment, depth: number): Comment => {
+      let children: Comment[] = [];
+      // Only look for child comments if we haven't exceeded our recursion depth
+      if (depth <= MAX_COMMENT_REPLIES) {
+        const nextLevelComments = hnComment.children;
+        nextLevelComments.length = Math.min(nextLevelComments.length, MAX_COMMENTS);
+        children = nextLevelComments.map((hnComment) => hnCommentToGenericCommentMapper(hnComment, depth + 1))
+      }
      return {
        author: hnComment.author || "",
        text: hnComment.text ? hnComment.text.slice(3, -4) : "", // We need to remove the <p> tag
        createdDate: hnComment.created_at,
        // Recursively map on the comment children
-       children: hnComment.children.map(hnCommentToGenericCommentMapper)
+       children
      }
     }
-    const comments = hnComments.map(hnCommentToGenericCommentMapper);
+
+    hnComments.length = Math.min(hnComments.length, MAX_COMMENTS);
+    const comments = hnComments.map((hnComment) => hnCommentToGenericCommentMapper(hnComment, 1));
+    // log.warn("HN Comments")
+    // log.warn(comments)
 
     return comments;
 

@@ -227,6 +227,11 @@ export async function fetchDataFromProviders(
         console.log("Getting comments for commentsUrl: " + commentsUrl)
         hackernews.getComments(commentsUrl);
       }
+      if (providerName === "reddit" && thisProviderQueryResults.length > 0) {
+        const commentsUrl = thisProviderQueryResults[0]?.commentsLink
+        console.log("Getting comments for commentsUrl: " + commentsUrl)
+        reddit.getComments(commentsUrl);
+      }
 
       thisProviderRestQueryTypes.forEach((otherQueryType: string) => {
         const otherQueryResults = thisProviderResults[otherQueryType];

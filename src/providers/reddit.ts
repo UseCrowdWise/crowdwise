@@ -12,6 +12,11 @@ import {
   Comment
 } from "./providers";
 
+// NOTE: critical to prevent us from processing all possible comments
+const MAX_COMMENTS = 3;
+// 2 refers to a reply chain 2 replies long (main -> reply -> replyback)
+const MAX_COMMENT_REPLIES = 2;
+
 const cheerio = require("cheerio");
 
 export class RedditResultProvider implements ResultProvider {
@@ -135,9 +140,44 @@ export class RedditResultProvider implements ResultProvider {
     const data = await cachedApiCall(url + "/?sort=top", false, CACHE_URL_DURATION_SEC);
     const $ = cheerio.load(data);
     const commentsTable = $(".sitetable.nestedlisting")
-    log.warn("Reddit comments table:")
-    log.warn(commentsTable)
-    return []
+    // No comments or some other error
+    if (!commentsTable || commentsTable.length === 0) {
+      log.debug("No reddit comments for " + url)
+      return [];
+    }
+
+    // Mapping function for each comment
+    const redditCommentsToGenericCommentMapper = (redditComment: any, depth: number): Comment => {
+      const childComments = $(redditComment.children)
+      const textHtml = childComments.find('.md')[0];
+      const text = $(textHtml).contents().text();
+      const author = childComments.find('.author')[0]?.children[0]?.data;
+      const createdDate = childComments.find('time')[0]?.attribs.datetime;
+      let children = []
+      // Only look for child comments if we haven't exceeded our recursion depth
+      if (depth <= MAX_COMMENT_REPLIES) {
+        const nextLevelComments = childComments.siblings('.child').children('.sitetable.listing').children(".thing.comment")
+        nextLevelComments.length = Math.min(nextLevelComments.length, MAX_COMMENTS);
+        children = nextLevelComments.map((_: number, redditComment: any) => redditCommentsToGenericCommentMapper(redditComment, depth + 1)).get();
+      }
+      const genericComment: Comment = {
+        author,
+        text,
+        createdDate,
+        children
+      }
+      return genericComment
+    }
+
+    // Get root comments
+    const rootComments = commentsTable.children('.thing.comment')
+    // Hack to truncate the list
+    rootComments.length = Math.min(rootComments.length, MAX_COMMENTS);
+    const genericComments = rootComments.map((_: number, redditComment: any) => redditCommentsToGenericCommentMapper(redditComment, 1)).get()
+    // log.warn("Final generic comments:")
+    // log.warn(genericComments)
+
+    return genericComments
   }
 
 
