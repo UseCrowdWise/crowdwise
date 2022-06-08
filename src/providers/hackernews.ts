@@ -180,11 +180,15 @@ export class HnResultProvider implements ResultProvider {
     // NOTE: we assume all children here are of type 'comment'
     // Seems reasonable since all children of a 'story' should be comment, right?
     const hnComments: HnComment[] = res.children;
+    // No comments
+    log.warn("HN Comments: ")
+    log.warn(hnComments)
+    if (hnComments === null || hnComments.length === 0) return []
 
     const hnCommentToGenericCommentMapper = (hnComment: HnComment): Comment => {
      return {
-       author: hnComment.author,
-       text: hnComment.text.slice(3, -4), // We need to remove the <p> tag
+       author: hnComment.author || "",
+       text: hnComment.text ? hnComment.text.slice(3, -4) : "", // We need to remove the <p> tag
        createdDate: hnComment.created_at,
        // Recursively map on the comment children
        children: hnComment.children.map(hnCommentToGenericCommentMapper)

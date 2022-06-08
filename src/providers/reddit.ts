@@ -132,6 +132,11 @@ export class RedditResultProvider implements ResultProvider {
   // Gets all comments for a reddit post
   // Requires that the url is a comments link for a post (.commentsLink from a result)
   async getComments(url: string): Promise<Comment[]>{
+    const data = await cachedApiCall(url + "/?sort=top", false, CACHE_URL_DURATION_SEC);
+    const $ = cheerio.load(data);
+    const commentsTable = $(".sitetable.nestedlisting")
+    log.warn("Reddit comments table:")
+    log.warn(commentsTable)
     return []
   }
 
