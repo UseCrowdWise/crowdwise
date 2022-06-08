@@ -166,6 +166,11 @@ const Sidebar = () => {
   // Send a message to the extension (alternative: use redux?) to close
   const closeSideBar = () => sendMessageToCurrentTab({ closeSideBar: true });
   const toggleSideBar = () => sendMessageToCurrentTab({ toggleSideBar: true });
+  const openInNewTab = (newTabUrl: string) =>
+    window.open(
+      "https://www.google.com/search?q=" + encodeURIComponent(newTabUrl),
+      "_blank"
+    );
 
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar is reimplementing the same hotkey shortcuts because it will be within an iFrame
@@ -219,6 +224,7 @@ const Sidebar = () => {
 
   // Query display
   const { searchExactUrl, searchTitle } = providerData?.queryInfo || {};
+  console.log("Search Exact URL: " + searchExactUrl);
   return (
     <div
       className={classNames(
@@ -372,6 +378,17 @@ const Sidebar = () => {
             <p className="text-xl pl-2 font-semibold text-indigo-600">
               Discussions
             </p>
+            {searchExactUrl && (
+              <div className="space-y-2 pl-2">
+                <button
+                  onClick={() => openInNewTab(searchExactUrl)}
+                  className="inline-flex items-center rounded border bg-indigo-600 text-white border-gray-400 text-md px-2.5 hover:bg-indigo-700"
+                >
+                  Search Google for more results
+                </button>
+              </div>
+            )}
+
             {noDiscussions || !providerData ? (
               <EmptyDiscussionsState />
             ) : isDebugMode ? (
