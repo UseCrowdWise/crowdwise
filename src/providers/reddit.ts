@@ -4,12 +4,12 @@ import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
 import { replaceTimeStr } from "../utils/time";
 import {
+  Comment,
   ProviderQueryType,
   ProviderType,
   ResultItem,
   ResultProvider,
   SingleProviderResults,
-  Comment
 } from "./providers";
 
 // NOTE: critical to prevent us from processing all possible comments
@@ -136,50 +136,70 @@ export class RedditResultProvider implements ResultProvider {
 
   // Gets all comments for a reddit post
   // Requires that the url is a comments link for a post (.commentsLink from a result)
-  async getComments(url: string): Promise<Comment[]>{
-    const data = await cachedApiCall(url + "/?sort=top", false, CACHE_URL_DURATION_SEC);
+  async getComments(url: string): Promise<Comment[]> {
+    const data = await cachedApiCall(
+      url + "/?sort=top",
+      false,
+      CACHE_URL_DURATION_SEC
+    );
     const $ = cheerio.load(data);
-    const commentsTable = $(".sitetable.nestedlisting")
+    const commentsTable = $(".sitetable.nestedlisting");
     // No comments or some other error
     if (!commentsTable || commentsTable.length === 0) {
-      log.debug("No reddit comments for " + url)
+      log.debug("No reddit comments for " + url);
       return [];
     }
 
     // Mapping function for each comment
-    const redditCommentsToGenericCommentMapper = (redditComment: any, depth: number): Comment => {
-      const childComments = $(redditComment.children)
-      const textHtml = childComments.find('.md')[0];
+    const redditCommentsToGenericCommentMapper = (
+      redditComment: any,
+      depth: number
+    ): Comment => {
+      const childComments = $(redditComment.children);
+      const textHtml = childComments.find(".md")[0];
       const text = $(textHtml).contents().text();
-      const author = childComments.find('.author')[0]?.children[0]?.data;
-      const createdDate = childComments.find('time')[0]?.attribs.datetime;
-      let children = []
+      const author = childComments.find(".author")[0]?.children[0]?.data;
+      const createdDate = childComments.find("time")[0]?.attribs.datetime;
+      let children = [];
       // Only look for child comments if we haven't exceeded our recursion depth
       if (depth <= MAX_COMMENT_REPLIES) {
-        const nextLevelComments = childComments.siblings('.child').children('.sitetable.listing').children(".thing.comment")
-        nextLevelComments.length = Math.min(nextLevelComments.length, MAX_COMMENTS);
-        children = nextLevelComments.map((_: number, redditComment: any) => redditCommentsToGenericCommentMapper(redditComment, depth + 1)).get();
+        const nextLevelComments = childComments
+          .siblings(".child")
+          .children(".sitetable.listing")
+          .children(".thing.comment");
+        nextLevelComments.length = Math.min(
+          nextLevelComments.length,
+          MAX_COMMENTS
+        );
+        children = nextLevelComments
+          .map((_: number, redditComment: any) =>
+            redditCommentsToGenericCommentMapper(redditComment, depth + 1)
+          )
+          .get();
       }
       const genericComment: Comment = {
         author,
         text,
         createdDate,
-        children
-      }
-      return genericComment
-    }
+        children,
+      };
+      return genericComment;
+    };
 
     // Get root comments
-    const rootComments = commentsTable.children('.thing.comment')
+    const rootComments = commentsTable.children(".thing.comment");
     // Hack to truncate the list
     rootComments.length = Math.min(rootComments.length, MAX_COMMENTS);
-    const genericComments = rootComments.map((_: number, redditComment: any) => redditCommentsToGenericCommentMapper(redditComment, 1)).get()
+    const genericComments = rootComments
+      .map((_: number, redditComment: any) =>
+        redditCommentsToGenericCommentMapper(redditComment, 1)
+      )
+      .get();
     // log.warn("Final generic comments:")
     // log.warn(genericComments)
 
-    return genericComments
+    return genericComments;
   }
-
 
   translateRedditToItem(
     html: string,

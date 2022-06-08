@@ -220,8 +220,8 @@ export async function fetchDataFromProviders(
       const thisProviderRestQueryTypes = thisProviderQueryTypes.slice(idx + 1);
       // Get the current provider query's results, so that we can subtract it from the other query results
       const thisProviderQueryResults = thisProviderResults[queryType];
-      console.log("Checking providerName: " + providerName + "and query res:")
-      console.log(thisProviderQueryResults)
+      console.log("Checking providerName: " + providerName + "and query res:");
+      console.log(thisProviderQueryResults);
       // Test code to get comments
       // if (providerName === "hacker_news" && thisProviderQueryResults.length > 0) {
       //   const commentsUrl = thisProviderQueryResults[0]?.commentsLink
