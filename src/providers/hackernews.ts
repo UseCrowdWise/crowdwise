@@ -9,6 +9,7 @@ import {
   ResultItem,
   ResultProvider,
   SingleProviderResults,
+  Comment,
 } from "./providers";
 
 interface HnHit {
@@ -24,6 +25,18 @@ interface HnHit {
 interface HnJsonResult {
   nbHits: number;
   hits: HnHit[];
+}
+
+
+interface HnComment {
+  author: string;
+  text: string;
+  created_at: string
+  children: HnComment[]
+}
+
+interface HnCommentsResults {
+  children: HnComment[]
 }
 
 export class HnResultProvider implements ResultProvider {
@@ -150,6 +163,39 @@ export class HnResultProvider implements ResultProvider {
       results: itemsAll,
     };
   }
+
+  // Gets all comments for a HN post ("story") on request
+  // Requires that the url is a comments link for a post (.commentsLink from a HN result)
+  async getComments(url: string): Promise<Comment[]>{
+    const storyId = new URL(url).searchParams.get('id');
+    // If somehow this is an invalid URL, don't continue
+    if (storyId === null) return []
+    // Otherwise, we make a call to the HN API
+    const requestUrl = "https://hn.algolia.com/api/v1/items/" + storyId;
+    const res = await cachedApiCall(
+      requestUrl,
+      true,
+      CACHE_URL_DURATION_SEC);
+    if (!res) return []
+    // NOTE: we assume all children here are of type 'comment'
+    // Seems reasonable since all children of a 'story' should be comment, right?
+    const hnComments: HnComment[] = res.children;
+
+    const hnCommentToGenericCommentMapper = (hnComment: HnComment): Comment => {
+     return {
+       author: hnComment.author,
+       text: hnComment.text.slice(3, -4), // We need to remove the <p> tag
+       createdDate: hnComment.created_at,
+       // Recursively map on the comment children
+       children: hnComment.children.map(hnCommentToGenericCommentMapper)
+     }
+    }
+    const comments = hnComments.map(hnCommentToGenericCommentMapper);
+
+    return comments;
+
+  }
+
 }
 
 function translateHnToItem(

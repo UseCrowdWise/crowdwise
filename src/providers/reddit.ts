@@ -9,6 +9,7 @@ import {
   ResultItem,
   ResultProvider,
   SingleProviderResults,
+  Comment
 } from "./providers";
 
 const cheerio = require("cheerio");
@@ -127,6 +128,13 @@ export class RedditResultProvider implements ResultProvider {
       results: itemsAll,
     };
   }
+
+  // Gets all comments for a reddit post
+  // Requires that the url is a comments link for a post (.commentsLink from a result)
+  async getComments(url: string): Promise<Comment[]>{
+    return []
+  }
+
 
   translateRedditToItem(
     html: string,
