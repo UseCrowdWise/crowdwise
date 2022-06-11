@@ -41,6 +41,7 @@ const logForumResultEvent = (
       resultProviderRequestUrl: result.providerRequestUrl,
       resultSubmittedUrl: result.submittedUrl,
       resultSubmittedDate: result.submittedDate,
+      resultSubmittedPrettyDate: result.submittedPrettyDate,
       resultSubmittedUpvotes: result.submittedUpvotes,
       resultSubmittedTitle: result.submittedTitle,
       resultSubmittedBy: result.submittedBy,
@@ -222,7 +223,7 @@ const ResultCard = (props: Props) => {
           <ThumbUpIcon className="h-3 w-3 text-slate-300" />
         </div>
         <div className="text-slate-600">
-          {resultWithReplacedLink.submittedDate}
+          {resultWithReplacedLink.submittedPrettyDate}
         </div>
         <div className="grow" />
         <div className={`text-[11px] ${colorForSubmittedBy} hover:underline`}>

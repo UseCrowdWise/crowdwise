@@ -1,4 +1,6 @@
 // Some code used from https://github.com/benwinding/newsit/
+import { parseISO } from "date-fns";
+
 import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
@@ -213,7 +215,8 @@ export class RedditResultProvider implements ResultProvider {
     const commentsText = $(".search-comments").text();
     const commentsLink = $(".search-comments").attr("href");
     const postTitle = $(".search-title").text();
-    const postDate = replaceTimeStr($(".search-time time").text());
+    const postDate = $(".search-time time").attr("datetime");
+    const postPrettyDate = replaceTimeStr($(".search-time time").text());
     const postPointsText = $(".search-score").text();
     const postAuthor = $(".author").text();
     const postAuthorLink = $(".author").attr("href");
@@ -236,7 +239,8 @@ export class RedditResultProvider implements ResultProvider {
       rawHtml: html,
       submittedUrl: url,
       submittedTitle: postTitle,
-      submittedDate: postDate,
+      submittedDate: parseISO(postDate),
+      submittedPrettyDate: postPrettyDate,
       submittedUpvotes: postPoints,
       submittedBy: postAuthor,
       submittedByLink: postAuthorLink,
