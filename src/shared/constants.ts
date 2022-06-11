@@ -1,4 +1,8 @@
-import { CONTENT_BUTTON_PLACEMENT_OPTIONS, FONT_SIZE_OPTIONS } from "./options";
+import {
+  CONTENT_BUTTON_PLACEMENT_OPTIONS,
+  FONT_SIZE_OPTIONS,
+  RESULT_FEED_SORT_OPTIONS,
+} from "./options";
 
 export const EVENTS_HOST_PROD = "https://crowdwise-web.vercel.app/api/events";
 export const EVENTS_HOST_STAGING = "http://localhost:3000/api/events";
@@ -17,6 +21,8 @@ export const GITHUB_REPOSITORY_LINK =
 export const SLACK_INVITE_LINK =
   "https://join.slack.com/t/crowdwise-community/shared_invite/zt-1a8nno7ci-1FcU8o3z_JiBGqd2vyuc9A";
 
+// ======== Default values ========
+// ==== Settings ====
 export const SHOULD_SHOW_DEBUG_BUTTON = process.env.NODE_ENV === "development";
 export const SETTINGS_DEBOUNCE_TIME = 100;
 export const DEFAULT_IS_DEBUG_MODE = false;
@@ -37,13 +43,17 @@ export const DEFAULT_INCOGNITO_MODE = false;
 export const DEFAULT_SHOULD_COLOR_FOR_SUBMITTED_BY = true;
 export const DEFAULT_SHOULD_SHOW_SIDEBAR_ON_RESULTS = false;
 export const DEFAULT_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS = false;
+// ==== Result feed settings ====
+export const DEFAULT_RESULT_FEED_SORT_EXACT_URL_FIRST = true;
+export const DEFAULT_RESULT_FEED_SORT_OPTION = RESULT_FEED_SORT_OPTIONS[0];
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
 export const DEFAULT_HOTKEYS_TOGGLE_SIDEBAR = ["ctrl+.", "⌘+."];
 export const DEFAULT_HOTKEYS_CLOSE_SIDEBAR = ["esc"];
 
-// Chrome storage keys
+// ======== Chrome storage keys ========
+// ==== Settings ====
 export const KEY_IS_DEBUG_MODE = "is-debug-mode";
 export const KEY_IS_DARK_MODE = "is-dark-mode";
 export const KEY_HOTKEYS_TOGGLE_SIDEBAR = "hotkeys-toggle-sidebar";
@@ -63,6 +73,10 @@ export const KEY_SHOULD_COLOR_FOR_SUBMITTED_BY =
 export const KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS = "show-sidebar-on-results";
 export const KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS =
   "show-sidebar-only-on-exact-results";
+// ==== Result feed settings ====
+export const KEY_RESULT_FEED_SORT_EXACT_URL_FIRST =
+  "result-feed-sort-exact-url-first";
+export const KEY_RESULT_FEED_SORT_OPTION = "result-feed-sort-option";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 120;

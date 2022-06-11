@@ -239,7 +239,7 @@ export class RedditResultProvider implements ResultProvider {
       rawHtml: html,
       submittedUrl: url,
       submittedTitle: postTitle,
-      submittedDate: parseISO(postDate),
+      submittedDate: parseISO(postDate).toISOString(),
       submittedPrettyDate: postPrettyDate,
       submittedUpvotes: postPoints,
       submittedBy: postAuthor,

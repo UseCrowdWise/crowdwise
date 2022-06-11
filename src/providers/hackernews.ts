@@ -237,7 +237,7 @@ function translateHnToItem(
     providerRequestUrl,
     providerIconUrl: "hackernews_icon.png",
     submittedUrl: h.url,
-    submittedDate: parseISO(h.created_at),
+    submittedDate: parseISO(h.created_at).toISOString(),
     submittedPrettyDate: postPrettyDate,
     submittedUpvotes: h.points,
     submittedTitle: h.title,

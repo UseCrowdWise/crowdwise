@@ -48,7 +48,7 @@ export interface ResultItem {
   rawHtml?: string;
   // NOTE: If we change submittedUrl name, we need to update the de-duplication code
   submittedUrl: string;
-  submittedDate: Date;
+  submittedDate: string;
   submittedPrettyDate: string;
   submittedUpvotes: number;
   submittedTitle: string;
