@@ -6,6 +6,7 @@ import {
   LightBulbIcon,
   MoonIcon,
   QuestionMarkCircleIcon,
+  SearchIcon,
 } from "@heroicons/react/outline";
 import React, { Fragment, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -35,6 +36,7 @@ import {
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
 import { useSettingsStore } from "../../shared/settings";
 import { classNames } from "../../utils/classNames";
+import { boldFrontPortionOfWords } from "../../utils/formatText";
 import { log } from "../../utils/log";
 import { sendMessageToCurrentTab } from "../../utils/tabs";
 import "./Sidebar.css";
@@ -51,7 +53,7 @@ const EmptyDiscussionsState = () => (
     </div>
     <div className="text-center text-slate-500 dark:text-slate-400">
       We can't find any relevant discussions on this web page, try going to a
-      different web page.
+      different web page or searching on Google.
     </div>
   </>
 );
@@ -166,11 +168,16 @@ const Sidebar = () => {
   // Send a message to the extension (alternative: use redux?) to close
   const closeSideBar = () => sendMessageToCurrentTab({ closeSideBar: true });
   const toggleSideBar = () => sendMessageToCurrentTab({ toggleSideBar: true });
-  const openInNewTab = (newTabUrl: string) =>
-    window.open(
-      "https://www.google.com/search?q=" + encodeURIComponent(newTabUrl),
-      "_blank"
+  const openGoogleInNewTab = (googleUrl: string) => {
+    sendEventsToServerViaWorker(
+      {
+        eventType: EventType.CLICK_SIDEBAR_SEARCH_ON_GOOGLE,
+        redirectLink: googleUrl,
+      },
+      isIncognitoMode
     );
+    window.open(googleUrl, "_blank");
+  };
 
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar is reimplementing the same hotkey shortcuts because it will be within an iFrame
@@ -224,6 +231,10 @@ const Sidebar = () => {
 
   // Query display
   const { searchExactUrl, searchTitle } = providerData?.queryInfo || {};
+  const searchGoogleUrl =
+    searchExactUrl &&
+    "https://www.google.com/search?q=" + encodeURIComponent(searchExactUrl);
+
   console.log("Search Exact URL: " + searchExactUrl);
   return (
     <div
@@ -375,22 +386,50 @@ const Sidebar = () => {
           )}
 
           <div className="space-y-3 p-3 text-left">
-            <p className="text-xl pl-2 font-semibold text-indigo-600">
-              Discussions
-            </p>
-            {searchExactUrl && (
-              <div className="space-y-2 pl-2">
-                <button
-                  onClick={() => openInNewTab(searchExactUrl)}
-                  className="inline-flex items-center rounded border bg-indigo-600 text-white border-gray-400 text-md px-2.5 hover:bg-indigo-700"
-                >
-                  Search Google for more results
-                </button>
+            <div className="flex flex-row align-middle">
+              <div className="flex">
+                <p className="text-xl pl-2 font-semibold text-indigo-600">
+                  Discussions
+                </p>
               </div>
-            )}
+              <div className="grow" />
+              {searchGoogleUrl && (
+                <div className="flex flex-row cursor-pointer text-black dark:text-zinc-300 font-normal my-auto space-x-1 pr-3 hover:underline">
+                  <SearchIcon
+                    className="h-4 w-4 text-slate-500 dark:text-zinc-300"
+                    onClick={() =>
+                      sendEventsToServerViaWorker(
+                        {
+                          eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
+                        },
+                        isIncognitoMode
+                      )
+                    }
+                  />
+                  <a
+                    href={searchGoogleUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => openGoogleInNewTab(searchGoogleUrl)}
+                  >
+                    Google
+                  </a>
+                </div>
+              )}
+            </div>
 
             {noDiscussions || !providerData ? (
-              <EmptyDiscussionsState />
+              <div className="text-center">
+                <EmptyDiscussionsState />
+                {searchExactUrl && (
+                  <button
+                    onClick={() => openGoogleInNewTab(searchExactUrl)}
+                    className="inline-flex items-center mt-6 px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Search on Google
+                  </button>
+                )}
+              </div>
             ) : isDebugMode ? (
               <div className="space-y-6 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
