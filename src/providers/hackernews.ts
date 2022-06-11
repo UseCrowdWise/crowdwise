@@ -1,4 +1,6 @@
 // Some code used from https://github.com/benwinding/newsit/
+import { parseISO } from "date-fns";
+
 import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
@@ -226,8 +228,8 @@ function translateHnToItem(
   cleanedTriggerUrl: string,
   providerRequestUrl: string
 ): ResultItem {
-  const fromNowStr = timeSince(h.created_at);
-  // const fromNowFirst = fromNowStr.split(',').shift() + ' ago';
+  const postPrettyDate = timeSince(h.created_at);
+  // const fromNowFirst = postPrettyDate.split(',').shift() + ' ago';
   return {
     providerType: ProviderType.HACKER_NEWS,
     providerQueryType,
@@ -235,7 +237,8 @@ function translateHnToItem(
     providerRequestUrl,
     providerIconUrl: "hackernews_icon.png",
     submittedUrl: h.url,
-    submittedDate: fromNowStr,
+    submittedDate: parseISO(h.created_at).toISOString(),
+    submittedPrettyDate: postPrettyDate,
     submittedUpvotes: h.points,
     submittedTitle: h.title,
     submittedBy: h.author,

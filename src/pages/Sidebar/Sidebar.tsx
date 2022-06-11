@@ -4,23 +4,25 @@ import {
   ChevronRightIcon,
   CogIcon,
   LightBulbIcon,
+  LightningBoltIcon,
   MoonIcon,
   QuestionMarkCircleIcon,
+  SearchIcon,
 } from "@heroicons/react/outline";
+import { parseISO } from "date-fns";
 import React, { Fragment, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import ReactTooltip from "react-tooltip";
 
 import { HelpPanel } from "../../containers/HelpPanel";
+import { ResultFeedSettingsPanel } from "../../containers/ResultFeedSettingsPanel";
 import ResultsContainer from "../../containers/ResultsContainer";
 import { SettingsPanel } from "../../containers/SettingsPanel";
 import {
   AllProviderResults,
   ProviderQueryType,
-  ProviderResultType,
   ProviderType,
-  QueryInfo,
-  SingleProviderResults,
+  ResultItem,
 } from "../../providers/providers";
 import {
   DEFAULT_HOTKEYS_CLOSE_SIDEBAR,
@@ -28,11 +30,14 @@ import {
   KEY_INCOGNITO_MODE,
   KEY_IS_DARK_MODE,
   KEY_IS_DEBUG_MODE,
+  KEY_RESULT_FEED_SORT_EXACT_URL_FIRST,
+  KEY_RESULT_FEED_SORT_OPTION,
   ML_FILTER_THRESHOLD,
   SHOULD_SHOW_DEBUG_BUTTON,
   SLACK_INVITE_LINK,
 } from "../../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
+import { SortOption } from "../../shared/options";
 import { useSettingsStore } from "../../shared/settings";
 import { classNames } from "../../utils/classNames";
 import { log } from "../../utils/log";
@@ -51,10 +56,106 @@ const EmptyDiscussionsState = () => (
     </div>
     <div className="text-center text-slate-500 dark:text-slate-400">
       We can't find any relevant discussions on this web page, try going to a
-      different web page.
+      different web page or searching on Google.
     </div>
   </>
 );
+
+const selectSortFunction = (
+  sortOption: SortOption,
+  sortExactUrlFirst: boolean
+) => {
+  const _exactUrlComparison = (x: ResultItem, y: ResultItem) => {
+    return sortExactUrlFirst
+      ? Number(y.providerQueryType === ProviderQueryType.EXACT_URL) -
+          Number(x.providerQueryType === ProviderQueryType.EXACT_URL)
+      : 0;
+  };
+  const _selectedComparison = {
+    "highest-comments": (x: ResultItem, y: ResultItem) => {
+      return y.commentsCount - x.commentsCount;
+    },
+    "lowest-comments": (x: ResultItem, y: ResultItem) => {
+      return x.commentsCount - y.commentsCount;
+    },
+    "highest-likes": (x: ResultItem, y: ResultItem) => {
+      return y.submittedUpvotes - x.submittedUpvotes;
+    },
+    "lowest-likes": (x: ResultItem, y: ResultItem) => {
+      return x.submittedUpvotes - y.submittedUpvotes;
+    },
+    newest: (x: ResultItem, y: ResultItem) => {
+      return (
+        parseISO(y.submittedDate).getTime() -
+        parseISO(x.submittedDate).getTime()
+      );
+    },
+    oldest: (x: ResultItem, y: ResultItem) => {
+      return (
+        parseISO(x.submittedDate).getTime() -
+        parseISO(y.submittedDate).getTime()
+      );
+    },
+  }[sortOption];
+  return (x: ResultItem, y: ResultItem) =>
+    _exactUrlComparison(x, y) || _selectedComparison(x, y);
+};
+
+const sortAndFilterResults = (
+  providerData: AllProviderResults | undefined,
+  sortOption: SortOption,
+  sortExactUrlFirst: boolean,
+  isDebugMode: boolean
+) => {
+  const hnResults =
+    providerData?.providerResults[ProviderType.HACKER_NEWS] || {};
+  const redditResults =
+    providerData?.providerResults[ProviderType.REDDIT] || {};
+
+  const sortFunction = selectSortFunction(sortOption, sortExactUrlFirst);
+
+  // Combining results from different sources
+  const allResults = (hnResults[ProviderQueryType.EXACT_URL] ?? [])
+    .concat(redditResults[ProviderQueryType.EXACT_URL] ?? [])
+    .concat(hnResults[ProviderQueryType.TITLE] ?? [])
+    .concat(redditResults[ProviderQueryType.TITLE] ?? [])
+    .sort(sortFunction);
+
+  // In debug mode, we want to see all results
+  return isDebugMode
+    ? allResults
+    : allResults.filter((result) =>
+        result.relevanceScore
+          ? result.relevanceScore > ML_FILTER_THRESHOLD
+          : true
+      );
+};
+
+const debugResults = (providerData: AllProviderResults | undefined) => {
+  // More UI display conditional variables
+  const hnResults =
+    providerData?.providerResults[ProviderType.HACKER_NEWS] || {};
+  const redditResults =
+    providerData?.providerResults[ProviderType.REDDIT] || {};
+
+  // Split results into the different sources when under debug mode
+  const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
+  const haveRedditExactResults =
+    redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
+  log.debug(
+    `Have HN exact: ${haveHnExactResults}, have Reddit exact: ${haveRedditExactResults}`
+  );
+  const haveHnTitleResults = hnResults[ProviderQueryType.TITLE]?.length > 0;
+  const haveRedditTitleResults =
+    redditResults[ProviderQueryType.TITLE]?.length > 0;
+
+  return {
+    haveHnExactResults,
+    haveRedditExactResults,
+    haveHnTitleResults,
+    haveRedditTitleResults,
+  };
+};
 
 const Sidebar = () => {
   log.debug("Sidebar re-render");
@@ -89,6 +190,9 @@ const Sidebar = () => {
   const isDebugMode = settings[KEY_IS_DEBUG_MODE];
   const isDarkMode = settings[KEY_IS_DARK_MODE];
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
+  const resultFeedSortExactUrlFirst =
+    settings[KEY_RESULT_FEED_SORT_EXACT_URL_FIRST];
+  const resultFeedSortOption = settings[KEY_RESULT_FEED_SORT_OPTION];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
 
   // Handles message from background script that our URL changed.
@@ -166,11 +270,16 @@ const Sidebar = () => {
   // Send a message to the extension (alternative: use redux?) to close
   const closeSideBar = () => sendMessageToCurrentTab({ closeSideBar: true });
   const toggleSideBar = () => sendMessageToCurrentTab({ toggleSideBar: true });
-  const openInNewTab = (newTabUrl: string) =>
-    window.open(
-      "https://www.google.com/search?q=" + encodeURIComponent(newTabUrl),
-      "_blank"
+  const openGoogleInNewTab = (googleUrl: string) => {
+    sendEventsToServerViaWorker(
+      {
+        eventType: EventType.CLICK_SIDEBAR_SEARCH_ON_GOOGLE,
+        redirectLink: googleUrl,
+      },
+      isIncognitoMode
     );
+    window.open(googleUrl, "_blank");
+  };
 
   // Hotkeys to control the sidebar visibility.
   // Note: The SideBar is reimplementing the same hotkey shortcuts because it will be within an iFrame
@@ -183,47 +292,29 @@ const Sidebar = () => {
     hasFetchedDataForThisPage == false &&
     isLoadingProviderData === false;
 
-  // More UI display conditional variables
-  const hnResults =
-    providerData?.providerResults[ProviderType.HACKER_NEWS] || {};
-  const redditResults =
-    providerData?.providerResults[ProviderType.REDDIT] || {};
-
-  // Combining results from different sources
-  const exactResults = (hnResults[ProviderQueryType.EXACT_URL] ?? [])
-    .concat(redditResults[ProviderQueryType.EXACT_URL] ?? [])
-    .sort((x, y) => y.commentsCount - x.commentsCount);
-
-  const titleResults = (hnResults[ProviderQueryType.TITLE] ?? [])
-    .concat(redditResults[ProviderQueryType.TITLE] ?? [])
-    .sort((x, y) => y.commentsCount - x.commentsCount);
-
-  const allResults = exactResults.concat(titleResults);
-
-  // In debug mode, we want to see all results
-  const filteredResults = isDebugMode
-    ? allResults
-    : allResults.filter((result) =>
-        result.relevanceScore
-          ? result.relevanceScore > ML_FILTER_THRESHOLD
-          : true
-      );
+  const filteredResults = sortAndFilterResults(
+    providerData,
+    resultFeedSortOption.key,
+    resultFeedSortExactUrlFirst,
+    isDebugMode
+  );
   const noDiscussions =
     filteredResults !== undefined ? filteredResults.length === 0 : true;
 
-  // Split results into the different sources when under debug mode
-  const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
-  const haveRedditExactResults =
-    redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
-  log.debug(
-    `Have HN exact: ${haveHnExactResults}, have Reddit exact: ${haveRedditExactResults}`
-  );
-  const haveHnTitleResults = hnResults[ProviderQueryType.TITLE]?.length > 0;
-  const haveRedditTitleResults =
-    redditResults[ProviderQueryType.TITLE]?.length > 0;
+  // Get results for debugging
+  const {
+    haveHnExactResults,
+    haveRedditExactResults,
+    haveHnTitleResults,
+    haveRedditTitleResults,
+  } = debugResults(providerData);
 
   // Query display
   const { searchExactUrl, searchTitle } = providerData?.queryInfo || {};
+  const searchGoogleUrl =
+    searchExactUrl &&
+    "https://www.google.com/search?q=" + encodeURIComponent(searchExactUrl);
+
   console.log("Search Exact URL: " + searchExactUrl);
   return (
     <div
@@ -375,22 +466,27 @@ const Sidebar = () => {
           )}
 
           <div className="space-y-3 p-3 text-left">
-            <p className="text-xl pl-2 font-semibold text-indigo-600">
-              Discussions
-            </p>
-            {searchExactUrl && (
-              <div className="space-y-2 pl-2">
-                <button
-                  onClick={() => openInNewTab(searchExactUrl)}
-                  className="inline-flex items-center rounded border bg-indigo-600 text-white border-gray-400 text-md px-2.5 hover:bg-indigo-700"
-                >
-                  Search Google for more results
-                </button>
+            <div className="flex flex-row align-middle">
+              <div className="flex">
+                <p className="text-xl pl-2 font-semibold text-indigo-600">
+                  Discussions
+                </p>
               </div>
-            )}
+              <div className="grow" />
+            </div>
 
             {noDiscussions || !providerData ? (
-              <EmptyDiscussionsState />
+              <div className="text-center">
+                <EmptyDiscussionsState />
+                {searchExactUrl && (
+                  <button
+                    onClick={() => openGoogleInNewTab(searchExactUrl)}
+                    className="inline-flex items-center mt-6 px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Search on Google
+                  </button>
+                )}
+              </div>
             ) : isDebugMode ? (
               <div className="space-y-6 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
@@ -534,13 +630,72 @@ const Sidebar = () => {
             ) : (
               <div className="space-y-6 py-1">
                 <div>
-                  <div className="pl-2 py-1 text-base dark:text-zinc-300">
-                    <span className="font-semibold text-indigo-600">
-                      {filteredResults.length}
-                    </span>
-                    {filteredResults.length > 1
-                      ? " results found"
-                      : " result found"}
+                  <div className="flex flex-row space-x-4">
+                    <div className="pl-2 py-1 text-base dark:text-zinc-300">
+                      <span className="font-semibold text-indigo-600">
+                        {filteredResults.length}
+                      </span>
+                      {filteredResults.length > 1
+                        ? " results found"
+                        : " result found"}
+                    </div>
+                    {searchGoogleUrl && (
+                      <div className="flex flex-row cursor-pointer text-black dark:text-zinc-300 font-normal my-auto space-x-0.5 pr-3 hover:underline">
+                        <SearchIcon
+                          className="h-3 w-3 my-auto text-slate-500 dark:text-zinc-300"
+                          onClick={() =>
+                            sendEventsToServerViaWorker(
+                              {
+                                eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
+                              },
+                              isIncognitoMode
+                            )
+                          }
+                        />
+                        <a
+                          href={searchGoogleUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={() => openGoogleInNewTab(searchGoogleUrl)}
+                        >
+                          Google
+                        </a>
+                      </div>
+                    )}
+                    <div className="grow" />
+                    <Popover className="relative my-auto pt-0.5 pr-2">
+                      {({ open }) => (
+                        <>
+                          <Popover.Button>
+                            <LightningBoltIcon
+                              className="h-5 w-5 text-indigo-600 hover:fill-current"
+                              onClick={() =>
+                                sendEventsToServerViaWorker(
+                                  {
+                                    eventType:
+                                      EventType.CLICK_SIDEBAR_RESULT_FEED_SETTING_ICON,
+                                  },
+                                  isIncognitoMode
+                                )
+                              }
+                            />
+                          </Popover.Button>
+                          <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-200"
+                            enterFrom="opacity-0 translate-y-1"
+                            enterTo="opacity-100 translate-y-0"
+                            leave="transition ease-in duration-150"
+                            leaveFrom="opacity-100 translate-y-0"
+                            leaveTo="opacity-0 translate-y-1"
+                          >
+                            <Popover.Panel className="absolute -right-4 z-30 mt-3 w-screen max-w-xs transform px-4 sm:px-0 lg:max-w-3xl">
+                              <ResultFeedSettingsPanel scrollable={true} />
+                            </Popover.Panel>
+                          </Transition>
+                        </>
+                      )}
+                    </Popover>
                   </div>
                   <div className="space-y-2">
                     <ResultsContainer results={filteredResults} />

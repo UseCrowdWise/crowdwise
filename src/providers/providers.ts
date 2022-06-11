@@ -49,6 +49,7 @@ export interface ResultItem {
   // NOTE: If we change submittedUrl name, we need to update the de-duplication code
   submittedUrl: string;
   submittedDate: string;
+  submittedPrettyDate: string;
   submittedUpvotes: number;
   submittedTitle: string;
   submittedBy: string;
