@@ -1,16 +1,28 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 
-import { ResultItem } from "../providers/providers";
+import { Comment, ProviderType, ResultItem } from "../providers/providers";
+import { useSettingsStore as useSettingsStoreDI } from "../shared/settings";
+import { onFetchComments as onFetchCommentsDI } from "../utils/results";
 import ResultCard from "./ResultCard";
 
 interface Props {
   results: ResultItem[];
-  numResults: number;
+  numResults?: number;
+  useSettingsStore?: () => any;
+  onFetchComments?: (
+    a: string,
+    b: ProviderType,
+    c: (comments: Comment[]) => void
+  ) => void;
 }
 
-const ResultsContainer = (props: Props) => {
-  const { results, numResults } = props;
+const ResultsContainer = ({
+  results,
+  numResults = 8,
+  useSettingsStore = useSettingsStoreDI,
+  onFetchComments = onFetchCommentsDI,
+}: Props) => {
   const [shouldShowMore, setShouldShowMore] = useState<boolean>(false);
 
   const partialResults = shouldShowMore
@@ -21,7 +33,13 @@ const ResultsContainer = (props: Props) => {
   return (
     <div className="space-y-2">
       {partialResults.map((result, index) => (
-        <ResultCard key={index} cardPosition={index} result={result} />
+        <ResultCard
+          key={index}
+          cardPosition={index}
+          result={result}
+          useSettingsStore={useSettingsStore}
+          onFetchComments={onFetchComments}
+        />
       ))}
       {numberMoreToShow > 0 && (
         <div className="flex justify-center">
@@ -41,10 +59,6 @@ const ResultsContainer = (props: Props) => {
       )}
     </div>
   );
-};
-
-ResultsContainer.defaultProps = {
-  numResults: 8,
 };
 
 export default ResultsContainer;

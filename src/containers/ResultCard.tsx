@@ -238,13 +238,13 @@ const ResultCard = ({
       <div
         className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3 hover:bg-gray-200`}
         onClick={(e: React.MouseEvent<HTMLElement>) => {
+          openComments();
           logForumResultEvent(
             EventType.CLICK_SIDEBAR_FORUM_RESULT_COMMENTS,
             cardPosition,
             resultWithReplacedLink,
             isIncognitoMode
           );
-          openComments();
           e.stopPropagation();
         }}
       >
@@ -284,15 +284,13 @@ const ResultCard = ({
         />
       </div>
 
-      {shouldShowComments && (
-        <ResultCardComments
-          shouldShowComments={shouldShowComments}
-          commentsUrl={result.commentsLink}
-          providerType={result.providerType}
-          onFetchComments={onFetchComments}
-          fontSizes={fontSizes}
-        />
-      )}
+      <ResultCardComments
+        shouldShowComments={shouldShowComments}
+        commentsUrl={result.commentsLink}
+        providerType={result.providerType}
+        onFetchComments={onFetchComments}
+        fontSizes={fontSizes}
+      />
     </div>
   );
 };
