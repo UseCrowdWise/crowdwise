@@ -29,10 +29,26 @@ export type SortOption =
   | "newest"
   | "oldest";
 export const RESULT_FEED_SORT_OPTIONS = [
-  { key: "highest-comments", value: "Highest Comments" },
-  { key: "lowest-comments", value: "Lowest Comments" },
+  { key: "highest-comments", value: "Highest Comment Counts" },
+  { key: "lowest-comments", value: "Lowest Comment Counts" },
   { key: "highest-likes", value: "Highest Likes" },
   { key: "lowest-likes", value: "Lowest Likes" },
   { key: "newest", value: "Newest" },
   { key: "oldest", value: "Oldest" },
+];
+
+export type FilterDateOption =
+  | "all"
+  | "1-week"
+  | "1-month"
+  | "3-months"
+  | "6-months"
+  | "1-year";
+export const RESULT_FEED_FILTER_BY_MIN_DATE_OPTIONS = [
+  { key: "all", value: "All" },
+  { key: "1-week", value: "From 1 week ago" },
+  { key: "1-month", value: "From 1 month ago" },
+  { key: "3-months", value: "From 3 months ago" },
+  { key: "6-months", value: "From 6 months ago" },
+  { key: "1-year", value: "From 1 year ago" },
 ];
