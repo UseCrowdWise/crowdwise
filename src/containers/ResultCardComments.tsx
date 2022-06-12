@@ -4,8 +4,10 @@ import { stripHtml } from "string-strip-html";
 import { Comment, ProviderType } from "../providers/providers";
 import {
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
+  KEY_INCOGNITO_MODE,
   KEY_SHOULD_USE_OLD_REDDIT_LINK,
 } from "../shared/constants";
+import { EventType, logForumCommentEvent } from "../shared/events";
 import { useSettingsStore as useSettingsStoreDI } from "../shared/settings";
 import { boldFrontPortionOfWords } from "../utils/formatText";
 import { log } from "../utils/log";
@@ -45,6 +47,7 @@ const ResultCardComments = ({
   ] = useSettingsStore();
   const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const shouldUseOldRedditLink = settings[KEY_SHOULD_USE_OLD_REDDIT_LINK];
+  const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
 
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [hasFetchedComments, setHasFetchedComments] = useState(false);
@@ -106,6 +109,18 @@ const ResultCardComments = ({
           <div className="pt-2 text-indigo-600">Top Comments</div>
           {comments.map((comment: Comment, index) => {
             const commentContent = stripHtml(comment.text).result;
+
+            const onClickCommentTitle = (
+              e: React.MouseEvent<HTMLAnchorElement>
+            ) => {
+              logForumCommentEvent(
+                EventType.CLICK_SIDEBAR_FORUM_COMMENT_TITLE,
+                comment,
+                isIncognitoMode
+              );
+              e.stopPropagation();
+            };
+
             return (
               <div key={index} className="space-y-2 ">
                 <div className="hover:underline">
@@ -113,8 +128,7 @@ const ResultCardComments = ({
                     href={comment.commentLink}
                     target="_blank"
                     rel="noreferrer"
-                    // TODO
-                    onClick={() => {}}
+                    onClick={onClickCommentTitle}
                   >
                     {boldInitialCharsOfWords
                       ? boldFrontPortionOfWords(commentContent)

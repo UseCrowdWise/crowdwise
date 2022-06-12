@@ -18,7 +18,11 @@ import {
   KEY_SHOULD_USE_OLD_REDDIT_LINK,
   ML_FILTER_THRESHOLD,
 } from "../shared/constants";
-import { EventType, sendEventsToServerViaWorker } from "../shared/events";
+import {
+  EventType,
+  logForumResultEvent,
+  sendEventsToServerViaWorker,
+} from "../shared/events";
 import { useSettingsStore as useSettingsStoreDI } from "../shared/settings";
 import { classNames } from "../utils/classNames";
 import { hashStringToColor } from "../utils/color";
@@ -42,36 +46,6 @@ interface Props {
     c: (comments: Comment[]) => void
   ) => void;
 }
-
-const logForumResultEvent = (
-  eventType: EventType,
-  cardPosition: number,
-  result: ResultItem,
-  isIncognitoMode: boolean
-) => {
-  sendEventsToServerViaWorker(
-    {
-      eventType,
-      resultCardPosition: cardPosition,
-      resultProviderType: result.providerType,
-      resultProviderQueryType: result.providerQueryType,
-      resultCleanedTriggerUrl: result.cleanedTriggerUrl,
-      resultProviderRequestUrl: result.providerRequestUrl,
-      resultSubmittedUrl: result.submittedUrl,
-      resultSubmittedDate: result.submittedDate,
-      resultSubmittedPrettyDate: result.submittedPrettyDate,
-      resultSubmittedUpvotes: result.submittedUpvotes,
-      resultSubmittedTitle: result.submittedTitle,
-      resultSubmittedBy: result.submittedBy,
-      resultSubmittedByLink: result.submittedByLink,
-      resultCommentsCount: result.commentsCount,
-      resultCommentsLink: result.commentsLink,
-      resultSubSourceName: result.subSourceName,
-      resultSubSourceLink: result.subSourceLink,
-    },
-    isIncognitoMode
-  );
-};
 
 const ResultCard = ({
   result,
@@ -207,7 +181,7 @@ const ResultCard = ({
         onClick={(e: React.MouseEvent<HTMLElement>) => {
           toggleComments();
           logForumResultEvent(
-            EventType.CLICK_SIDEBAR_FORUM_RESULT_COMMENTS,
+            EventType.CLICK_SIDEBAR_FORUM_RESULT_SHOW_COMMENTS,
             cardPosition,
             resultWithReplacedLink,
             isIncognitoMode
