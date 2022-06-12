@@ -49,6 +49,11 @@ Adjust the sidebar to suit the look and feel that you like. You can customise th
 - `npm start`
 - For chrome: go to `chrome://extensions/` and `Load unpacked`, point it to the `build/` folder.
 
+### Developing UI components
+
+- `npm run storybook`
+- Go to http://localhost:6006 where you will have an auto-reloading server to iterate on UI components.
+
 ## Credits
 
 - Some HN and Reddit parsing code adapted from Newsit: https://github.com/benwinding/newsit/

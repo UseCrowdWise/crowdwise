@@ -45,7 +45,7 @@ import {
 import { createChromeStorageStateHookLocal } from "./storage/index";
 
 const SETTINGS_KEY = "settings";
-const INITIAL_VALUE = {
+export const INITIAL_SETTING_VALUES = {
   // ==== Settings ====
   [KEY_IS_DEBUG_MODE]: DEFAULT_IS_DEBUG_MODE,
   [KEY_IS_DARK_MODE]: DEFAULT_IS_DARK_MODE,
@@ -78,5 +78,5 @@ const INITIAL_VALUE = {
 
 export const useSettingsStore = createChromeStorageStateHookLocal(
   SETTINGS_KEY,
-  INITIAL_VALUE
+  INITIAL_SETTING_VALUES
 );

@@ -2,8 +2,12 @@ import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
 import React, { useState } from "react";
 import ReactTooltip from "react-tooltip";
 
-import { ProviderQueryType, ResultItem } from "../providers/providers";
-import { ProviderType } from "../providers/providers";
+import {
+  Comment,
+  ProviderQueryType,
+  ProviderType,
+  ResultItem,
+} from "../providers/providers";
 import {
   COLOR_IF_OUTSIDE_HASH,
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
@@ -15,16 +19,24 @@ import {
   ML_FILTER_THRESHOLD,
 } from "../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../shared/events";
-import { useSettingsStore } from "../shared/settings";
+import { useSettingsStore as useSettingsStoreDI } from "../shared/settings";
 import { classNames } from "../utils/classNames";
 import { hashStringToColor } from "../utils/color";
 import { boldFrontPortionOfWords } from "../utils/formatText";
+import { getImageUrl } from "../utils/image";
+import { onFetchComments as onFetchCommentsDI } from "../utils/results";
 import Badge from "./Badge";
 import ResultCardComments from "./ResultCardComments";
 
 interface Props {
   cardPosition: number;
   result: ResultItem;
+  useSettingsStore?: () => any;
+  onFetchComments?: (
+    a: string,
+    b: ProviderType,
+    c: (comments: Comment[]) => void
+  ) => void;
 }
 
 const logForumResultEvent = (
@@ -92,8 +104,12 @@ const replaceRedditLinksInResult = (
   };
 };
 
-const ResultCard = (props: Props) => {
-  const { result, cardPosition } = props;
+const ResultCard = ({
+  result,
+  cardPosition,
+  useSettingsStore = useSettingsStoreDI,
+  onFetchComments = onFetchCommentsDI,
+}: Props) => {
   const [
     settings,
     setValueAll,
@@ -204,7 +220,7 @@ const ResultCard = (props: Props) => {
         <img
           alt="Source Icon"
           className="inline h-4 w-4"
-          src={chrome.runtime.getURL(resultWithReplacedLink.providerIconUrl)}
+          src={getImageUrl(resultWithReplacedLink.providerIconUrl)}
         />
         <a
           href={resultWithReplacedLink.commentsLink}
@@ -222,13 +238,13 @@ const ResultCard = (props: Props) => {
       <div
         className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3 hover:bg-gray-200`}
         onClick={(e: React.MouseEvent<HTMLElement>) => {
+          openComments();
           logForumResultEvent(
             EventType.CLICK_SIDEBAR_FORUM_RESULT_COMMENTS,
             cardPosition,
             resultWithReplacedLink,
             isIncognitoMode
           );
-          openComments();
           e.stopPropagation();
         }}
       >
@@ -268,14 +284,13 @@ const ResultCard = (props: Props) => {
         />
       </div>
 
-      {shouldShowComments && (
-        <ResultCardComments
-          shouldShowComments={shouldShowComments}
-          commentsUrl={result.commentsLink}
-          providerType={result.providerType}
-          fontSizes={fontSizes}
-        />
-      )}
+      <ResultCardComments
+        shouldShowComments={shouldShowComments}
+        commentsUrl={result.commentsLink}
+        providerType={result.providerType}
+        onFetchComments={onFetchComments}
+        fontSizes={fontSizes}
+      />
     </div>
   );
 };

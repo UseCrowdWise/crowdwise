@@ -10,7 +10,9 @@
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js",
-    "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md}'"
+    "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",
@@ -45,6 +47,15 @@
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "@storybook/addon-actions": "^6.5.8",
+    "@storybook/addon-essentials": "^6.5.8",
+    "@storybook/addon-interactions": "^6.5.8",
+    "@storybook/addon-links": "^6.5.8",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/builder-webpack5": "^6.5.8",
+    "@storybook/manager-webpack5": "^6.5.8",
+    "@storybook/react": "^6.5.8",
+    "@storybook/testing-library": "0.0.12",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/chrome": "^0.0.177",
     "@types/lodash": "^4.14.178",

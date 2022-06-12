@@ -162,6 +162,11 @@ export class RedditResultProvider implements ResultProvider {
       const text = $(textHtml).contents().text();
       const author = childComments.find(".author")[0]?.children[0]?.data;
       const createdDate = childComments.find("time")[0]?.attribs.datetime;
+      const commentUpvotesText = childComments.find(".score .unvoted")[0];
+      const commentUpvotes = parseInt(
+        commentUpvotesText?.replace("points", "")?.trim() || "0"
+      );
+      const commentsCount = 0;
       let children = [];
       // Only look for child comments if we haven't exceeded our recursion depth
       if (depth <= MAX_COMMENT_REPLIES) {
@@ -197,8 +202,8 @@ export class RedditResultProvider implements ResultProvider {
         redditCommentsToGenericCommentMapper(redditComment, 1)
       )
       .get();
-    log.warn("Final generic comments:")
-    log.warn(genericComments)
+    log.warn("Final generic comments:");
+    log.warn(genericComments);
 
     return genericComments;
   }
