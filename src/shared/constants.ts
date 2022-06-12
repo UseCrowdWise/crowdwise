@@ -1,6 +1,7 @@
 import {
   CONTENT_BUTTON_PLACEMENT_OPTIONS,
   FONT_SIZE_OPTIONS,
+  RESULT_FEED_FILTER_BY_MIN_DATE_OPTIONS,
   RESULT_FEED_SORT_OPTIONS,
 } from "./options";
 
@@ -46,6 +47,10 @@ export const DEFAULT_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS = false;
 // ==== Result feed settings ====
 export const DEFAULT_RESULT_FEED_SORT_EXACT_URL_FIRST = true;
 export const DEFAULT_RESULT_FEED_SORT_OPTION = RESULT_FEED_SORT_OPTIONS[0];
+export const DEFAULT_RESULT_FEED_FILTER_BY_MIN_COMMENTS = 0;
+export const DEFAULT_RESULT_FEED_FILTER_BY_MIN_LIKES = 1;
+export const DEFAULT_RESULT_FEED_FILTER_BY_MIN_DATE =
+  RESULT_FEED_FILTER_BY_MIN_DATE_OPTIONS[0];
 
 // Hotkeys. See reference for special shortcuts.
 // https://github.com/JohannesKlauss/react-hotkeys-hook
@@ -77,6 +82,12 @@ export const KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS =
 export const KEY_RESULT_FEED_SORT_EXACT_URL_FIRST =
   "result-feed-sort-exact-url-first";
 export const KEY_RESULT_FEED_SORT_OPTION = "result-feed-sort-option";
+export const KEY_RESULT_FEED_FILTER_BY_MIN_COMMENTS =
+  "result-feed-filter-by-min-comments";
+export const KEY_RESULT_FEED_FILTER_BY_MIN_LIKES =
+  "result-feed-filter-by-min-likes";
+export const KEY_RESULT_FEED_FILTER_BY_MIN_DATE =
+  "result-feed-filter-by-min-date";
 
 // Cache settings
 export const CACHE_URL_DURATION_SEC = 120;

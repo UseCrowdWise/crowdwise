@@ -9,6 +9,7 @@ import {
   QuestionMarkCircleIcon,
   SearchIcon,
 } from "@heroicons/react/outline";
+import { differenceInDays } from "date-fns";
 import { parseISO } from "date-fns";
 import React, { Fragment, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -30,6 +31,9 @@ import {
   KEY_INCOGNITO_MODE,
   KEY_IS_DARK_MODE,
   KEY_IS_DEBUG_MODE,
+  KEY_RESULT_FEED_FILTER_BY_MIN_COMMENTS,
+  KEY_RESULT_FEED_FILTER_BY_MIN_DATE,
+  KEY_RESULT_FEED_FILTER_BY_MIN_LIKES,
   KEY_RESULT_FEED_SORT_EXACT_URL_FIRST,
   KEY_RESULT_FEED_SORT_OPTION,
   ML_FILTER_THRESHOLD,
@@ -37,7 +41,7 @@ import {
   SLACK_INVITE_LINK,
 } from "../../shared/constants";
 import { EventType, sendEventsToServerViaWorker } from "../../shared/events";
-import { SortOption } from "../../shared/options";
+import { FilterDateOption, SortOption } from "../../shared/options";
 import { useSettingsStore } from "../../shared/settings";
 import { classNames } from "../../utils/classNames";
 import { log } from "../../utils/log";
@@ -101,10 +105,56 @@ const selectSortFunction = (
     _exactUrlComparison(x, y) || _selectedComparison(x, y);
 };
 
+const filterResults = (
+  results: ResultItem[],
+  filterByDate: FilterDateOption,
+  filterByMinCommentCounts: number,
+  filterByMinLikeCounts: number
+) => {
+  return results.filter((result) => {
+    // Filter by relevance
+    const passRelevanceFilter = result.relevanceScore
+      ? result.relevanceScore > ML_FILTER_THRESHOLD
+      : true;
+
+    // Filter by dates
+    const daysDiffBetweenNowAndResult = differenceInDays(
+      new Date(),
+      parseISO(result.submittedDate)
+    );
+
+    const passDateFilter = {
+      all: true,
+      "1-week": daysDiffBetweenNowAndResult - 7 <= 0,
+      "1-month": daysDiffBetweenNowAndResult - 30 <= 0,
+      "3-months": daysDiffBetweenNowAndResult - 90 <= 0,
+      "6-months": daysDiffBetweenNowAndResult - 180 <= 0,
+      "1-year": daysDiffBetweenNowAndResult - 365 <= 0,
+    }[filterByDate];
+
+    // Filter by comments count
+    const passCommentCountsFilter =
+      result.commentsCount >= filterByMinCommentCounts;
+
+    // Filter by likes count
+    const passLikeCountsFilter =
+      result.submittedUpvotes >= filterByMinLikeCounts;
+    return (
+      passRelevanceFilter &&
+      passDateFilter &&
+      passCommentCountsFilter &&
+      passLikeCountsFilter
+    );
+  });
+};
+
 const sortAndFilterResults = (
   providerData: AllProviderResults | undefined,
   sortOption: SortOption,
   sortExactUrlFirst: boolean,
+  filterByDate: FilterDateOption,
+  filterByMinCommentCounts: number,
+  filterByMinLikeCounts: number,
   isDebugMode: boolean
 ) => {
   const hnResults =
@@ -124,10 +174,11 @@ const sortAndFilterResults = (
   // In debug mode, we want to see all results
   return isDebugMode
     ? allResults
-    : allResults.filter((result) =>
-        result.relevanceScore
-          ? result.relevanceScore > ML_FILTER_THRESHOLD
-          : true
+    : filterResults(
+        allResults,
+        filterByDate,
+        filterByMinCommentCounts,
+        filterByMinLikeCounts
       );
 };
 
@@ -188,12 +239,19 @@ const Sidebar = () => {
   };
 
   const isDebugMode = settings[KEY_IS_DEBUG_MODE];
+  const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
   const isDarkMode = settings[KEY_IS_DARK_MODE];
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
+
   const resultFeedSortExactUrlFirst =
     settings[KEY_RESULT_FEED_SORT_EXACT_URL_FIRST];
   const resultFeedSortOption = settings[KEY_RESULT_FEED_SORT_OPTION];
-  const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
+  const resultFeedFilterByMinDate =
+    settings[KEY_RESULT_FEED_FILTER_BY_MIN_DATE];
+  const resultFeedFilterByMinComments =
+    settings[KEY_RESULT_FEED_FILTER_BY_MIN_COMMENTS];
+  const resultFeedFilterByMinLikes =
+    settings[KEY_RESULT_FEED_FILTER_BY_MIN_LIKES];
 
   // Handles message from background script that our URL changed.
   // We receive this message only when we are in a SPA and the link changes without full-page reload.
@@ -296,6 +354,9 @@ const Sidebar = () => {
     providerData,
     resultFeedSortOption.key,
     resultFeedSortExactUrlFirst,
+    resultFeedFilterByMinDate.key,
+    resultFeedFilterByMinComments,
+    resultFeedFilterByMinLikes,
     isDebugMode
   );
   const noDiscussions =
@@ -475,19 +536,7 @@ const Sidebar = () => {
               <div className="grow" />
             </div>
 
-            {noDiscussions || !providerData ? (
-              <div className="text-center">
-                <EmptyDiscussionsState />
-                {searchGoogleUrl && (
-                  <button
-                    onClick={() => openGoogleInNewTab(searchGoogleUrl)}
-                    className="inline-flex items-center mt-6 px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-                  >
-                    Search on Google
-                  </button>
-                )}
-              </div>
-            ) : isDebugMode ? (
+            {providerData && isDebugMode ? (
               <div className="space-y-6 py-1">
                 {haveHnExactResults || haveRedditExactResults ? (
                   <div>
@@ -701,6 +750,20 @@ const Sidebar = () => {
                     <ResultsContainer results={filteredResults} />
                   </div>
                 </div>
+              </div>
+            )}
+
+            {(noDiscussions || !providerData) && (
+              <div className="text-center">
+                <EmptyDiscussionsState />
+                {searchExactUrl && (
+                  <button
+                    onClick={() => openGoogleInNewTab(searchExactUrl)}
+                    className="inline-flex items-center mt-6 px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Search on Google
+                  </button>
+                )}
               </div>
             )}
           </div>
