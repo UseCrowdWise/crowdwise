@@ -64,18 +64,33 @@ export const mockComments: Comment[] = [
     text: 'The advantage with firebase web sockets is that when they inevitably get blocked by firewalls you can always say "Would you mind whitelisting google? Thanks."',
     author: "rickdg",
     createdDate: "",
+    commentLink: "",
+    authorLink: "",
+    points: 0,
+    commentsCount: 0,
+    createdPrettyDate: "",
     children: [],
   },
   {
     text: "Is that free or not? Cause I didn't see it anything.",
     author: "osmanyilmaz",
     createdDate: "",
+    commentLink: "",
+    authorLink: "",
+    points: 0,
+    commentsCount: 0,
+    createdPrettyDate: "",
     children: [],
   },
   {
     text: "Besides the pricing, the other painful thing about Firebase are the storage rules. Given I understand you want to give maximum control to frontend developers without having a backend, the fact that I need to reimplement them if I switch serverless is an absolute pain. What are your plan regarding this aspect. Where are we going to implement the business logic?",
     author: "InvOfSmallC",
     createdDate: "",
+    commentLink: "",
+    authorLink: "",
+    points: 0,
+    commentsCount: 0,
+    createdPrettyDate: "",
     children: [],
   },
 ];
@@ -130,10 +145,20 @@ export const mockResults: ResultItem[] = [
   },
 ];
 
-export const createMockOnFetchComments = (mockComments: Comment[]) => {
-  return (
+const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const createMockOnFetchComments = (
+  time: number,
+  mockComments: Comment[]
+) => {
+  return async (
     commentsUrl: string,
     providerType: ProviderType,
     commentsCallback: (comments: Comment[]) => void
-  ) => commentsCallback(mockComments);
+  ) => {
+    await sleep(time);
+    commentsCallback(mockComments);
+  };
 };

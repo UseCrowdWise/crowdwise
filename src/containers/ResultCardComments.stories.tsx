@@ -1,7 +1,12 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 
-import { createMockOnFetchComments, mockComments } from "../tests/mocks";
+import { ProviderType } from "../providers/providers";
+import {
+  createMockOnFetchComments,
+  mockComments,
+  mockUseSettingsStore,
+} from "../tests/mocks";
 import ResultCardComments from "./ResultCardComments";
 
 export default {
@@ -19,6 +24,10 @@ const Template: ComponentStory<typeof ResultCardComments> = (args) => (
 export const Primary = Template.bind({});
 Primary.args = {
   shouldShowComments: true,
-  onFetchComments: createMockOnFetchComments(mockComments),
-  fontSizes: { subText: "text-xs" },
+  toggleShouldShowComments: () => {},
+  commentsUrl: "",
+  providerType: ProviderType.REDDIT,
+  onClickSubmittedBy: () => {},
+  onFetchComments: createMockOnFetchComments(0, mockComments),
+  useSettingsStore: mockUseSettingsStore,
 };

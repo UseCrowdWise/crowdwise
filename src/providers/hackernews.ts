@@ -30,9 +30,14 @@ interface HnJsonResult {
 }
 
 interface HnComment {
+  id: string;
   author: string;
   text: string;
   created_at: string;
+  options: string[];
+  points?: number;
+  story_id: number;
+  parent_id: number;
   children: HnComment[];
 }
 
@@ -44,6 +49,15 @@ interface HnCommentsResults {
 const MAX_COMMENTS = 3;
 // 2 refers to a reply chain 2 replies long (main -> reply -> replyback)
 const MAX_COMMENT_REPLIES = 0;
+
+const createAuthorLink = (authorName: string) =>
+  `https://news.ycombinator.com/user?id=${authorName}`;
+
+const createPostLink = (postId: string) =>
+  `https://news.ycombinator.com/item?id=${postId}`;
+
+const createCommentLink = (postId: string, commentId: string) =>
+  `https://news.ycombinator.com/item?id=${postId}#${commentId}`;
 
 export class HnResultProvider implements ResultProvider {
   // Main function to get all relevant results from HN
@@ -203,9 +217,18 @@ export class HnResultProvider implements ResultProvider {
         );
       }
       return {
+        commentLink: createCommentLink(
+          String(hnComment.story_id),
+          hnComment.id
+        ),
         author: hnComment.author || "",
         text: hnComment.text ? hnComment.text.slice(3, -4) : "", // We need to remove the <p> tag
         createdDate: hnComment.created_at,
+        createdPrettyDate: timeSince(hnComment.created_at),
+        authorLink: createAuthorLink(hnComment.author),
+        commentsCount: hnComment.children.length,
+        // HackerNews points is usually null
+        points: hnComment.points,
         // Recursively map on the comment children
         children,
       };
@@ -242,9 +265,9 @@ function translateHnToItem(
     submittedUpvotes: h.points,
     submittedTitle: h.title,
     submittedBy: h.author,
-    submittedByLink: `https://news.ycombinator.com/user?id=${h.author}`,
+    submittedByLink: createAuthorLink(h.author),
     commentsCount: h.num_comments,
-    commentsLink: `https://news.ycombinator.com/item?id=${h.objectID}`,
+    commentsLink: createPostLink(h.objectID),
     subSourceName: "",
     subSourceLink: "",
   };

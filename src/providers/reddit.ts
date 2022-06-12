@@ -4,7 +4,7 @@ import { parseISO } from "date-fns";
 import { CACHE_URL_DURATION_SEC } from "../shared/constants";
 import { cachedApiCall } from "../utils/cache";
 import { log } from "../utils/log";
-import { replaceTimeStr } from "../utils/time";
+import { replaceTimeStr, timeSince } from "../utils/time";
 import {
   Comment,
   ProviderQueryType,
@@ -161,12 +161,16 @@ export class RedditResultProvider implements ResultProvider {
       const textHtml = childComments.find(".md")[0];
       const text = $(textHtml).contents().text();
       const author = childComments.find(".author")[0]?.children[0]?.data;
+      const authorLink = childComments.find(".author")[0]?.attribs.href;
       const createdDate = childComments.find("time")[0]?.attribs.datetime;
+      const createdPrettyDate = timeSince(parseISO(createdDate));
       const commentUpvotesText = childComments.find(".score .unvoted")[0];
       const commentUpvotes = parseInt(
         commentUpvotesText?.replace("points", "")?.trim() || "0"
       );
-      const commentsCount = 0;
+      // This link only shows the comment and its children, and not the other comments
+      const commentLink = childComments.find(".bylink")[0]?.attribs.href;
+
       let children = [];
       // Only look for child comments if we haven't exceeded our recursion depth
       if (depth <= MAX_COMMENT_REPLIES) {
@@ -184,13 +188,16 @@ export class RedditResultProvider implements ResultProvider {
           )
           .get();
       }
-      const genericComment: Comment = {
+      return {
+        commentLink,
+        authorLink,
+        points: commentUpvotes,
         author,
         text,
         createdDate,
+        createdPrettyDate,
         children,
       };
-      return genericComment;
     };
 
     // Get root comments
