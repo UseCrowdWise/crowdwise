@@ -319,6 +319,13 @@ const Sidebar = () => {
     // Update provider info ONLY IF we are not incognito
     if (!isLoadingStore && !settings[KEY_INCOGNITO_MODE]) {
       updateProviderData();
+
+      sendEventsToServerViaWorker(
+        {
+          eventType: EventType.LOAD_SIDEBAR,
+        },
+        isIncognitoMode
+      );
     }
 
     // Remove listener when this component unmounts
@@ -326,8 +333,20 @@ const Sidebar = () => {
   }, [settings[KEY_INCOGNITO_MODE], isLoadingStore]);
 
   // Send a message to the extension (alternative: use redux?) to close
-  const closeSideBar = () => sendMessageToCurrentTab({ closeSideBar: true });
-  const toggleSideBar = () => sendMessageToCurrentTab({ toggleSideBar: true });
+  const closeSideBar = () => {
+    sendEventsToServerViaWorker(
+      { eventType: EventType.CLOSE_SIDEBAR },
+      isIncognitoMode
+    );
+    sendMessageToCurrentTab({ closeSideBar: true });
+  };
+  const toggleSideBar = () => {
+    sendEventsToServerViaWorker(
+      { eventType: EventType.TOGGLE_SIDEBAR },
+      isIncognitoMode
+    );
+    sendMessageToCurrentTab({ toggleSideBar: true });
+  };
   const openGoogleInNewTab = (googleUrl: string) => {
     sendEventsToServerViaWorker(
       {

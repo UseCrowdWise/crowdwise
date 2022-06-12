@@ -27,7 +27,7 @@ Reddit.args = {
   cardPosition: 0,
   result: mockRedditResultItem,
   useSettingsStore: mockUseSettingsStore,
-  onFetchComments: createMockOnFetchComments(mockComments),
+  onFetchComments: createMockOnFetchComments(0, mockComments),
 };
 
 export const HackerNews = Template.bind({});
@@ -35,5 +35,5 @@ HackerNews.args = {
   cardPosition: 0,
   result: mockHackerNewsResultItem,
   useSettingsStore: mockUseSettingsStore,
-  onFetchComments: createMockOnFetchComments(mockComments),
+  onFetchComments: createMockOnFetchComments(0, mockComments),
 };

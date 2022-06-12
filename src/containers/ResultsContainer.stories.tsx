@@ -26,5 +26,13 @@ Primary.args = {
   results: mockResults,
   numResults: 10,
   useSettingsStore: mockUseSettingsStore,
-  onFetchComments: createMockOnFetchComments(mockComments),
+  onFetchComments: createMockOnFetchComments(0, mockComments),
+};
+
+export const LoadingComments = Template.bind({});
+LoadingComments.args = {
+  results: mockResults,
+  numResults: 10,
+  useSettingsStore: mockUseSettingsStore,
+  onFetchComments: createMockOnFetchComments(100000000, mockComments),
 };

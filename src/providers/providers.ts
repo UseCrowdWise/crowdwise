@@ -66,9 +66,14 @@ export interface ResultItem {
 }
 
 export interface Comment {
+  commentLink: string;
   text: string;
   author: string;
+  authorLink: string;
+  points?: number;
+  commentsCount?: number;
   createdDate: string;
+  createdPrettyDate: string;
   children: Comment[];
 }
 
@@ -111,16 +116,18 @@ const hackernews = new HnResultProvider();
 const providers: ResultProvider[] = [reddit, hackernews];
 // Can't use ProviderType as a key so we need a function
 const providerTypeToProvider = (providerType: ProviderType): ResultProvider => {
-  switch(providerType) {
+  switch (providerType) {
     case ProviderType.REDDIT:
       return reddit;
     case ProviderType.HACKER_NEWS:
-      return hackernews
+      return hackernews;
     default:
-      throw new Error('Programmer error: provider type function does not recognized provider ' + providerType)
+      throw new Error(
+        "Programmer error: provider type function does not recognized provider " +
+          providerType
+      );
   }
-}
-
+};
 
 /**
  * Main entry point for content script to get provider data.
@@ -281,8 +288,11 @@ export async function fetchDataFromProviders(
   };
 }
 
-export async function fetchCommentsFromProvider(providerType: ProviderType, url: string) {
-  const provider: ResultProvider = providerTypeToProvider(providerType)
-  const results = await provider.getComments(url)
+export async function fetchCommentsFromProvider(
+  providerType: ProviderType,
+  url: string
+) {
+  const provider: ResultProvider = providerTypeToProvider(providerType);
+  const results = await provider.getComments(url);
   return results;
 }

@@ -18,14 +18,22 @@ import {
   KEY_SHOULD_USE_OLD_REDDIT_LINK,
   ML_FILTER_THRESHOLD,
 } from "../shared/constants";
-import { EventType, sendEventsToServerViaWorker } from "../shared/events";
+import {
+  EventType,
+  logForumResultEvent,
+  sendEventsToServerViaWorker,
+} from "../shared/events";
 import { useSettingsStore as useSettingsStoreDI } from "../shared/settings";
 import { classNames } from "../utils/classNames";
 import { hashStringToColor } from "../utils/color";
 import { boldFrontPortionOfWords } from "../utils/formatText";
 import { getImageUrl } from "../utils/image";
-import { onFetchComments as onFetchCommentsDI } from "../utils/results";
+import {
+  onFetchComments as onFetchCommentsDI,
+  replaceRedditLinksInResult,
+} from "../utils/results";
 import Badge from "./Badge";
+import CardBottomBar from "./CardBottomBar";
 import ResultCardComments from "./ResultCardComments";
 
 interface Props {
@@ -38,71 +46,6 @@ interface Props {
     c: (comments: Comment[]) => void
   ) => void;
 }
-
-const logForumResultEvent = (
-  eventType: EventType,
-  cardPosition: number,
-  result: ResultItem,
-  isIncognitoMode: boolean
-) => {
-  sendEventsToServerViaWorker(
-    {
-      eventType,
-      resultCardPosition: cardPosition,
-      resultProviderType: result.providerType,
-      resultProviderQueryType: result.providerQueryType,
-      resultCleanedTriggerUrl: result.cleanedTriggerUrl,
-      resultProviderRequestUrl: result.providerRequestUrl,
-      resultSubmittedUrl: result.submittedUrl,
-      resultSubmittedDate: result.submittedDate,
-      resultSubmittedPrettyDate: result.submittedPrettyDate,
-      resultSubmittedUpvotes: result.submittedUpvotes,
-      resultSubmittedTitle: result.submittedTitle,
-      resultSubmittedBy: result.submittedBy,
-      resultSubmittedByLink: result.submittedByLink,
-      resultCommentsCount: result.commentsCount,
-      resultCommentsLink: result.commentsLink,
-      resultSubSourceName: result.subSourceName,
-      resultSubSourceLink: result.subSourceLink,
-    },
-    isIncognitoMode
-  );
-};
-
-const replaceRedditLink = (
-  url: string | undefined,
-  shouldUseOldRedditLink: boolean
-): string => {
-  if (!url) return "";
-  return shouldUseOldRedditLink
-    ? url
-    : url.replace("old.reddit.com", "reddit.com");
-};
-
-const replaceRedditLinksInResult = (
-  result: ResultItem,
-  shouldUseOldRedditLink: boolean
-): ResultItem => {
-  return {
-    ...result,
-    submittedUrl: replaceRedditLink(
-      result.submittedUrl,
-      shouldUseOldRedditLink
-    ),
-    submittedByLink: replaceRedditLink(
-      result.submittedByLink,
-      shouldUseOldRedditLink
-    ),
-    commentsLink: replaceRedditLink(
-      result.commentsLink,
-      shouldUseOldRedditLink
-    ),
-    subSourceLink: replaceRedditLink(
-      result.subSourceLink,
-      shouldUseOldRedditLink
-    ),
-  };
-};
 
 const ResultCard = ({
   result,
@@ -119,16 +62,15 @@ const ResultCard = ({
     isLoadingStore,
   ] = useSettingsStore();
 
-  const [shouldShowComments, setShouldShowComments] = useState(false);
+  const [shouldShowComments, setShouldShowComments] = useState(
+    cardPosition < 1
+  );
 
   const isDebugMode = settings[KEY_IS_DEBUG_MODE];
   const shouldUseOldRedditLink = settings[KEY_SHOULD_USE_OLD_REDDIT_LINK];
   const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
   const fontSizes = settings[KEY_FONT_SIZES];
   const isIncognitoMode = settings[KEY_INCOGNITO_MODE];
-  const colorForSubmittedBy = settings[KEY_SHOULD_COLOR_FOR_SUBMITTED_BY]
-    ? hashStringToColor(result.submittedBy)
-    : COLOR_IF_OUTSIDE_HASH;
 
   const resultWithReplacedLink = replaceRedditLinksInResult(
     result,
@@ -157,24 +99,13 @@ const ResultCard = ({
       : false;
 
   // Open comments bar beneath this result
-  const openComments = () => {
+  const toggleComments = () => {
     // Toggle show state
     setShouldShowComments((prev: boolean) => !prev);
   };
 
   return (
-    <div
-      className="flex cursor-pointer flex-col space-y-2 p-3"
-      onClick={() => {
-        logForumResultEvent(
-          EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
-          cardPosition,
-          resultWithReplacedLink,
-          isIncognitoMode
-        );
-        onCardClick(resultWithReplacedLink.commentsLink);
-      }}
-    >
+    <div className="flex flex-col space-y-2 p-3">
       {isDebugMode && result.relevanceScore !== undefined && (
         <div className="text-base font-bold">
           Score: {result.relevanceScore.toFixed(1)}{" "}
@@ -214,8 +145,17 @@ const ResultCard = ({
           isFiltered
             ? "text-zinc-600 dark:text-zinc-500"
             : "text-black dark:text-zinc-300",
-          "font-normal space-x-2 hover:underline"
+          "cursor-pointer font-normal space-x-2 hover:underline"
         )}
+        onClick={() => {
+          logForumResultEvent(
+            EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE,
+            cardPosition,
+            resultWithReplacedLink,
+            isIncognitoMode
+          );
+          onCardClick(resultWithReplacedLink.commentsLink);
+        }}
       >
         <img
           alt="Source Icon"
@@ -235,12 +175,13 @@ const ResultCard = ({
             : resultWithReplacedLink.submittedTitle}
         </a>
       </div>
+
       <div
-        className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3 hover:bg-gray-200`}
+        className="rounded hover:outline outline-2 outline-slate-200 dark:outline-slate-600 outline-offset-4 cursor-pointer"
         onClick={(e: React.MouseEvent<HTMLElement>) => {
-          openComments();
+          toggleComments();
           logForumResultEvent(
-            EventType.CLICK_SIDEBAR_FORUM_RESULT_COMMENTS,
+            EventType.CLICK_SIDEBAR_FORUM_RESULT_SHOW_COMMENTS,
             cardPosition,
             resultWithReplacedLink,
             isIncognitoMode
@@ -248,33 +189,17 @@ const ResultCard = ({
           e.stopPropagation();
         }}
       >
-        <div className="flex flex-row items-center space-x-1">
-          <strong className="text-slate-500">
-            {resultWithReplacedLink.commentsCount}
-          </strong>
-          <ChatIcon className="h-3 w-3 text-slate-300" />
-        </div>
-        <div className="flex flex-row items-center space-x-1">
-          <strong className="text-slate-500">
-            {resultWithReplacedLink.submittedUpvotes}
-          </strong>
-          <ThumbUpIcon className="h-3 w-3 text-slate-300" />
-        </div>
-        <div className="text-slate-600">
-          {resultWithReplacedLink.submittedPrettyDate}
-        </div>
-        <div className="grow" />
-        <div className={`text-[11px] ${colorForSubmittedBy} hover:underline`}>
-          <a
-            href={resultWithReplacedLink.submittedByLink}
-            target="_blank"
-            onClick={createOnClickLogForumEvent(
-              EventType.CLICK_SIDEBAR_FORUM_RESULT_AUTHOR
-            )}
-          >
-            {resultWithReplacedLink.submittedBy}
-          </a>
-        </div>
+        <CardBottomBar
+          commentsCount={resultWithReplacedLink.commentsCount}
+          submittedUpvotes={resultWithReplacedLink.submittedUpvotes}
+          submittedPrettyDate={resultWithReplacedLink.submittedPrettyDate}
+          submittedByLink={resultWithReplacedLink.submittedByLink}
+          submittedBy={resultWithReplacedLink.submittedBy}
+          onClickSubmittedBy={createOnClickLogForumEvent(
+            EventType.CLICK_SIDEBAR_FORUM_RESULT_AUTHOR
+          )}
+          useSettingsStore={useSettingsStore}
+        />
         <ReactTooltip
           arrowColor="transparent"
           place="top"
@@ -286,10 +211,14 @@ const ResultCard = ({
 
       <ResultCardComments
         shouldShowComments={shouldShowComments}
+        toggleShouldShowComments={toggleComments}
         commentsUrl={result.commentsLink}
         providerType={result.providerType}
         onFetchComments={onFetchComments}
-        fontSizes={fontSizes}
+        onClickSubmittedBy={createOnClickLogForumEvent(
+          EventType.CLICK_SIDEBAR_FORUM_RESULT_AUTHOR
+        )}
+        useSettingsStore={useSettingsStore}
       />
     </div>
   );
