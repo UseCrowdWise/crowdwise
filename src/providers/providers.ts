@@ -14,6 +14,7 @@ export interface ResultProvider {
   getExactUrlResults(url: string): Promise<SingleProviderResults>;
   getSiteUrlResults(url: string): Promise<SingleProviderResults>;
   getTitleResults(url: string, title: string): Promise<SingleProviderResults>;
+  getComments(url: string): Promise<Comment[]>;
 }
 
 export enum ProviderType {
@@ -108,6 +109,18 @@ const hackernews = new HnResultProvider();
 
 // Build a data structure of all providers so we can do things programmatically
 const providers: ResultProvider[] = [reddit, hackernews];
+// Can't use ProviderType as a key so we need a function
+const providerTypeToProvider = (providerType: ProviderType): ResultProvider => {
+  switch(providerType) {
+    case ProviderType.REDDIT:
+      return reddit;
+    case ProviderType.HACKER_NEWS:
+      return hackernews
+    default:
+      throw new Error('Programmer error: provider type function does not recognized provider ' + providerType)
+  }
+}
+
 
 /**
  * Main entry point for content script to get provider data.
@@ -266,4 +279,10 @@ export async function fetchDataFromProviders(
     numResults,
     numExactResults,
   };
+}
+
+export async function fetchCommentsFromProvider(providerType: ProviderType, url: string) {
+  const provider: ResultProvider = providerTypeToProvider(providerType)
+  const results = await provider.getComments(url)
+  return results;
 }

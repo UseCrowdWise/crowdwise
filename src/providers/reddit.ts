@@ -17,7 +17,7 @@ import {
 // NOTE: critical to prevent us from processing all possible comments
 const MAX_COMMENTS = 3;
 // 2 refers to a reply chain 2 replies long (main -> reply -> replyback)
-const MAX_COMMENT_REPLIES = 2;
+const MAX_COMMENT_REPLIES = 0;
 
 const cheerio = require("cheerio");
 
@@ -197,8 +197,8 @@ export class RedditResultProvider implements ResultProvider {
         redditCommentsToGenericCommentMapper(redditComment, 1)
       )
       .get();
-    // log.warn("Final generic comments:")
-    // log.warn(genericComments)
+    log.warn("Final generic comments:")
+    log.warn(genericComments)
 
     return genericComments;
   }
