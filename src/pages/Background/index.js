@@ -1,4 +1,7 @@
-import { fetchDataFromProviders } from "../../providers/providers";
+import {
+  fetchCommentsFromProvider,
+  fetchDataFromProviders,
+} from "../../providers/providers";
 import {
   CACHE_CLEAR_TABID_ALARM_INTERVAL_MIN,
   CACHE_CLEAR_TABID_ALARM_NAME,
@@ -164,6 +167,16 @@ async function handleOnMessage(request, sender) {
       } catch (e) {
         log.debug(e.message);
       }
+    } else if (request.getComments) {
+      log.debug("BG: Received request for comments.");
+      // Tab is asking for comments
+      const comments = await fetchCommentsFromProvider(
+        request.providerType,
+        request.commentsUrl
+      );
+      log.debug("BG: Fetched comments:");
+      log.debug(comments);
+      return comments;
     }
   }
   return {};

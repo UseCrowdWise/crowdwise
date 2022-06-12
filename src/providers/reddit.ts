@@ -197,8 +197,8 @@ export class RedditResultProvider implements ResultProvider {
         redditCommentsToGenericCommentMapper(redditComment, 1)
       )
       .get();
-    // log.warn("Final generic comments:")
-    // log.warn(genericComments)
+    log.warn("Final generic comments:")
+    log.warn(genericComments)
 
     return genericComments;
   }

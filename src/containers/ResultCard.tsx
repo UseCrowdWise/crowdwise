@@ -1,8 +1,9 @@
 import { ChatIcon, ThumbUpIcon } from "@heroicons/react/solid";
-import React from "react";
+import React, { useState } from "react";
 import ReactTooltip from "react-tooltip";
 
 import { ProviderQueryType, ResultItem } from "../providers/providers";
+import { ProviderType } from "../providers/providers";
 import {
   COLOR_IF_OUTSIDE_HASH,
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
@@ -19,6 +20,7 @@ import { classNames } from "../utils/classNames";
 import { hashStringToColor } from "../utils/color";
 import { boldFrontPortionOfWords } from "../utils/formatText";
 import Badge from "./Badge";
+import ResultCardComments from "./ResultCardComments";
 
 interface Props {
   cardPosition: number;
@@ -101,6 +103,8 @@ const ResultCard = (props: Props) => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  const [shouldShowComments, setShouldShowComments] = useState(false);
+
   const isDebugMode = settings[KEY_IS_DEBUG_MODE];
   const shouldUseOldRedditLink = settings[KEY_SHOULD_USE_OLD_REDDIT_LINK];
   const boldInitialCharsOfWords = settings[KEY_BOLD_INITIAL_CHARS_OF_WORDS];
@@ -135,6 +139,12 @@ const ResultCard = (props: Props) => {
     result.relevanceScore !== undefined
       ? result.relevanceScore < ML_FILTER_THRESHOLD
       : false;
+
+  // Open comments bar beneath this result
+  const openComments = () => {
+    // Toggle show state
+    setShouldShowComments((prev: boolean) => !prev);
+  };
 
   return (
     <div
@@ -209,7 +219,19 @@ const ResultCard = (props: Props) => {
             : resultWithReplacedLink.submittedTitle}
         </a>
       </div>
-      <div className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3`}>
+      <div
+        className={`${fontSizes.subText} flex flex-row flex-wrap space-x-3 hover:bg-gray-200`}
+        onClick={(e: React.MouseEvent<HTMLElement>) => {
+          logForumResultEvent(
+            EventType.CLICK_SIDEBAR_FORUM_RESULT_COMMENTS,
+            cardPosition,
+            resultWithReplacedLink,
+            isIncognitoMode
+          );
+          openComments();
+          e.stopPropagation();
+        }}
+      >
         <div className="flex flex-row items-center space-x-1">
           <strong className="text-slate-500">
             {resultWithReplacedLink.commentsCount}
@@ -245,6 +267,14 @@ const ResultCard = (props: Props) => {
           delayShow={500}
         />
       </div>
+
+      {shouldShowComments && (
+        <ResultCardComments
+          shouldShowComments={shouldShowComments}
+          commentsUrl={result.commentsLink}
+          providerType={result.providerType}
+        />
+      )}
     </div>
   );
 };
