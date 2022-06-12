@@ -15,8 +15,8 @@ export enum EventType {
   CLICK_SIDEBAR_SLACK_ICON = "click_sidebar_slack_icon",
   CHANGE_SETTING = "change_setting",
   LOAD_SIDEBAR = "load_sidebar",
-  CLICK_OPEN_SIDEBAR = "click_open_sidebar",
-  CLICK_CLOSE_SIDEBAR = "click_close_sidebar",
+  TOGGLE_SIDEBAR = "toggle_sidebar",
+  CLOSE_SIDEBAR = "close_sidebar",
 }
 
 export const sendEventsToServer = async (payload: Map<string, any>) => {
