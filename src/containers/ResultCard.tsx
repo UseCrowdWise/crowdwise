@@ -273,6 +273,7 @@ const ResultCard = (props: Props) => {
           shouldShowComments={shouldShowComments}
           commentsUrl={result.commentsLink}
           providerType={result.providerType}
+          fontSizes={fontSizes}
         />
       )}
     </div>
