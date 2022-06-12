@@ -10,10 +10,21 @@ export interface Props {
   commentsUrl: string;
   providerType: ProviderType;
   fontSizes: any;
+  onFetchComments: (
+    commentsUrl: string,
+    providerType: ProviderType,
+    callback: (comments: Comment[]) => void
+  ) => void;
 }
 
 const ResultCardComments = (props: Props) => {
-  const { shouldShowComments, commentsUrl, providerType, fontSizes } = props;
+  const {
+    shouldShowComments,
+    commentsUrl,
+    providerType,
+    fontSizes,
+    onFetchComments,
+  } = props;
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [hasFetchedComments, setHasFetchedComments] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -22,15 +33,13 @@ const ResultCardComments = (props: Props) => {
     if (shouldShowComments && !hasFetchedComments) {
       setHasFetchedComments(true);
       log.debug("Sending message to bg script for comments.");
-      chrome.runtime.sendMessage(
-        { getComments: true, commentsUrl, providerType },
-        (newComments: Comment[]) => {
-          log.debug("Comments:");
-          log.debug(newComments);
-          setComments(newComments);
-          setIsLoadingComments(false);
-        }
-      );
+
+      onFetchComments(commentsUrl, providerType, (newComments: Comment[]) => {
+        log.debug("Comments:");
+        log.debug(newComments);
+        setComments(newComments);
+        setIsLoadingComments(false);
+      });
     }
   }, [shouldShowComments]);
 
