@@ -478,9 +478,9 @@ const Sidebar = () => {
             {noDiscussions || !providerData ? (
               <div className="text-center">
                 <EmptyDiscussionsState />
-                {searchExactUrl && (
+                {searchGoogleUrl && (
                   <button
-                    onClick={() => openGoogleInNewTab(searchExactUrl)}
+                    onClick={() => openGoogleInNewTab(searchGoogleUrl)}
                     className="inline-flex items-center mt-6 px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
                   >
                     Search on Google
