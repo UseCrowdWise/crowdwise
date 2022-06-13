@@ -34,7 +34,7 @@ const ResultsContainer = ({
     <div className="space-y-2">
       {partialResults.map((result, index) => (
         <ResultCard
-          key={index}
+          key={result.commentsLink}
           cardPosition={index}
           result={result}
           useSettingsStore={useSettingsStore}
