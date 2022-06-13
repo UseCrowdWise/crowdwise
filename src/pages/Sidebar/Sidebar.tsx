@@ -212,6 +212,7 @@ const Sidebar = () => {
   log.debug("Sidebar re-render");
 
   const [providerData, setProviderData] = useState<AllProviderResults>();
+  const [filteredResults, setFilteredResults] = useState<ResultItem[]>([]);
   const [isLoadingProviderData, setIsLoadingProviderData] =
     useState<boolean>(false);
   const [hasFetchedDataForThisPage, setHasFetchedDataForThisPage] =
@@ -294,9 +295,25 @@ const Sidebar = () => {
         setHasFetchedDataForThisPage(true);
         log.debug("Printing provider data from background script...");
         log.debug(allProviderResults);
+
+        // Set all results before filtered and sorting
         setProviderData(allProviderResults);
+
+        // Set filtered + one-list results for the sidebar
+        const filteredResults = sortAndFilterResults(
+          allProviderResults,
+          resultFeedSortOption.key,
+          resultFeedSortExactUrlFirst,
+          resultFeedFilterByMinDate.key,
+          resultFeedFilterByMinComments,
+          resultFeedFilterByMinLikes,
+          isDebugMode
+        );
+        setFilteredResults(filteredResults);
+
         sendMessageToCurrentTab({
-          newProviderDataCount: allProviderResults.numResults,
+          newProviderDataCount: filteredResults.length,
+          // TODO: potential bug - exact results in all provider results may be filtered out!
           newProviderExactDataCount: allProviderResults.numExactResults,
           loadingProviderData: false,
         });
@@ -369,15 +386,6 @@ const Sidebar = () => {
     hasFetchedDataForThisPage == false &&
     isLoadingProviderData === false;
 
-  const filteredResults = sortAndFilterResults(
-    providerData,
-    resultFeedSortOption.key,
-    resultFeedSortExactUrlFirst,
-    resultFeedFilterByMinDate.key,
-    resultFeedFilterByMinComments,
-    resultFeedFilterByMinLikes,
-    isDebugMode
-  );
   const noDiscussions =
     filteredResults !== undefined ? filteredResults.length === 0 : true;
 
