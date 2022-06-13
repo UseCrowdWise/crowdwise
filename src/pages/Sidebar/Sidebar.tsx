@@ -253,6 +253,14 @@ const Sidebar = () => {
     settings[KEY_RESULT_FEED_FILTER_BY_MIN_COMMENTS];
   const resultFeedFilterByMinLikes =
     settings[KEY_RESULT_FEED_FILTER_BY_MIN_LIKES];
+  // Make sure to update this list if we add more filters or we won't live update the feed
+  const resultFeedSortFilters = [
+    resultFeedSortExactUrlFirst,
+    resultFeedSortOption,
+    resultFeedFilterByMinDate,
+    resultFeedFilterByMinComments,
+    resultFeedFilterByMinLikes,
+  ];
 
   // Handles message from background script that our URL changed.
   // We receive this message only when we are in a SPA and the link changes without full-page reload.
@@ -296,26 +304,8 @@ const Sidebar = () => {
         log.debug(allProviderResults);
 
         // Set all results before filtered and sorting
+        // Another effect will handle this
         setProviderData(allProviderResults);
-
-        // Set filtered + one-list results for the sidebar
-        const filteredResults = sortAndFilterResults(
-          allProviderResults,
-          resultFeedSortOption.key,
-          resultFeedSortExactUrlFirst,
-          resultFeedFilterByMinDate.key,
-          resultFeedFilterByMinComments,
-          resultFeedFilterByMinLikes,
-          isDebugMode
-        );
-        setFilteredResults(filteredResults);
-
-        sendMessageToCurrentTab({
-          newProviderDataCount: filteredResults.length,
-          // TODO: potential bug - exact results in all provider results may be filtered out!
-          newProviderExactDataCount: allProviderResults.numExactResults,
-          loadingProviderData: false,
-        });
       }
     );
   };
@@ -347,6 +337,28 @@ const Sidebar = () => {
     // Remove listener when this component unmounts
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
   }, [settings[KEY_INCOGNITO_MODE], isLoadingStore]);
+
+  // Run side effect to filter results and update count on new results
+  useEffect(() => {
+    // Set filtered + one-list results for the sidebar
+    const filteredResults = sortAndFilterResults(
+      providerData,
+      resultFeedSortOption.key,
+      resultFeedSortExactUrlFirst,
+      resultFeedFilterByMinDate.key,
+      resultFeedFilterByMinComments,
+      resultFeedFilterByMinLikes,
+      isDebugMode
+    );
+    setFilteredResults(filteredResults);
+
+    sendMessageToCurrentTab({
+      newProviderDataCount: filteredResults.length,
+      // TODO: potential bug - exact results in all provider results may be filtered out!
+      newProviderExactDataCount: providerData?.numExactResults || 0,
+      loadingProviderData: false,
+    });
+  }, [providerData, ...resultFeedSortFilters]);
 
   // Send a message to the extension (alternative: use redux?) to close
   const closeSideBar = () => {
