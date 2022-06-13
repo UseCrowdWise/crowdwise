@@ -320,7 +320,9 @@ const Sidebar = () => {
       }, loading store? ${JSON.stringify(isLoadingStore)}`
     );
     // Add listener when component mounts
-    chrome.runtime.onMessage.addListener(handleMessage);
+    if (!chrome.runtime.onMessage.hasListener(handleMessage)) {
+      chrome.runtime.onMessage.addListener(handleMessage);
+    }
 
     // Update provider info ONLY IF we are not incognito
     if (!isLoadingStore && !settings[KEY_INCOGNITO_MODE]) {

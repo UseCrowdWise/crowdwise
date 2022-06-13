@@ -126,7 +126,9 @@ const App = () => {
   // For listeners
   useEffect(() => {
     // Add listeners when component mounts
-    chrome.runtime.onMessage.addListener(handleMessage);
+    if (!chrome.runtime.onMessage.hasListener(handleMessage)) {
+      chrome.runtime.onMessage.addListener(handleMessage);
+    }
     document.addEventListener("fullscreenchange", handleFullscreenChange);
 
     // Remove listeners when this component unmounts
