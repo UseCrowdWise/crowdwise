@@ -138,6 +138,7 @@ export async function fetchDataFromProviders(
   documentTitle: string
 ): Promise<AllProviderResults> {
   log.debug("Starting to fetch provider data.");
+  log.debug(`Raw URL: ${rawUrl}, documentTitle: ${documentTitle}`);
 
   // Get just the site from the URL for a wider search.
   const siteUrl = new URL(rawUrl).hostname;

@@ -260,7 +260,7 @@ const Sidebar = () => {
   const handleMessage = (request: any, sender: any, sendResponse: any) => {
     log.debug("Content script received message that our tab's URL changed.");
     // A SPA-like page change happened so we should allow incog users to request new data.
-    if (request.changedUrl) {
+    if (request.changedUrl || request.changedTitle) {
       // For incognito to know to show the click-to-call-api overlay
       setHasFetchedDataForThisPage(false);
       // To tell button to not display (no results yet)
@@ -271,9 +271,8 @@ const Sidebar = () => {
     }
 
     if (
-      request.changedUrl &&
-      !isLoadingStore &&
-      !settings[KEY_INCOGNITO_MODE]
+      request.changedUrl ||
+      (request.changedTitle && !isLoadingStore && !settings[KEY_INCOGNITO_MODE])
     ) {
       updateProviderData();
     }
