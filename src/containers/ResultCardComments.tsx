@@ -69,7 +69,7 @@ const ResultCardComments = ({
         setIsLoadingComments(false);
       });
     }
-  }, [shouldShowComments]);
+  }, [shouldShowComments, commentsUrl, providerType]);
 
   if (!shouldShowComments) return null;
 
