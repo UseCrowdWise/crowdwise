@@ -743,7 +743,6 @@ const Sidebar = () => {
                           }
                         />
                         <a
-                          href={searchGoogleUrl}
                           target="_blank"
                           rel="noreferrer"
                           onClick={() => openGoogleInNewTab(searchGoogleUrl)}
