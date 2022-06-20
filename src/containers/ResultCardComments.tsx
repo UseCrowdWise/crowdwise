@@ -129,6 +129,7 @@ const ResultCardComments = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={onClickCommentTitle}
+                    className="line-clamp-4"
                   >
                     {boldInitialCharsOfWords
                       ? boldFrontPortionOfWords(commentContent)
