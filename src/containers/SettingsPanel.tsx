@@ -119,11 +119,12 @@ export const SettingsPanel = (props: Props) => {
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:text-zinc-300">
       <div
         className={classNames(
-          "relative grid gap-6 bg-white dark:bg-gray-800 p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600",
+          "relative grid gap-5 bg-white dark:bg-gray-800 p-6 scrollbar scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-200 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600",
           scrollable ? "max-h-[80vh]" : ""
         )}
       >
         <div className="text-lg font-medium">Change settings</div>
+        <div className="pt-2 text-base font-medium">Sidebar</div>
         <div className="space-y-2">
           <div>Sidebar Width</div>
           <Slider
@@ -142,93 +143,6 @@ export const SettingsPanel = (props: Props) => {
             step={1}
             defaultValue={[sideBarOpacity]}
             onValueChange={setSideBarOpacityDebounced}
-          />
-        </div>
-        <div className="space-y-2">
-          <div>Font Size</div>
-          <Slider
-            choices={FONT_SIZE_OPTIONS}
-            defaultValue={[settings[KEY_FONT_SIZES]]}
-            onValueChange={handleFontSizeChange}
-          />
-        </div>
-        <div className="flex flex-col space-y-2">
-          <div>Extension Button Placement</div>
-          <SelectMenu
-            options={CONTENT_BUTTON_PLACEMENT_OPTIONS}
-            defaultOption={contentButtonPlacement}
-            onSelected={setContentButtonPlacement}
-          />
-        </div>
-        <div
-          data-tip="Hide the extension button that is normally on the corners of the page."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">Extension Button Hidden</div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
-        </div>
-        <div
-          data-tip="Adds a solid background to the floating extension button for better visibility."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">Extension Button Background</div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={contentButtonBackground}
-            onCheck={setContentButtonBackground}
-          />
-        </div>
-        <div
-          data-tip="Links from Reddit go to old.reddit.com instead of reddit.com."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">
-              Use old.reddit.com instead of reddit.com
-            </div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={shouldUseOldRedditLink}
-            onCheck={handleShouldUseOldRedditLink}
-          />
-        </div>
-        <div
-          data-tip="Bold the initial characters of words in order to enhance your reading experience."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">
-              Bold Initial Characters of Words To Enhance Reading
-            </div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={shouldBoldInitialCharsOfWords}
-            onCheck={handleShouldBoldInitialCharsOfWords}
-          />
-        </div>
-        <div
-          data-tip="Color the name of each discussion author differently to identify different points of view. "
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">Color Author Names</div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={shouldColorForSubmittedBy}
-            onCheck={handleShouldColorForSubmittedBy}
           />
         </div>
         <div
@@ -277,17 +191,6 @@ export const SettingsPanel = (props: Props) => {
             onCheck={handleShouldShowSidebarOnlyOnExactResults}
           />
         </div>
-        <div
-          data-tip="Only start searching for discussions when the sidebar is clicked."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">Incognito Mode</div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle checked={isIncognitoMode} onCheck={handleIncogChange} />
-        </div>
         <div className="space-y-2">
           <div>Keyboard Shortcuts</div>
           <div className="text-xs text-slate-400">
@@ -300,6 +203,106 @@ export const SettingsPanel = (props: Props) => {
             <div className="grow" />
             <HotkeysListenerButton settingsKey={KEY_HOTKEYS_TOGGLE_SIDEBAR} />
           </div>
+        </div>
+
+        <div className="pt-5 text-base font-medium">General</div>
+        <div className="space-y-2">
+          <div>Font Size</div>
+          <Slider
+            choices={FONT_SIZE_OPTIONS}
+            defaultValue={[settings[KEY_FONT_SIZES]]}
+            onValueChange={handleFontSizeChange}
+          />
+        </div>
+        <div
+          data-tip="Enable Bionic Reading - bold the initial characters of words in order to enhance your reading experience."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Bionic Reading</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldBoldInitialCharsOfWords}
+            onCheck={handleShouldBoldInitialCharsOfWords}
+          />
+        </div>
+        <div
+          data-tip="Links from Reddit go to old.reddit.com instead of reddit.com."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">
+              Use old.reddit.com instead of reddit.com
+            </div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldUseOldRedditLink}
+            onCheck={handleShouldUseOldRedditLink}
+          />
+        </div>
+        <div
+          data-tip="Color the name of each discussion author differently to identify different points of view. "
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Color Author Names</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldColorForSubmittedBy}
+            onCheck={handleShouldColorForSubmittedBy}
+          />
+        </div>
+        <div
+          data-tip="Only start searching for discussions when the sidebar is clicked."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Incognito Mode</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle checked={isIncognitoMode} onCheck={handleIncogChange} />
+        </div>
+
+        <div className="pt-5 text-base font-medium">Extension Button</div>
+        <div className="flex flex-col space-y-2">
+          <div>Extension Button Placement</div>
+          <SelectMenu
+            options={CONTENT_BUTTON_PLACEMENT_OPTIONS}
+            defaultOption={contentButtonPlacement}
+            onSelected={setContentButtonPlacement}
+          />
+        </div>
+        <div
+          data-tip="Hide the extension button that is normally on the corners of the page."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Extension Button Hidden</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle checked={hideContentButton} onCheck={setHideContentButton} />
+        </div>
+        <div
+          data-tip="Adds a solid background to the floating extension button for better visibility."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Extension Button Background</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={contentButtonBackground}
+            onCheck={setContentButtonBackground}
+          />
         </div>
       </div>
 

@@ -1,9 +1,14 @@
 import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
 import _ from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import ReactTooltip from "react-tooltip";
 
 import {
+  DEFAULT_RESULT_FEED_FILTER_BY_MIN_COMMENTS,
+  DEFAULT_RESULT_FEED_FILTER_BY_MIN_DATE,
+  DEFAULT_RESULT_FEED_FILTER_BY_MIN_LIKES,
+  DEFAULT_RESULT_FEED_SORT_EXACT_URL_FIRST,
+  DEFAULT_RESULT_FEED_SORT_OPTION,
   KEY_INCOGNITO_MODE,
   KEY_RESULT_FEED_FILTER_BY_MIN_COMMENTS,
   KEY_RESULT_FEED_FILTER_BY_MIN_DATE,
@@ -83,6 +88,23 @@ export const ResultFeedSettingsPanel = (props: Props) => {
     setResultFeedFilterByMinLikes(value);
   }, SETTINGS_DEBOUNCE_TIME);
 
+  const resetSettingsToDefault = () => {
+    setValueAll((prevState: any) => {
+      return {
+        ...prevState,
+        [KEY_RESULT_FEED_SORT_OPTION]: DEFAULT_RESULT_FEED_SORT_OPTION,
+        [KEY_RESULT_FEED_SORT_EXACT_URL_FIRST]:
+          DEFAULT_RESULT_FEED_SORT_EXACT_URL_FIRST,
+        [KEY_RESULT_FEED_FILTER_BY_MIN_COMMENTS]:
+          DEFAULT_RESULT_FEED_FILTER_BY_MIN_COMMENTS,
+        [KEY_RESULT_FEED_FILTER_BY_MIN_LIKES]:
+          DEFAULT_RESULT_FEED_FILTER_BY_MIN_LIKES,
+        [KEY_RESULT_FEED_FILTER_BY_MIN_DATE]:
+          DEFAULT_RESULT_FEED_FILTER_BY_MIN_DATE,
+      };
+    });
+  };
+
   if (isLoadingStore) return null;
   return (
     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:text-zinc-300">
@@ -92,8 +114,17 @@ export const ResultFeedSettingsPanel = (props: Props) => {
           scrollable ? "max-h-[80vh]" : ""
         )}
       >
-        <div className="text-lg font-medium">Customise your Results</div>
-        <div className="text-base font-medium">Sorting</div>
+        <div className="space-y-2">
+          <div className="text-lg font-medium">Customise your Results</div>
+          <span
+            className="inline-block text-indigo-600 hover:underline cursor-pointer"
+            onClick={resetSettingsToDefault}
+          >
+            Reset to default
+          </span>
+        </div>
+
+        <div className="pt-2 text-base font-medium">Sorting</div>
         <div className="flex flex-col space-y-2">
           <div>Sort Results by</div>
           <SelectMenu
@@ -118,7 +149,7 @@ export const ResultFeedSettingsPanel = (props: Props) => {
             onCheck={setResultFeedSortExactUrlFirst}
           />
         </div>
-        <div className="pt-2 text-base font-medium">Filtering</div>
+        <div className="pt-5 text-base font-medium">Filtering</div>
         <div className="flex flex-col space-y-2">
           <div>Filter by Date</div>
           <SelectMenu

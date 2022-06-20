@@ -1,8 +1,9 @@
 import * as RadixSlider from "@radix-ui/react-slider";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { indexOfObjectArr } from "../utils/array";
 import { classNames } from "../utils/classNames";
+import { log } from "../utils/log";
 
 interface SliderProps extends RadixSlider.SliderProps {
   className?: string;
@@ -33,7 +34,7 @@ const Slider = (props: SliderProps) => {
       min={_min}
       max={_max}
       step={_step}
-      defaultValue={_defaultValue}
+      value={_defaultValue}
       onValueChange={_onValueChange}
       className={classNames(
         "relative flex h-4 select-none items-center",

@@ -15,3 +15,27 @@
 .__react_component_tooltip .place-left {
   margin: 0 5px 0 0;
 }
+
+.badge {
+  position: absolute;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  min-width: 8px;
+  border-radius: 16px;
+  padding: 1px 5px;
+}
+
+.badge-red {
+  /*text-gray-500*/
+  background-color: #ef4444;
+  /*text-zinc-200*/
+  color: #e4e4e7;
+}
+
+.badge-grey {
+  /*text-gray-200*/
+  background-color: #e2e8f0;
+  /*text-gray-500*/
+  color: #64748b;
+}

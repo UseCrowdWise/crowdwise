@@ -166,6 +166,7 @@ const ResultCard = ({
           href={resultWithReplacedLink.commentsLink}
           target="_blank"
           rel="noreferrer"
+          className="align-middle"
           onClick={createOnClickLogForumEvent(
             EventType.CLICK_SIDEBAR_FORUM_RESULT_TITLE
           )}

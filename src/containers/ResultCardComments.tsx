@@ -105,7 +105,7 @@ const ResultCardComments = ({
             e.stopPropagation();
           }}
         />
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-3 text-ellipsis overflow-hidden">
           <div className="pt-2 text-indigo-600">Top Comments</div>
           {comments.map((comment: Comment, index) => {
             const commentContent = stripHtml(comment.text).result;
@@ -122,13 +122,14 @@ const ResultCardComments = ({
             };
 
             return (
-              <div key={index} className="space-y-2 ">
+              <div key={index} className="space-y-2">
                 <div className="hover:underline">
                   <a
                     href={comment.commentLink}
                     target="_blank"
                     rel="noreferrer"
                     onClick={onClickCommentTitle}
+                    className="line-clamp-4"
                   >
                     {boldInitialCharsOfWords
                       ? boldFrontPortionOfWords(commentContent)

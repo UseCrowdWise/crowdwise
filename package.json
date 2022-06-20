@@ -57,6 +57,7 @@
     "@storybook/manager-webpack5": "^6.5.8",
     "@storybook/react": "^6.5.8",
     "@storybook/testing-library": "0.0.12",
+    "@tailwindcss/line-clamp": "^0.4.0",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/chrome": "^0.0.177",
     "@types/jest": "^28.1.1",

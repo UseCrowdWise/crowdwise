@@ -1,6 +1,6 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import { classNames } from "../utils/classNames";
 
@@ -19,6 +19,10 @@ interface Props {
 const SelectMenu = (props: Props) => {
   const { defaultOption, options, onSelected, label } = props;
   const [selected, setSelected] = useState<Option>(defaultOption);
+
+  useEffect(() => {
+    setSelected(defaultOption);
+  }, [defaultOption]);
 
   return (
     <Listbox
