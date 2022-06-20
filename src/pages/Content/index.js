@@ -297,18 +297,10 @@ const App = () => {
           )}
           {!isLoadingResults && numResults > 0 && (
             <div
-              className="all-unset animate__animated animate__heartBeat"
-              style={{
-                position: "absolute",
-                right: "0",
-                textAlign: "center",
-                fontSize: "12px",
-                minWidth: "8px",
-                backgroundColor: "red",
-                color: "white",
-                borderRadius: "16px",
-                padding: "1px 5px",
-              }}
+              className={
+                "animate__animated animate__heartBeat badge " +
+                (numExactResults > 0 ? "badge-red" : "badge-grey")
+              }
             >
               {numResults}
             </div>
