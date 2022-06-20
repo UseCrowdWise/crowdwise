@@ -1,5 +1,5 @@
 import { Switch } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { classNames } from "../utils/classNames";
 import { log } from "../utils/log";
@@ -12,6 +12,10 @@ export interface Props {
 const Toggle = (props: Props) => {
   const { checked, onCheck } = props;
   const [enabled, setEnabled] = useState<boolean>(checked);
+
+  useEffect(() => {
+    setEnabled(checked);
+  }, [checked]);
 
   log.debug("Toggle rerender", checked, enabled);
 
