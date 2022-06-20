@@ -791,7 +791,10 @@ const Sidebar = () => {
                     </Popover>
                   </div>
                   <div className="space-y-2">
-                    <ResultsContainer results={filteredResults} />
+                    <ResultsContainer
+                      numResults={1000}
+                      results={filteredResults}
+                    />
                   </div>
                 </div>
               </div>
