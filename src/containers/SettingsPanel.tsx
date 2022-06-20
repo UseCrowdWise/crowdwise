@@ -205,6 +205,71 @@ export const SettingsPanel = (props: Props) => {
           </div>
         </div>
 
+        <div className="pt-5 text-base font-medium">General</div>
+        <div className="space-y-2">
+          <div>Font Size</div>
+          <Slider
+            choices={FONT_SIZE_OPTIONS}
+            defaultValue={[settings[KEY_FONT_SIZES]]}
+            onValueChange={handleFontSizeChange}
+          />
+        </div>
+        <div
+          data-tip="Enable Bionic Reading - bold the initial characters of words in order to enhance your reading experience."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Bionic Reading</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldBoldInitialCharsOfWords}
+            onCheck={handleShouldBoldInitialCharsOfWords}
+          />
+        </div>
+        <div
+          data-tip="Links from Reddit go to old.reddit.com instead of reddit.com."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">
+              Use old.reddit.com instead of reddit.com
+            </div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldUseOldRedditLink}
+            onCheck={handleShouldUseOldRedditLink}
+          />
+        </div>
+        <div
+          data-tip="Color the name of each discussion author differently to identify different points of view. "
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Color Author Names</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle
+            checked={shouldColorForSubmittedBy}
+            onCheck={handleShouldColorForSubmittedBy}
+          />
+        </div>
+        <div
+          data-tip="Only start searching for discussions when the sidebar is clicked."
+          className="flex flex-row items-center space-x-2"
+        >
+          <div>
+            <div className="mr-1 inline">Incognito Mode</div>
+            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
+          </div>
+          <div className="grow" />
+          <Toggle checked={isIncognitoMode} onCheck={handleIncogChange} />
+        </div>
+
         <div className="pt-5 text-base font-medium">Extension Button</div>
         <div className="flex flex-col space-y-2">
           <div>Extension Button Placement</div>
@@ -238,75 +303,6 @@ export const SettingsPanel = (props: Props) => {
             checked={contentButtonBackground}
             onCheck={setContentButtonBackground}
           />
-        </div>
-
-        <div className="pt-5 text-base font-medium">Result Cards</div>
-        <div className="space-y-2">
-          <div>Font Size</div>
-          <Slider
-            choices={FONT_SIZE_OPTIONS}
-            defaultValue={[settings[KEY_FONT_SIZES]]}
-            onValueChange={handleFontSizeChange}
-          />
-        </div>
-        <div
-          data-tip="Links from Reddit go to old.reddit.com instead of reddit.com."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">
-              Use old.reddit.com instead of reddit.com
-            </div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={shouldUseOldRedditLink}
-            onCheck={handleShouldUseOldRedditLink}
-          />
-        </div>
-        <div
-          data-tip="Bold the initial characters of words in order to enhance your reading experience."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">
-              Bold Initial Characters of Words To Enhance Reading
-            </div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={shouldBoldInitialCharsOfWords}
-            onCheck={handleShouldBoldInitialCharsOfWords}
-          />
-        </div>
-        <div
-          data-tip="Color the name of each discussion author differently to identify different points of view. "
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">Color Author Names</div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle
-            checked={shouldColorForSubmittedBy}
-            onCheck={handleShouldColorForSubmittedBy}
-          />
-        </div>
-
-        <div className="pt-5 text-base font-medium">General</div>
-        <div
-          data-tip="Only start searching for discussions when the sidebar is clicked."
-          className="flex flex-row items-center space-x-2"
-        >
-          <div>
-            <div className="mr-1 inline">Incognito Mode</div>
-            <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
-          </div>
-          <div className="grow" />
-          <Toggle checked={isIncognitoMode} onCheck={handleIncogChange} />
         </div>
       </div>
 
