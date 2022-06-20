@@ -401,6 +401,8 @@ const Sidebar = () => {
 
   const noDiscussions =
     filteredResults !== undefined ? filteredResults.length === 0 : true;
+  const numFilteredResults =
+    (providerData?.numResults || 0) - filteredResults.length;
 
   // Get results for debugging
   const {
@@ -719,6 +721,27 @@ const Sidebar = () => {
             ) : (
               <div className="space-y-6 py-1">
                 <div>
+                  {searchGoogleUrl && (
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => openGoogleInNewTab(searchGoogleUrl)}
+                      className="inline-flex flex-row cursor-pointer text-black dark:text-zinc-300 font-normal my-auto pl-2 hover:underline"
+                    >
+                      <SearchIcon
+                        className="h-3 w-3 my-auto pr-0.5 text-slate-500 dark:text-zinc-300"
+                        onClick={() =>
+                          sendEventsToServerViaWorker(
+                            {
+                              eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
+                            },
+                            isIncognitoMode
+                          )
+                        }
+                      />
+                      Google
+                    </a>
+                  )}
                   <div className="flex flex-row space-x-4">
                     <div className="pl-2 py-1 text-base dark:text-zinc-300">
                       <span className="font-semibold text-indigo-600">
@@ -728,29 +751,10 @@ const Sidebar = () => {
                       filteredResults.length === 0
                         ? " results found"
                         : " result found"}
+                      <span className="ml-2 text-xs text-black dark:text-zinc-300 align-text-bottom">
+                        ({numFilteredResults} filtered)
+                      </span>
                     </div>
-                    {searchGoogleUrl && (
-                      <div className="flex flex-row cursor-pointer text-black dark:text-zinc-300 font-normal my-auto space-x-0.5 pr-3 hover:underline">
-                        <SearchIcon
-                          className="h-3 w-3 my-auto text-slate-500 dark:text-zinc-300"
-                          onClick={() =>
-                            sendEventsToServerViaWorker(
-                              {
-                                eventType: EventType.CLICK_SIDEBAR_HELP_ICON,
-                              },
-                              isIncognitoMode
-                            )
-                          }
-                        />
-                        <a
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={() => openGoogleInNewTab(searchGoogleUrl)}
-                        >
-                          Google
-                        </a>
-                      </div>
-                    )}
                     <div className="grow" />
                     <Popover className="relative my-auto pt-0.5 pr-2">
                       {({ open }) => (

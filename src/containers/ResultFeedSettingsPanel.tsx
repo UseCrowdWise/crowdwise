@@ -93,7 +93,7 @@ export const ResultFeedSettingsPanel = (props: Props) => {
         )}
       >
         <div className="text-lg font-medium">Customise your Results</div>
-        <div className="text-base font-medium">Sorting</div>
+        <div className="pt-2 text-base font-medium">Sorting</div>
         <div className="flex flex-col space-y-2">
           <div>Sort Results by</div>
           <SelectMenu
@@ -118,7 +118,7 @@ export const ResultFeedSettingsPanel = (props: Props) => {
             onCheck={setResultFeedSortExactUrlFirst}
           />
         </div>
-        <div className="pt-2 text-base font-medium">Filtering</div>
+        <div className="pt-5 text-base font-medium">Filtering</div>
         <div className="flex flex-col space-y-2">
           <div>Filter by Date</div>
           <SelectMenu
