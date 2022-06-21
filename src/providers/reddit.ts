@@ -159,13 +159,13 @@ export class RedditResultProvider implements ResultProvider {
     ): Comment => {
       const childComments = $(redditComment.children);
       const textHtml = childComments.find(".md")[0];
-      log.warn(childComments)
       const text = $(textHtml).contents().text();
       const author = childComments.find(".author")[0]?.children[0]?.data;
       const authorLink = childComments.find(".author")[0]?.attribs.href;
       const createdDate = childComments.find("time")[0]?.attribs.datetime;
       const createdPrettyDate = timeSince(parseISO(createdDate));
-      const commentUpvotesText = childComments.find(".score.unvoted")[0]?.attribs?.title || "0";
+      const commentUpvotesText =
+        childComments.find(".score.unvoted")[0]?.attribs?.title || "0";
       // parseInt can fail if the score is hidden, so return 0 if so
       const commentUpvotes = parseInt(commentUpvotesText) || 0;
       // This link only shows the comment and its children, and not the other comments
