@@ -164,7 +164,8 @@ export class RedditResultProvider implements ResultProvider {
       const authorLink = childComments.find(".author")[0]?.attribs.href;
       const createdDate = childComments.find("time")[0]?.attribs.datetime;
       const createdPrettyDate = timeSince(parseISO(createdDate));
-      const commentUpvotesText = childComments.find(".score.unvoted")[0]?.attribs?.title || "0";
+      const commentUpvotesText =
+        childComments.find(".score.unvoted")[0]?.attribs?.title || "0";
       // parseInt can fail if the score is hidden, so return 0 if so
       const commentUpvotes = parseInt(commentUpvotesText) || 0;
       // This link only shows the comment and its children, and not the other comments

@@ -4,11 +4,11 @@
 import _ from "lodash";
 
 import { log } from "../utils/log";
+import { unproxyUrl } from "../utils/proxy";
 import { isBlacklisted } from "./blacklist";
 import { HnResultProvider } from "./hackernews";
 import { RedditResultProvider } from "./reddit";
 import { scoreResultsRelevance } from "./scoring";
-import { unproxyUrl } from '../utils/proxy'
 
 // All providers must implement these two functions for search
 export interface ResultProvider {
@@ -160,17 +160,13 @@ export async function fetchDataFromProviders(
   );
 
   const unproxiedUrl = unproxyUrl(noFragmentUrl);
-  log.debug(
-    `No fragment URL ${noFragmentUrl}\Unproxied URL: ${unproxiedUrl}`
-  );
+  log.debug(`No fragment URL ${noFragmentUrl}\Unproxied URL: ${unproxiedUrl}`);
 
   // Remove http, https, www, and trailing slash
   let cleanedUrl = unproxiedUrl.replace(/^https?:\/\//, "");
   cleanedUrl = cleanedUrl.replace(/www\./, "");
   cleanedUrl = cleanedUrl.replace(/\/$/, "");
-  log.debug(
-    `unproxied URL ${noFragmentUrl}\nFINAL Cleaned URL: ${cleanedUrl}`
-  );
+  log.debug(`unproxied URL ${noFragmentUrl}\nFINAL Cleaned URL: ${cleanedUrl}`);
 
   const queryInfo = {
     searchExactUrl: cleanedUrl,

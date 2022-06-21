@@ -203,8 +203,13 @@ export class HnResultProvider implements ResultProvider {
     // Recurses down all child comments to get total no. of replies
     const getNumReplies = (replies: HnComment[]): number => {
       // No. of all current reples + no. of all sub-replies
-      return replies.length + replies.map(reply => getNumReplies(reply.children)).reduce((prev, cur) => prev + cur, 0);
-    }
+      return (
+        replies.length +
+        replies
+          .map((reply) => getNumReplies(reply.children))
+          .reduce((prev, cur) => prev + cur, 0)
+      );
+    };
 
     const hnCommentToGenericCommentMapper = (
       hnComment: HnComment,
@@ -245,7 +250,9 @@ export class HnResultProvider implements ResultProvider {
     );
 
     // Descending order of comment count
-    const commentsSorted = comments.sort((c1, c2) => (c2?.commentsCount || 0) - (c1?.commentsCount || 0));
+    const commentsSorted = comments.sort(
+      (c1, c2) => (c2?.commentsCount || 0) - (c1?.commentsCount || 0)
+    );
 
     // Limit to just top MAX_COMMENTS
     comments.length = Math.min(comments.length, MAX_COMMENTS);
