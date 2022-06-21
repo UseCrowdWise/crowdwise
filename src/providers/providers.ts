@@ -13,6 +13,7 @@ import { scoreResultsRelevance } from "./scoring";
 // All providers must implement these two functions for search
 export interface ResultProvider {
   getExactUrlResults(url: string): Promise<SingleProviderResults>;
+  getExactUrlTextResults(url: string): Promise<SingleProviderResults>;
   getSiteUrlResults(url: string): Promise<SingleProviderResults>;
   getTitleResults(url: string, title: string): Promise<SingleProviderResults>;
   getComments(url: string): Promise<Comment[]>;
@@ -26,6 +27,7 @@ export enum ProviderType {
 // To indicate inside the result structure, so we know where in the UI to place it
 export enum ProviderQueryType {
   EXACT_URL = "exact_url",
+  EXACT_URL_TEXT = "exact_url_text",
   SITE_URL = "site_url",
   TITLE = "title",
 }
@@ -193,6 +195,7 @@ export async function fetchDataFromProviders(
   const providerPromises: Promise<SingleProviderResults>[] = providers
     .map((provider) => [
       provider.getExactUrlResults(cleanedUrl),
+      provider.getExactUrlTextResults(cleanedUrl),
       scoreResultsRelevance(
         documentTitle,
         provider.getTitleResults(cleanedUrl, documentTitle)

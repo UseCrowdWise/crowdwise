@@ -107,6 +107,46 @@ export class HnResultProvider implements ResultProvider {
     };
   }
 
+  async getExactUrlTextResults(url: string): Promise<SingleProviderResults> {
+    const encodedUrl = encodeURIComponent(url);
+    const queryString = `query=\"${encodedUrl}\"&tags=story&typoTolerance=false`;
+    const requestUrl = "https://hn.algolia.com/api/v1/search?" + queryString;
+    const res: HnJsonResult = await cachedApiCall(
+      requestUrl,
+      true,
+      CACHE_URL_DURATION_SEC
+    );
+    if (res.nbHits === 0) {
+      log.debug("Hacker News API: No urls found");
+      return {
+        providerName: ProviderType.HACKER_NEWS,
+        queryType: ProviderQueryType.EXACT_URL_TEXT,
+        results: [],
+      };
+    }
+    log.debug("HN Results Pre-translation:");
+    log.debug(res.hits);
+    const itemsAll =
+      res.hits?.map((hnHit) =>
+        translateHnToItem(
+          hnHit,
+          ProviderQueryType.EXACT_URL_TEXT,
+          url,
+          requestUrl
+        )
+      ) || [];
+    log.debug("Hacker News returned results for exact url text search:", {
+      response: res,
+      resultsWithoutDedup: itemsAll,
+      resultsTranslated: itemsAll,
+    });
+    return {
+      providerName: ProviderType.HACKER_NEWS,
+      queryType: ProviderQueryType.EXACT_URL_TEXT,
+      results: itemsAll,
+    };
+  }
+
   // Main function to get all relevant results from HN
   async getSiteUrlResults(url: string): Promise<SingleProviderResults> {
     const encodedUrl = encodeURIComponent(url);

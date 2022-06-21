@@ -122,6 +122,17 @@ const ResultCard = ({
           <Badge>EXACT MATCH</Badge>
         </div>
       )}
+      {resultWithReplacedLink.providerQueryType ===
+        ProviderQueryType.EXACT_URL_TEXT && (
+        // data-iscapture="true" allow us to immediately dismiss tooltip on user scroll
+        <div
+          data-tip="This result contains an exact link to your current page."
+          data-iscapture="true"
+        >
+          <Badge>EXACT URL TEXT MATCH</Badge>
+        </div>
+      )}
+
       {resultWithReplacedLink.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
           <div

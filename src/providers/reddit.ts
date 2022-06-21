@@ -24,7 +24,7 @@ const cheerio = require("cheerio");
 export class RedditResultProvider implements ResultProvider {
   // Main function to get all relevant results from Reddit
   async getExactUrlResults(url: string): Promise<SingleProviderResults> {
-    const queryString = "sort=top&q=" + encodeURIComponent("url:" + url);
+    const queryString = "sort=top&q=" + encodeURIComponent('url:"' + url + '"');
     const requestUrl = "https://old.reddit.com/search?" + queryString;
     const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
 
@@ -39,6 +39,7 @@ export class RedditResultProvider implements ResultProvider {
         )
       )
       .toArray();
+    // Remove non-exact url matches
     const itemsDeduped = itemsAll.filter(
       (item) =>
         (item.submittedUrl.endsWith(url) ||
@@ -59,6 +60,39 @@ export class RedditResultProvider implements ResultProvider {
       providerName: ProviderType.REDDIT,
       queryType: ProviderQueryType.EXACT_URL,
       results: itemsDeduped,
+    };
+  }
+
+  // Main function to get all relevant results from Reddit
+  async getExactUrlTextResults(url: string): Promise<SingleProviderResults> {
+    const queryString = 'sort=relevance&q="' + encodeURIComponent(url) + '"';
+    const requestUrl = "https://old.reddit.com/search?" + queryString;
+    const data = await cachedApiCall(requestUrl, false, CACHE_URL_DURATION_SEC);
+
+    const $ = cheerio.load(data);
+    const itemsAll: ResultItem[] = $(".search-result.search-result-link")
+      .map((i: number, el: Element) =>
+        this.translateRedditToItem(
+          $(el).html(),
+          ProviderQueryType.EXACT_URL_TEXT,
+          url,
+          requestUrl
+        )
+      )
+      .toArray();
+
+    if (itemsAll.length === 0) {
+      return {
+        providerName: ProviderType.REDDIT,
+        queryType: ProviderQueryType.EXACT_URL_TEXT,
+        results: [],
+      };
+    }
+
+    return {
+      providerName: ProviderType.REDDIT,
+      queryType: ProviderQueryType.EXACT_URL_TEXT,
+      results: itemsAll,
     };
   }
 
@@ -220,7 +254,6 @@ export class RedditResultProvider implements ResultProvider {
     providerRequestUrl: string
   ): ResultItem {
     const $ = cheerio.load(html);
-
     const url = $(".search-link").attr("href");
     const commentsText = $(".search-comments").text();
     const commentsLink = $(".search-comments").attr("href");
