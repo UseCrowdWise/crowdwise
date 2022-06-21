@@ -1,6 +1,7 @@
 import "animate.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import Draggable from "react-draggable";
 import { useHotkeys } from "react-hotkeys-hook";
 import DotLoader from "react-spinners/DotLoader";
 import ReactTooltip from "react-tooltip";
@@ -60,6 +61,8 @@ const App = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const [
     settings,
     setSettings,
@@ -80,7 +83,11 @@ const App = () => {
   const showSidebarOnlyOnExactResults =
     settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
 
-  const toggleSideBar = () => toggleUserOpenedSidebarStateWithStorage();
+  const toggleSideBar = () => {
+    if (!isDragging) {
+      toggleUserOpenedSidebarStateWithStorage();
+    }
+  };
   const closeSideBar = () => setUserOpenedSidebarStateWithStorage(false);
 
   // Toggle the side bar based on incoming message from further down in the component (close arrow)
@@ -258,6 +265,19 @@ const App = () => {
           },
         }[contentButtonPlacement.key];
 
+  // Updates the dragging state for our button to use (don't open sidebar if dragging)
+  const dragEventControl = (event, info) => {
+    if (event.type === "mousemove" || event.type === "touchmove") {
+      console.log(event);
+      setIsDragging(true);
+    }
+    if (event.type === "mouseup" || event.type === "touchend") {
+      setTimeout(() => {
+        setIsDragging(false);
+      }, 100);
+    }
+  };
+
   return (
     <div className="all-unset">
       {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
@@ -274,62 +294,64 @@ const App = () => {
         onLoad={() => log.debug("iFrame loaded")}
       />
       {shouldShowContentButton && (
-        <div
-          className="all-unset"
-          style={{
-            ...contentButtonPlacementCss,
-            position: "fixed",
-          }}
-          onClick={toggleSideBar}
-        >
-          {isLoadingResults && (
-            <DotLoader
-              color={"rgba(163,163,163,0.5)"}
-              css={{
-                display: "block",
-                position: "absolute",
-                right: "0",
-              }}
-              loading={isLoadingResults}
-              size={20}
-              margin={2}
-            />
-          )}
-          {!isLoadingResults && numResults > 0 && (
-            <div
-              className={
-                "animate__animated animate__heartBeat badge " +
-                (numExactResults > 0 ? "badge-red" : "badge-grey")
-              }
-            >
-              {numResults}
-            </div>
-          )}
-          {/*Height and width needed because no text is given to p tag*/}
-          <img
-            alt="Trigger Extension Button"
+        <Draggable onDrag={dragEventControl} onStop={dragEventControl}>
+          <div
+            className="all-unset"
             style={{
-              width: "64px",
-              height: "64px",
+              ...contentButtonPlacementCss,
+              position: "fixed",
             }}
-            src={chrome.runtime.getURL(
-              contentButtonBackground ? "icon.svg" : "icon-outline.svg"
-            )}
             onClick={toggleSideBar}
-          />
-          <p
-            data-tip={contentButtonTooltip}
-            className="reset-spacing"
-            style={{
-              height: "64px",
-              width: "64px",
-              cursor: "pointer",
-              top: "0",
-              position: "absolute",
-            }}
-          />
-          <ReactTooltip place="top" type="dark" effect="solid" />
-        </div>
+          >
+            {isLoadingResults && (
+              <DotLoader
+                color={"rgba(163,163,163,0.5)"}
+                css={{
+                  display: "block",
+                  position: "absolute",
+                  right: "0",
+                }}
+                loading={isLoadingResults}
+                size={20}
+                margin={2}
+              />
+            )}
+            {!isLoadingResults && numResults > 0 && (
+              <div
+                className={
+                  "animate__animated animate__heartBeat badge " +
+                  (numExactResults > 0 ? "badge-red" : "badge-grey")
+                }
+              >
+                {numResults}
+              </div>
+            )}
+            {/*Height and width needed because no text is given to p tag*/}
+            <img
+              alt="Trigger Extension Button"
+              style={{
+                width: "64px",
+                height: "64px",
+              }}
+              src={chrome.runtime.getURL(
+                contentButtonBackground ? "icon.svg" : "icon-outline.svg"
+              )}
+              onClick={toggleSideBar}
+            />
+            <p
+              data-tip={contentButtonTooltip}
+              className="reset-spacing"
+              style={{
+                height: "64px",
+                width: "64px",
+                cursor: "pointer",
+                top: "0",
+                position: "absolute",
+              }}
+            />
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </div>
+        </Draggable>
       )}
     </div>
   );
