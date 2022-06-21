@@ -250,17 +250,6 @@ export async function fetchDataFromProviders(
       const thisProviderQueryResults = thisProviderResults[queryType];
       console.log("Checking providerName: " + providerName + "and query res:");
       console.log(thisProviderQueryResults);
-      // Test code to get comments
-      // if (providerName === "hacker_news" && thisProviderQueryResults.length > 0) {
-      //   const commentsUrl = thisProviderQueryResults[0]?.commentsLink
-      //   console.log("Getting comments for commentsUrl: " + commentsUrl)
-      //   hackernews.getComments(commentsUrl);
-      // }
-      // if (providerName === "reddit" && thisProviderQueryResults.length > 0) {
-      //   const commentsUrl = thisProviderQueryResults[0]?.commentsLink
-      //   console.log("Getting comments for commentsUrl: " + commentsUrl)
-      //   reddit.getComments(commentsUrl);
-      // }
 
       thisProviderRestQueryTypes.forEach((otherQueryType: string) => {
         const otherQueryResults = thisProviderResults[otherQueryType];

@@ -159,7 +159,6 @@ export class RedditResultProvider implements ResultProvider {
     ): Comment => {
       const childComments = $(redditComment.children);
       const textHtml = childComments.find(".md")[0];
-      log.warn(childComments)
       const text = $(textHtml).contents().text();
       const author = childComments.find(".author")[0]?.children[0]?.data;
       const authorLink = childComments.find(".author")[0]?.attribs.href;
