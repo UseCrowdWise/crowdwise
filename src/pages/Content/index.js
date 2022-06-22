@@ -90,26 +90,38 @@ const App = () => {
     settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
 
   // These indicate whether we dragged or clicked
-  const [lastPosX, setLastPosX] = useState(buttonTranslation.x);
-  const [lastPosY, setLastPosY] = useState(buttonTranslation.y);
+  const [lastPosX, setLastPosX] = useState(0);
+  const [lastPosY, setLastPosY] = useState(0);
   // These directly control the position of the icon
-  const [posX, setPosX] = useState(buttonTranslation.x);
-  const [posY, setPosY] = useState(buttonTranslation.y);
+  const [posX, setPosX] = useState(0);
+  const [posY, setPosY] = useState(0);
   // Zoom level for scaling
   const [curZoom, setCurZoom] = useState(zoomLevel());
 
-  // Update the button position if our settings change!
+  // Keep our translation accurate even when zoom level changes in the tab
+  const handleZoomChange = () => setCurZoom(zoomLevel());
   useEffect(() => {
-    const scaleFactor = curZoom / buttonTranslation.zoom;
-    setLastPosX(buttonTranslation.x / scaleFactor);
-    setLastPosY(buttonTranslation.y / scaleFactor);
-    setPosX(buttonTranslation.x / scaleFactor);
-    setPosY(buttonTranslation.y / scaleFactor);
-  }, [settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION]]);
-  log.warn(
-    `Current placement translation: ${buttonTranslation.x}, ${buttonTranslation.y}`
-  );
-  log.warn(`posX/posY: ${posX}, ${posY}, zoom: ${curZoom}`);
+    window.addEventListener("resize", handleZoomChange);
+    // cleanup this component
+    return () => {
+      window.removeEventListener("keydown", handleZoomChange);
+    };
+  }, []);
+
+  // Update the button position if our button-pos-related settings change!
+  useEffect(() => {
+    let curButtonTranslation =
+      settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION];
+    const scaleFactor = curZoom / curButtonTranslation.zoom;
+    setLastPosX(curButtonTranslation.x / scaleFactor);
+    setLastPosY(curButtonTranslation.y / scaleFactor);
+    setPosX(curButtonTranslation.x / scaleFactor);
+    setPosY(curButtonTranslation.y / scaleFactor);
+  }, [
+    settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION],
+    settings[KEY_CONTENT_BUTTON_PLACEMENT],
+    curZoom,
+  ]);
 
   const toggleSideBar = () => {
     if (!isDragging) {
@@ -337,7 +349,6 @@ const App = () => {
           position={{ x: posX, y: posY }}
           onStart={handleOnDragStart}
           onStop={handleOnDragStop}
-          /* scale={curZoom / buttonTranslation.zoom} */
         >
           <div
             className="all-unset"

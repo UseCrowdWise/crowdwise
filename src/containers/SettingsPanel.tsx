@@ -89,11 +89,15 @@ export const SettingsPanel = (props: Props) => {
   const setContentButtonBackground = (state: boolean) =>
     setKeyValueWithEvents(KEY_CONTENT_BUTTON_BACKGROUND, state);
   const setContentButtonPlacement = (state: any) => {
-    setKeyValue(
-      KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
-      DEFAULT_CONTENT_BUTTON_PLACEMENT_TRANSLATION
-    );
-    setKeyValueWithEvents(KEY_CONTENT_BUTTON_PLACEMENT, state);
+    // NOTE: we had to do this because setting them separately led to the button translation not being registered.
+    setValueAll((prevState: any) => {
+      return {
+        ...prevState,
+        [KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION]:
+          DEFAULT_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
+        [KEY_CONTENT_BUTTON_PLACEMENT]: state,
+      };
+    });
   };
   const handleSidebarSqueezePage = (state: boolean) =>
     setKeyValueWithEvents(KEY_SIDEBAR_SQUEEZES_PAGE, state);
