@@ -62,6 +62,10 @@ const App = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isDragging, setIsDragging] = useState(false);
+  const [lastPosX, setLastPosX] = useState(0);
+  const [lastPosY, setLastPosY] = useState(0);
+  const [posX, setPosX] = useState(0);
+  const [posY, setPosY] = useState(0);
 
   const [
     settings,
@@ -265,17 +269,21 @@ const App = () => {
           },
         }[contentButtonPlacement.key];
 
-  // Updates the dragging state for our button to use (don't open sidebar if dragging)
-  const dragEventControl = (event, info) => {
-    if (event.type === "mousemove" || event.type === "touchmove") {
-      console.log(event);
-      setIsDragging(true);
+  // Initial position of the button before dragging
+  const handleOnDragStart = (event, data) => {
+    setLastPosX(data.x);
+    setLastPosY(data.y);
+  };
+
+  const handleOnDragStop = (event, data) => {
+    // event.stopPropagation();
+    if (data.x === lastPosX && data.y === lastPosY) {
+      // drag did not change anything. Consider this to be a click
+      toggleSideBar();
     }
-    if (event.type === "mouseup" || event.type === "touchend") {
-      setTimeout(() => {
-        setIsDragging(false);
-      }, 100);
-    }
+    log.debug(`X/Y: ${data.x}, ${data.y}`);
+    setPosX(data.x);
+    setPosY(data.y);
   };
 
   return (
@@ -294,14 +302,17 @@ const App = () => {
         onLoad={() => log.debug("iFrame loaded")}
       />
       {shouldShowContentButton && (
-        <Draggable onDrag={dragEventControl} onStop={dragEventControl}>
+        <Draggable
+          position={{ x: posX, y: posY }}
+          onStart={handleOnDragStart}
+          onStop={handleOnDragStop}
+        >
           <div
             className="all-unset"
             style={{
               ...contentButtonPlacementCss,
               position: "fixed",
             }}
-            onClick={toggleSideBar}
           >
             {isLoadingResults && (
               <DotLoader
