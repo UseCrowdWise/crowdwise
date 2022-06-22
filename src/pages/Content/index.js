@@ -12,6 +12,7 @@ import {
   DEFAULT_SIDEBAR_OPEN_TAB_STATE,
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_PLACEMENT,
+  KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
   KEY_HIDE_CONTENT_BUTTON,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS,
@@ -62,10 +63,6 @@ const App = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isDragging, setIsDragging] = useState(false);
-  const [lastPosX, setLastPosX] = useState(0);
-  const [lastPosY, setLastPosY] = useState(0);
-  const [posX, setPosX] = useState(0);
-  const [posY, setPosY] = useState(0);
 
   const [
     settings,
@@ -76,16 +73,39 @@ const App = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  // Don't load the button if we're still loading settings (need to know icon placement!)
+  // if (isLoadingStore) return null;
+
   const sideBarWidth = settings[KEY_SIDEBAR_WIDTH];
   const sideBarOpacity = settings[KEY_SIDEBAR_OPACITY];
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
   const hideContentButton = settings[KEY_HIDE_CONTENT_BUTTON];
   const contentButtonBackground = settings[KEY_CONTENT_BUTTON_BACKGROUND];
   const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
+  const buttonTranslation = settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION];
   const sidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const showSidebarOnResults = settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
   const showSidebarOnlyOnExactResults =
     settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
+
+  // These indicate whether we dragged or clicked
+  const [lastPosX, setLastPosX] = useState(buttonTranslation.x);
+  const [lastPosY, setLastPosY] = useState(buttonTranslation.y);
+  // These directly control the position of the icon
+  const [posX, setPosX] = useState(buttonTranslation.x);
+  const [posY, setPosY] = useState(buttonTranslation.y);
+
+  // Update the button position if our settings change!
+  useEffect(() => {
+    setLastPosX(buttonTranslation.x);
+    setLastPosY(buttonTranslation.y);
+    setPosX(buttonTranslation.x);
+    setPosY(buttonTranslation.y);
+  }, [settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION]]);
+  log.warn(
+    `Current placement translation: ${buttonTranslation.x}, ${buttonTranslation.y}`
+  );
+  log.warn(`posX/posY: ${posX}, ${posY}`);
 
   const toggleSideBar = () => {
     if (!isDragging) {
@@ -280,6 +300,12 @@ const App = () => {
     if (data.x === lastPosX && data.y === lastPosY) {
       // drag did not change anything. Consider this to be a click
       toggleSideBar();
+    } else {
+      // We dragged the sidebar to a new position, so update our settings
+      setKeyValue(KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION, {
+        x: data.x,
+        y: data.y,
+      });
     }
     log.debug(`X/Y: ${data.x}, ${data.y}`);
     setPosX(data.x);
@@ -303,6 +329,10 @@ const App = () => {
       />
       {shouldShowContentButton && (
         <Draggable
+          defaultPosition={{
+            x: buttonTranslation.x,
+            y: buttonTranslation.y,
+          }}
           position={{ x: posX, y: posY }}
           onStart={handleOnDragStart}
           onStop={handleOnDragStop}

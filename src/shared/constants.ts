@@ -39,6 +39,7 @@ export const DEFAULT_CONTENT_BUTTON_BACKGROUND = false;
 export const DEFAULT_CONTENT_BUTTON_PLACEMENT =
   CONTENT_BUTTON_PLACEMENT_OPTIONS[3];
 export const DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET = "16px";
+export const DEFAULT_CONTENT_BUTTON_PLACEMENT_TRANSLATION = { x: 0, y: 0 };
 export const DEFAULT_SIDEBAR_OPEN_TAB_STATE = false;
 export const DEFAULT_INCOGNITO_MODE = false;
 export const DEFAULT_SHOULD_COLOR_FOR_SUBMITTED_BY = true;
@@ -71,6 +72,8 @@ export const KEY_BOLD_INITIAL_CHARS_OF_WORDS = "bold-initial-chars-of-words";
 export const KEY_HIDE_CONTENT_BUTTON = "hide-content-button";
 export const KEY_CONTENT_BUTTON_BACKGROUND = "content-button-background";
 export const KEY_CONTENT_BUTTON_PLACEMENT = "content-button-placement";
+export const KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION =
+  "content-button-placement-translation";
 export const KEY_SIDEBAR_OPEN_TAB_STATE = "sidebar-open-tab-state";
 export const KEY_INCOGNITO_MODE = "sidebar-incognito-mode";
 export const KEY_SHOULD_COLOR_FOR_SUBMITTED_BY =

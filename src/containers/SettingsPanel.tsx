@@ -4,9 +4,11 @@ import React from "react";
 import ReactTooltip from "react-tooltip";
 
 import {
+  DEFAULT_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
   KEY_BOLD_INITIAL_CHARS_OF_WORDS,
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_PLACEMENT,
+  KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
   KEY_FONT_SIZES,
   KEY_HIDE_CONTENT_BUTTON,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
@@ -86,8 +88,13 @@ export const SettingsPanel = (props: Props) => {
     setKeyValueWithEvents(KEY_HIDE_CONTENT_BUTTON, state);
   const setContentButtonBackground = (state: boolean) =>
     setKeyValueWithEvents(KEY_CONTENT_BUTTON_BACKGROUND, state);
-  const setContentButtonPlacement = (state: any) =>
+  const setContentButtonPlacement = (state: any) => {
+    setKeyValue(
+      KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
+      DEFAULT_CONTENT_BUTTON_PLACEMENT_TRANSLATION
+    );
     setKeyValueWithEvents(KEY_CONTENT_BUTTON_PLACEMENT, state);
+  };
   const handleSidebarSqueezePage = (state: boolean) =>
     setKeyValueWithEvents(KEY_SIDEBAR_SQUEEZES_PAGE, state);
   const handleFontSizeChange = (state: Record<string, string>) =>
