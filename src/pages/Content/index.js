@@ -234,7 +234,7 @@ const App = () => {
   const finalSideBarWidth = shouldShowSideBar ? `${sideBarWidth}px` : "0px";
   const contentButtonTooltip =
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
-    "  (Go settings to hide button)";
+    "  (Hide button in the settings)";
 
   if (sidebarSqueezePage) {
     document.body.style.marginRight = `calc(${originalMarginRight} + ${finalSideBarWidth})`;
