@@ -99,6 +99,12 @@ export const SettingsPanel = (props: Props) => {
       };
     });
   };
+  const resetContentButtonPlacement = (state: any) => {
+    setKeyValueWithEvents(
+      KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
+      DEFAULT_CONTENT_BUTTON_PLACEMENT_TRANSLATION
+    );
+  };
   const handleSidebarSqueezePage = (state: boolean) =>
     setKeyValueWithEvents(KEY_SIDEBAR_SQUEEZES_PAGE, state);
   const handleFontSizeChange = (state: Record<string, string>) =>
@@ -290,12 +296,27 @@ export const SettingsPanel = (props: Props) => {
             onSelected={setContentButtonPlacement}
           />
         </div>
+        <div className="flex flex-col space-y-2">
+          <div className="flex flex-row items-center">
+            <div>Reset Extension Button Position</div>
+            <div className="grow" />
+            <button
+              className={classNames(
+                "inline-flex items-center rounded border border-gray-300 text-gray-700",
+                "px-2.5 py-1.5 text-xs font-medium shadow-sm hover:bg-indigo-600 hover:text-white"
+              )}
+              onClick={resetContentButtonPlacement}
+            >
+              Reset
+            </button>
+          </div>
+        </div>
         <div
           data-tip="Hide the extension button that is normally on the corners of the page."
           className="flex flex-row items-center space-x-2"
         >
           <div>
-            <div className="mr-1 inline">Extension Button Hidden</div>
+            <div className="mr-1 inline">Hide Extension Button</div>
             <QuestionMarkCircleIcon className="inline h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="grow" />
