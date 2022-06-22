@@ -5,6 +5,7 @@ import Draggable from "react-draggable";
 import { useHotkeys } from "react-hotkeys-hook";
 import DotLoader from "react-spinners/DotLoader";
 import ReactTooltip from "react-tooltip";
+import { zoomLevel } from "zoom-level";
 
 import {
   DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
@@ -94,18 +95,21 @@ const App = () => {
   // These directly control the position of the icon
   const [posX, setPosX] = useState(buttonTranslation.x);
   const [posY, setPosY] = useState(buttonTranslation.y);
+  // Zoom level for scaling
+  const [curZoom, setCurZoom] = useState(zoomLevel());
 
   // Update the button position if our settings change!
   useEffect(() => {
-    setLastPosX(buttonTranslation.x);
-    setLastPosY(buttonTranslation.y);
-    setPosX(buttonTranslation.x);
-    setPosY(buttonTranslation.y);
+    const scaleFactor = curZoom / buttonTranslation.zoom;
+    setLastPosX(buttonTranslation.x / scaleFactor);
+    setLastPosY(buttonTranslation.y / scaleFactor);
+    setPosX(buttonTranslation.x / scaleFactor);
+    setPosY(buttonTranslation.y / scaleFactor);
   }, [settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION]]);
   log.warn(
     `Current placement translation: ${buttonTranslation.x}, ${buttonTranslation.y}`
   );
-  log.warn(`posX/posY: ${posX}, ${posY}`);
+  log.warn(`posX/posY: ${posX}, ${posY}, zoom: ${curZoom}`);
 
   const toggleSideBar = () => {
     if (!isDragging) {
@@ -305,6 +309,7 @@ const App = () => {
       setKeyValue(KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION, {
         x: data.x,
         y: data.y,
+        zoom: curZoom,
       });
     }
     log.debug(`X/Y: ${data.x}, ${data.y}`);
@@ -329,13 +334,10 @@ const App = () => {
       />
       {shouldShowContentButton && (
         <Draggable
-          defaultPosition={{
-            x: buttonTranslation.x,
-            y: buttonTranslation.y,
-          }}
           position={{ x: posX, y: posY }}
           onStart={handleOnDragStart}
           onStop={handleOnDragStop}
+          /* scale={curZoom / buttonTranslation.zoom} */
         >
           <div
             className="all-unset"
