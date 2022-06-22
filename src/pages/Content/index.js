@@ -1,9 +1,11 @@
 import "animate.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import Draggable from "react-draggable";
 import { useHotkeys } from "react-hotkeys-hook";
 import DotLoader from "react-spinners/DotLoader";
 import ReactTooltip from "react-tooltip";
+import { zoomLevel } from "zoom-level";
 
 import {
   DEFAULT_CONTENT_BUTTON_PLACEMENT_OFFSET,
@@ -11,6 +13,7 @@ import {
   DEFAULT_SIDEBAR_OPEN_TAB_STATE,
   KEY_CONTENT_BUTTON_BACKGROUND,
   KEY_CONTENT_BUTTON_PLACEMENT,
+  KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION,
   KEY_HIDE_CONTENT_BUTTON,
   KEY_HOTKEYS_TOGGLE_SIDEBAR,
   KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS,
@@ -60,6 +63,8 @@ const App = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const [
     settings,
     setSettings,
@@ -69,18 +74,60 @@ const App = () => {
     isLoadingStore,
   ] = useSettingsStore();
 
+  // Don't load the button if we're still loading settings (need to know icon placement!)
+  // if (isLoadingStore) return null;
+
   const sideBarWidth = settings[KEY_SIDEBAR_WIDTH];
   const sideBarOpacity = settings[KEY_SIDEBAR_OPACITY];
   const hotkeysToggleSidebar = settings[KEY_HOTKEYS_TOGGLE_SIDEBAR];
   const hideContentButton = settings[KEY_HIDE_CONTENT_BUTTON];
   const contentButtonBackground = settings[KEY_CONTENT_BUTTON_BACKGROUND];
   const contentButtonPlacement = settings[KEY_CONTENT_BUTTON_PLACEMENT];
+  const buttonTranslation = settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION];
   const sidebarSqueezePage = settings[KEY_SIDEBAR_SQUEEZES_PAGE];
   const showSidebarOnResults = settings[KEY_SHOULD_SHOW_SIDEBAR_ON_RESULTS];
   const showSidebarOnlyOnExactResults =
     settings[KEY_SHOULD_SHOW_SIDEBAR_ONLY_ON_EXACT_RESULTS];
 
-  const toggleSideBar = () => toggleUserOpenedSidebarStateWithStorage();
+  // These indicate whether we dragged or clicked
+  const [lastPosX, setLastPosX] = useState(0);
+  const [lastPosY, setLastPosY] = useState(0);
+  // These directly control the position of the icon
+  const [posX, setPosX] = useState(0);
+  const [posY, setPosY] = useState(0);
+  // Zoom level for scaling
+  const [curZoom, setCurZoom] = useState(zoomLevel());
+
+  // Keep our translation accurate even when zoom level changes in the tab
+  const handleZoomChange = () => setCurZoom(zoomLevel());
+  useEffect(() => {
+    window.addEventListener("resize", handleZoomChange);
+    // cleanup this component
+    return () => {
+      window.removeEventListener("keydown", handleZoomChange);
+    };
+  }, []);
+
+  // Update the button position if our button-pos-related settings change!
+  useEffect(() => {
+    let curButtonTranslation =
+      settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION];
+    const scaleFactor = curZoom / curButtonTranslation.zoom;
+    setLastPosX(curButtonTranslation.x / scaleFactor);
+    setLastPosY(curButtonTranslation.y / scaleFactor);
+    setPosX(curButtonTranslation.x / scaleFactor);
+    setPosY(curButtonTranslation.y / scaleFactor);
+  }, [
+    settings[KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION],
+    settings[KEY_CONTENT_BUTTON_PLACEMENT],
+    curZoom,
+  ]);
+
+  const toggleSideBar = () => {
+    if (!isDragging) {
+      toggleUserOpenedSidebarStateWithStorage();
+    }
+  };
   const closeSideBar = () => setUserOpenedSidebarStateWithStorage(false);
 
   // Toggle the side bar based on incoming message from further down in the component (close arrow)
@@ -223,7 +270,7 @@ const App = () => {
   const finalSideBarWidth = shouldShowSideBar ? `${sideBarWidth}px` : "0px";
   const contentButtonTooltip =
     hotkeysToggleSidebar.join(", ").replaceAll("+", " + ") +
-    "  (Go settings to hide button)";
+    "  (Hide button in the settings)";
 
   if (sidebarSqueezePage) {
     document.body.style.marginRight = `calc(${originalMarginRight} + ${finalSideBarWidth})`;
@@ -258,6 +305,30 @@ const App = () => {
           },
         }[contentButtonPlacement.key];
 
+  // Initial position of the button before dragging
+  const handleOnDragStart = (event, data) => {
+    setLastPosX(data.x);
+    setLastPosY(data.y);
+  };
+
+  const handleOnDragStop = (event, data) => {
+    // event.stopPropagation();
+    if (data.x === lastPosX && data.y === lastPosY) {
+      // drag did not change anything. Consider this to be a click
+      toggleSideBar();
+    } else {
+      // We dragged the sidebar to a new position, so update our settings
+      setKeyValue(KEY_CONTENT_BUTTON_PLACEMENT_TRANSLATION, {
+        x: data.x,
+        y: data.y,
+        zoom: curZoom,
+      });
+    }
+    log.debug(`X/Y: ${data.x}, ${data.y}`);
+    setPosX(data.x);
+    setPosY(data.y);
+  };
+
   return (
     <div className="all-unset">
       {/*IMPORTANT: Reduce re-rendering of iframe because it will be laggy*/}
@@ -274,62 +345,67 @@ const App = () => {
         onLoad={() => log.debug("iFrame loaded")}
       />
       {shouldShowContentButton && (
-        <div
-          className="all-unset"
-          style={{
-            ...contentButtonPlacementCss,
-            position: "fixed",
-          }}
-          onClick={toggleSideBar}
+        <Draggable
+          position={{ x: posX, y: posY }}
+          onStart={handleOnDragStart}
+          onStop={handleOnDragStop}
         >
-          {isLoadingResults && (
-            <DotLoader
-              color={"rgba(163,163,163,0.5)"}
-              css={{
-                display: "block",
-                position: "absolute",
-                right: "0",
-              }}
-              loading={isLoadingResults}
-              size={20}
-              margin={2}
-            />
-          )}
-          {!isLoadingResults && numResults > 0 && (
-            <div
-              className={
-                "animate__animated animate__heartBeat badge " +
-                (numExactResults > 0 ? "badge-red" : "badge-grey")
-              }
-            >
-              {numResults}
-            </div>
-          )}
-          {/*Height and width needed because no text is given to p tag*/}
-          <img
-            alt="Trigger Extension Button"
+          <div
+            className="all-unset"
             style={{
-              width: "64px",
-              height: "64px",
+              ...contentButtonPlacementCss,
+              position: "fixed",
             }}
-            src={chrome.runtime.getURL(
-              contentButtonBackground ? "icon.svg" : "icon-outline.svg"
+          >
+            {isLoadingResults && (
+              <DotLoader
+                color={"rgba(163,163,163,0.5)"}
+                css={{
+                  display: "block",
+                  position: "absolute",
+                  right: "0",
+                }}
+                loading={isLoadingResults}
+                size={20}
+                margin={2}
+              />
             )}
-            onClick={toggleSideBar}
-          />
-          <p
-            data-tip={contentButtonTooltip}
-            className="reset-spacing"
-            style={{
-              height: "64px",
-              width: "64px",
-              cursor: "pointer",
-              top: "0",
-              position: "absolute",
-            }}
-          />
-          <ReactTooltip place="top" type="dark" effect="solid" />
-        </div>
+            {!isLoadingResults && numResults > 0 && (
+              <div
+                className={
+                  "animate__animated animate__heartBeat badge " +
+                  (numExactResults > 0 ? "badge-red" : "badge-grey")
+                }
+              >
+                {numResults}
+              </div>
+            )}
+            {/*Height and width needed because no text is given to p tag*/}
+            <img
+              alt="Trigger Extension Button"
+              style={{
+                width: "64px",
+                height: "64px",
+              }}
+              src={chrome.runtime.getURL(
+                contentButtonBackground ? "icon.svg" : "icon-outline.svg"
+              )}
+              onClick={toggleSideBar}
+            />
+            <p
+              data-tip={contentButtonTooltip}
+              className="reset-spacing"
+              style={{
+                height: "64px",
+                width: "64px",
+                cursor: "pointer",
+                top: "0",
+                position: "absolute",
+              }}
+            />
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </div>
+        </Draggable>
       )}
     </div>
   );
