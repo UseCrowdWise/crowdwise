@@ -12,6 +12,7 @@ import {
 import { sendEventsToServer } from "../../shared/events";
 import { isExpiredCacheEntry } from "../../utils/cache";
 import { log } from "../../utils/log";
+import { sendMessageToActiveTab } from "../../utils/tabs";
 
 /**
  * BACKGROUND SCRIPT.
@@ -72,6 +73,11 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     });
   }
 });
+
+// Allow clicking on icon in toolbar to trigger sidebar open
+chrome.action.onClicked.addListener(() =>
+  sendMessageToActiveTab({ toggleSideBar: true })
+);
 
 // Clear all expired cache entries
 function removeExpiredCacheEntries() {
