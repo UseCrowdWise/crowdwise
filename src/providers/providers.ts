@@ -175,7 +175,8 @@ export async function fetchDataFromProviders(
   };
 
   // Return early if this URL is blacklisted
-  if (isBlacklisted(cleanedUrl) || isBlacklisted(siteUrl)) {
+  const isUrlBlacklisted = await isBlacklisted(noFragmentUrl);
+  if (isUrlBlacklisted) {
     log.warn(`URL ${cleanedUrl} or ${siteUrl} is blacklisted!`);
     return {
       resultType: ProviderResultType.Blacklisted,

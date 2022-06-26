@@ -22,6 +22,7 @@ import { SettingsPanel } from "../../containers/SettingsPanel";
 import {
   AllProviderResults,
   ProviderQueryType,
+  ProviderResultType,
   ProviderType,
   ResultItem,
 } from "../../providers/providers";
@@ -61,6 +62,24 @@ const EmptyDiscussionsState = () => (
     <div className="text-center text-slate-500 dark:text-slate-400">
       We can't find any relevant discussions on this web page, try going to a
       different web page or searching on Google.
+    </div>
+  </>
+);
+
+const BlacklistedState = () => (
+  <>
+    <img
+      alt="Online discussions"
+      className="mx-auto w-3/4 p-4 opacity-80"
+      src={chrome.runtime.getURL("undraw_access_denied.svg")}
+    />
+    <div className="text-center text-base dark:text-zinc-300 font-semibold">
+      URL is blacklisted
+    </div>
+    <div className="text-center text-slate-500 dark:text-slate-400">
+      This page's URL is blacklisted. <br />
+      Crowdwise did not attempt to find any relevant discussions. <br /> <br />
+      You can modify the blacklist in the Crowdwise settings.
     </div>
   </>
 );
@@ -217,6 +236,7 @@ const Sidebar = () => {
     useState<boolean>(false);
   const [hasFetchedDataForThisPage, setHasFetchedDataForThisPage] =
     useState<boolean>(false);
+  const [isBlacklisted, setIsBlacklisted] = useState<boolean>(false);
 
   const [
     settings,
@@ -342,6 +362,9 @@ const Sidebar = () => {
 
   // Run side effect to filter results and update count on new results
   useEffect(() => {
+    const isBlacklisted =
+      providerData?.resultType === ProviderResultType.Blacklisted;
+    setIsBlacklisted(isBlacklisted);
     // Set filtered + one-list results for the sidebar
     const filteredResults = sortAndFilterResults(
       providerData,
@@ -359,6 +382,7 @@ const Sidebar = () => {
       // TODO: potential bug - exact results in all provider results may be filtered out!
       newProviderExactDataCount: providerData?.numExactResults || 0,
       loadingProviderData: false,
+      isBlacklisted,
     });
   }, [providerData, ...resultFeedSortFilters]);
 
@@ -800,7 +824,7 @@ const Sidebar = () => {
               </div>
             )}
 
-            {(noDiscussions || !providerData) && (
+            {((noDiscussions && !isBlacklisted) || !providerData) && (
               <div className="text-center">
                 <EmptyDiscussionsState />
                 {searchGoogleUrl && (
@@ -811,6 +835,12 @@ const Sidebar = () => {
                     Search on Google
                   </button>
                 )}
+              </div>
+            )}
+
+            {isBlacklisted && providerData && (
+              <div className="text-center">
+                <BlacklistedState />
               </div>
             )}
           </div>
