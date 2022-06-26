@@ -26,39 +26,89 @@
  *     - we can't cache it locally since service workers are not persistent
  *
  * */
+import { createChromeStorageStateHookSync } from "../shared/storage/index";
 import { log } from "../utils/log";
 
 // Constants
 export const BLACKLIST_STORAGE_KEY = "user-blacklist";
-
-export interface Blacklist {
-  hostnames: Set<string>;
-  fullUrls: Set<string>;
-  subdomains: SubdomainMap;
-}
-export interface SubdomainMap {
-  [numDomains: number]: Set<string>;
-}
-
-export const emptyBlacklist: Blacklist = {
-  hostnames: new Set<string>(),
-  fullUrls: new Set<string>(),
-  subdomains: {},
+export const emptyBlacklist: StorageBlacklist = {
+  hostnames: [],
+  fullUrls: [],
+  subdomains: [],
+};
+export const testBlacklist: StorageBlacklist = {
+  hostnames: ["www.facebook.com"],
+  fullUrls: ["asdf-vm.com/manage/core.html"],
+  subdomains: ["asdf-vm.com"],
 };
 
-export const testBlacklist: Blacklist = {
-  hostnames: new Set<string>(["www.facebook.com"]),
-  fullUrls: new Set<string>(["asdf-vm.com/manage/core.html"]),
-  subdomains: { 2: new Set(["google.com"]) },
+// Chrome storage hook for react
+export const useBlacklistSettingsStore = createChromeStorageStateHookSync(
+  BLACKLIST_STORAGE_KEY,
+  testBlacklist
+);
+
+export interface LocalBlacklist {
+  hostnames: Set<string>;
+  fullUrls: Set<string>;
+  subdomains: LocalSubdomainMap;
+}
+export interface LocalSubdomainMap {
+  [numDomains: number]: Set<string>;
+}
+export type StorageSubdomainMap = string[];
+export interface StorageBlacklist {
+  hostnames: string[];
+  fullUrls: string[];
+  subdomains: StorageSubdomainMap;
+}
+
+// Convert from storage version of subdomain list to local subdomain map
+export const subdomainsAsListToMap = (
+  subdomains: StorageSubdomainMap
+): LocalSubdomainMap => {
+  log.debug("Subdomains in subdomainsAsListToMap:");
+  log.debug(subdomains);
+  let output: LocalSubdomainMap = {};
+  subdomains.forEach((subdomain: string) => {
+    log.debug("processing subdomain");
+    log.debug(subdomain);
+    // Each of the format x.y.z
+    const subdomainSize = subdomain.split(".").length;
+    if (output[subdomainSize] && !output[subdomainSize].has(subdomain)) {
+      output[subdomainSize].add(subdomain);
+    } else {
+      output[subdomainSize] = new Set([subdomain]);
+    }
+  });
+
+  return output;
+};
+
+// Full conversion function from chrome storage to local
+// Necessary since we can't store sets, has to be serializable
+const convertStorageToLocalBlacklist = (
+  sbl: StorageBlacklist
+): LocalBlacklist => {
+  return {
+    hostnames: new Set(sbl.hostnames),
+    fullUrls: new Set(sbl.fullUrls),
+    subdomains: subdomainsAsListToMap(sbl.subdomains),
+  };
 };
 
 // Start with blacklist undefined
-let blacklist: Blacklist | undefined = testBlacklist;
+let blacklist: LocalBlacklist | undefined =
+  convertStorageToLocalBlacklist(testBlacklist);
 
 // Try to keep blacklist updated through listening to the chrome storage API
 const blacklistChangedListener = (changes: any, areaName: string) => {
   if (areaName === "sync" && BLACKLIST_STORAGE_KEY in changes) {
-    blacklist = changes[BLACKLIST_STORAGE_KEY].newValue;
+    log.debug("Blacklist changed, new blacklist is:");
+    log.debug(changes[BLACKLIST_STORAGE_KEY].newValue);
+    blacklist = convertStorageToLocalBlacklist(
+      changes[BLACKLIST_STORAGE_KEY].newValue
+    );
   }
 };
 
@@ -71,7 +121,9 @@ if (!chrome.storage.onChanged.hasListener(blacklistChangedListener)) {
 async function updateBlacklist(): Promise<void> {
   return new Promise((resolve, reject) => {
     const callback = async (result: any) => {
-      const storageBlacklist = result[BLACKLIST_STORAGE_KEY] ?? emptyBlacklist;
+      const storageBlacklist = convertStorageToLocalBlacklist(
+        result[BLACKLIST_STORAGE_KEY] ?? emptyBlacklist
+      );
       log.debug(`Got blacklist: `);
       log.debug(storageBlacklist);
       blacklist = storageBlacklist;

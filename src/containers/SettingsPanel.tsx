@@ -30,6 +30,7 @@ import {
 import { useSettingsStore } from "../shared/settings";
 import { classNames } from "../utils/classNames";
 import { log } from "../utils/log";
+import Blacklist from "./Blacklist";
 import HotkeysListenerButton from "./HotkeysListenerButton";
 import SelectMenu from "./SelectMenu";
 import Slider from "./Slider";
@@ -336,6 +337,8 @@ export const SettingsPanel = (props: Props) => {
             onCheck={setContentButtonBackground}
           />
         </div>
+
+        <Blacklist fontSizes={settings[KEY_FONT_SIZES]} />
       </div>
 
       <ReactTooltip place="top" type="dark" effect="solid" />
