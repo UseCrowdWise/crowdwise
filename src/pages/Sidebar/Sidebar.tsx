@@ -45,7 +45,7 @@ import { FilterDateOption, SortOption } from "../../shared/options";
 import { useSettingsStore } from "../../shared/settings";
 import { classNames } from "../../utils/classNames";
 import { log } from "../../utils/log";
-import { sendMessageToCurrentTab } from "../../utils/tabs";
+import { getActiveTab, sendMessageToCurrentTab } from "../../utils/tabs";
 import "./Sidebar.css";
 
 const EmptyDiscussionsState = () => (
@@ -354,11 +354,34 @@ const Sidebar = () => {
     );
     setFilteredResults(filteredResults);
 
+    // TODO: potential bug - exact results in all provider results may be filtered out!
+    const numExactResults = providerData?.numExactResults || 0;
     sendMessageToCurrentTab({
       newProviderDataCount: filteredResults.length,
-      // TODO: potential bug - exact results in all provider results may be filtered out!
-      newProviderExactDataCount: providerData?.numExactResults || 0,
+      newProviderExactDataCount: numExactResults,
       loadingProviderData: false,
+    });
+
+    // Adds a badge to the extension icon within the search toolbar
+    getActiveTab(function (tabId) {
+      if (tabId && filteredResults.length !== 0) {
+        chrome.action.setBadgeText({
+          text: filteredResults.length.toString(),
+          tabId: tabId,
+        });
+        chrome.action.setBadgeBackgroundColor({
+          // Make sure that the color syncs with the extension icon colors.
+          // Search css .badge-grey. Red color cannot sync because poor contrast.
+          // #22c55e is text-green-400
+          color: numExactResults > 0 ? "#4ade80" : "#e4e4e7",
+          tabId: tabId,
+        });
+      } else {
+        chrome.action.setBadgeText({
+          text: "",
+          tabId: tabId,
+        });
+      }
     });
   }, [providerData, ...resultFeedSortFilters]);
 
