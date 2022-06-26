@@ -75,37 +75,50 @@ const BlacklistContainer = ({ fontSizes }: Props) => {
       <div className="flex text-base flex-row flex-wrap space-x-3 font-">
         Blocked Sites
       </div>
-      {hostnames.map((url: string, idx: number) => (
-        <BlacklistUrl
-          key={idx}
-          url={url}
-          position={idx}
-          onDelete={onHostnameDelete}
-        />
-      ))}
+      {hostnames.length > 0 ? (
+        hostnames.map((url: string, idx: number) => (
+          <BlacklistUrl
+            key={idx}
+            url={url}
+            position={idx}
+            onDelete={onHostnameDelete}
+          />
+        ))
+      ) : (
+        <div> No hostnames blocked </div>
+      )}
+
       <div className="flex text-base flex-row flex-wrap space-x-3">
         Blocked URLs
       </div>
-      {fullUrls.map((url: string, idx: number) => (
-        <BlacklistUrl
-          key={idx}
-          url={url}
-          position={idx}
-          onDelete={onFullUrlDelete}
-        />
-      ))}
+      {fullUrls.length > 0 ? (
+        fullUrls.map((url: string, idx: number) => (
+          <BlacklistUrl
+            key={idx}
+            url={url}
+            position={idx}
+            onDelete={onFullUrlDelete}
+          />
+        ))
+      ) : (
+        <div> No complete URLs blocked </div>
+      )}
 
       <div className="flex text-base flex-row flex-wrap space-x-3">
         Blocked Domains
       </div>
-      {subdomains.map((url: string, idx: number) => (
-        <BlacklistUrl
-          url={"*." + url}
-          key={idx}
-          position={idx}
-          onDelete={onSubdomainDelete}
-        />
-      ))}
+      {subdomains.length > 0 ? (
+        subdomains.map((url: string, idx: number) => (
+          <BlacklistUrl
+            url={"*." + url}
+            key={idx}
+            position={idx}
+            onDelete={onSubdomainDelete}
+          />
+        ))
+      ) : (
+        <div> No subdomains blocked </div>
+      )}
     </>
   );
 };
