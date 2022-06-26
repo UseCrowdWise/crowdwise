@@ -5,10 +5,7 @@
   "permissions": ["storage", "tabs", "alarms", "identity", "identity.email"],
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": "icon-32.png"
-  },
+  "action": {},
   "icons": {
     "128": "icon-128.png"
   },

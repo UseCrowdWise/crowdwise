@@ -1,9 +1,15 @@
 import { log } from "./log";
 
-export const sendMessageToActiveTab = (message: Record<string, any>) => {
+export const getActiveTab = (callback: (tabId?: number) => void) => {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (tabs[0].id) {
-      chrome.tabs.sendMessage(tabs[0].id, message);
+    callback(tabs[0].id);
+  });
+};
+
+export const sendMessageToActiveTab = (message: Record<string, any>) => {
+  getActiveTab((tabId) => {
+    if (tabId) {
+      chrome.tabs.sendMessage(tabId, message);
     }
   });
 };
