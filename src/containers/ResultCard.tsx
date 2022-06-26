@@ -126,10 +126,10 @@ const ResultCard = ({
         ProviderQueryType.EXACT_URL_TEXT && (
         // data-iscapture="true" allow us to immediately dismiss tooltip on user scroll
         <div
-          data-tip="This result contains an exact link to your current page."
+          data-tip="This result mentions your current page's link (or an expanded form of it) in the discussions."
           data-iscapture="true"
         >
-          <Badge>EXACT URL TEXT MATCH</Badge>
+          <Badge>DISCUSSION CONTAINS LINK</Badge>
         </div>
       )}
 
