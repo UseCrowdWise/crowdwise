@@ -122,6 +122,17 @@ const ResultCard = ({
           <Badge>EXACT MATCH</Badge>
         </div>
       )}
+      {resultWithReplacedLink.providerQueryType ===
+        ProviderQueryType.EXACT_URL_TEXT && (
+        // data-iscapture="true" allow us to immediately dismiss tooltip on user scroll
+        <div
+          data-tip="This result mentions your current page's link (or an expanded form of it) in the discussions."
+          data-iscapture="true"
+        >
+          <Badge>DISCUSSION CONTAINS LINK</Badge>
+        </div>
+      )}
+
       {resultWithReplacedLink.subSourceName !== "" && (
         <div className="flex flex-row space-x-1">
           <div

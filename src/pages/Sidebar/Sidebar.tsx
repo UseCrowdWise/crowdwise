@@ -167,12 +167,14 @@ const sortAndFilterResults = (
   // Combining results from different sources
   const allResults = (hnResults[ProviderQueryType.EXACT_URL] ?? [])
     .concat(redditResults[ProviderQueryType.EXACT_URL] ?? [])
+    .concat(hnResults[ProviderQueryType.EXACT_URL_TEXT] ?? [])
+    .concat(redditResults[ProviderQueryType.EXACT_URL_TEXT] ?? [])
     .concat(hnResults[ProviderQueryType.TITLE] ?? [])
     .concat(redditResults[ProviderQueryType.TITLE] ?? [])
     .sort(sortFunction);
 
   // In debug mode, we want to see all results
-  return isDebugMode
+  const finalResults = isDebugMode
     ? allResults
     : filterResults(
         allResults,
@@ -180,6 +182,8 @@ const sortAndFilterResults = (
         filterByMinCommentCounts,
         filterByMinLikeCounts
       );
+
+  return finalResults;
 };
 
 const debugResults = (providerData: AllProviderResults | undefined) => {
@@ -192,7 +196,12 @@ const debugResults = (providerData: AllProviderResults | undefined) => {
   // Split results into the different sources when under debug mode
   const haveHnExactResults = hnResults[ProviderQueryType.EXACT_URL]?.length > 0;
   const haveRedditExactResults =
+    redditResults[ProviderQueryType.EXACT_URL_TEXT]?.length > 0;
+  const haveHnExactUrlTextResults =
+    hnResults[ProviderQueryType.EXACT_URL_TEXT]?.length > 0;
+  const haveRedditExactUrlTextResults =
     redditResults[ProviderQueryType.EXACT_URL]?.length > 0;
+
   log.debug(
     `Have HN exact: ${haveHnExactResults}, have Reddit exact: ${haveRedditExactResults}`
   );
@@ -203,6 +212,8 @@ const debugResults = (providerData: AllProviderResults | undefined) => {
   return {
     haveHnExactResults,
     haveRedditExactResults,
+    haveHnExactUrlTextResults,
+    haveRedditExactUrlTextResults,
     haveHnTitleResults,
     haveRedditTitleResults,
   };
@@ -431,6 +442,8 @@ const Sidebar = () => {
   const {
     haveHnExactResults,
     haveRedditExactResults,
+    haveHnExactUrlTextResults,
+    haveRedditExactUrlTextResults,
     haveHnTitleResults,
     haveRedditTitleResults,
   } = debugResults(providerData);
@@ -671,6 +684,76 @@ const Sidebar = () => {
                     </div>
                   </div>
                 )}
+                <hr />
+                {haveHnExactUrlTextResults || haveRedditExactUrlTextResults ? (
+                  <div>
+                    <div className="py-1 text-base">
+                      Results for{" "}
+                      <span
+                        className="font-semibold text-indigo-600"
+                        data-tip={searchTitle}
+                      >
+                        {`current URL in post text`}
+                      </span>
+                      <div
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        className="text-xs text-slate-500"
+                      >
+                        {" "}
+                        ({searchExactUrl}){" "}
+                      </div>
+                    </div>
+                    {haveHnExactUrlTextResults && (
+                      <div className="space-y-2">
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[
+                              ProviderType.HACKER_NEWS
+                            ][ProviderQueryType.EXACT_URL_TEXT]
+                          }
+                        />
+                        <hr />
+                      </div>
+                    )}
+                    {haveRedditExactUrlTextResults && (
+                      <div className="space-y-2">
+                        <ResultsContainer
+                          results={
+                            providerData.providerResults[ProviderType.REDDIT][
+                              ProviderQueryType.EXACT_URL_TEXT
+                            ]
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="py-1 text-base">
+                    No results for{" "}
+                    <span
+                      className="font-semibold text-indigo-600"
+                      data-tip={searchTitle}
+                    >
+                      {`current page title`}
+                    </span>
+                    <div
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                      className="text-xs text-slate-500"
+                    >
+                      {" "}
+                      ({searchTitle}){" "}
+                    </div>
+                  </div>
+                )}
+
                 <hr />
                 {haveHnTitleResults || haveRedditTitleResults ? (
                   <div>

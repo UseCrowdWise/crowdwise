@@ -15,7 +15,7 @@ export const EVENTS_HOST =
 export const ML_HOST =
   "https://crowdwise-ml-jhhom.ondigitalocean.app/api/score_documents";
 export const ML_API_KEY = "5b58147b-d869-465a-ab43-41c2ffc29ae0";
-export const ML_FILTER_THRESHOLD = -5.0;
+export const ML_FILTER_THRESHOLD = 0.0;
 
 export const GITHUB_REPOSITORY_LINK =
   "https://github.com/usecrowdwise/crowdwise";
