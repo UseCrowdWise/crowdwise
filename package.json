@@ -1,6 +1,6 @@
 {
   "name": "CrowdWise",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CrowdWise shows you discussions (from HN/Reddit) about the page you're browsing. What do other people think?",
   "license": "MIT",
   "repository": {
