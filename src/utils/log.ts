@@ -5,9 +5,13 @@ import logprefix from "loglevel-plugin-prefix";
  * Project-wide logging
  * */
 function setup() {
-  log.setLevel("trace");
-  logprefix.reg(log);
-  logprefix.apply(log);
+  if (process.env.NODE_ENV === "production") {
+    log.setLevel("silent");
+  } else {
+    log.setLevel("trace");
+    logprefix.reg(log);
+    logprefix.apply(log);
+  }
 }
 
 setup();

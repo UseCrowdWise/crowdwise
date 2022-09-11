@@ -244,8 +244,6 @@ export async function fetchDataFromProviders(
       const thisProviderRestQueryTypes = thisProviderQueryTypes.slice(idx + 1);
       // Get the current provider query's results, so that we can subtract it from the other query results
       const thisProviderQueryResults = thisProviderResults[queryType];
-      console.log("Checking providerName: " + providerName + "and query res:");
-      console.log(thisProviderQueryResults);
 
       thisProviderRestQueryTypes.forEach((otherQueryType: string) => {
         const otherQueryResults = thisProviderResults[otherQueryType];

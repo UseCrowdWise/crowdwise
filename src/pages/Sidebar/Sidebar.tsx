@@ -441,7 +441,6 @@ const Sidebar = () => {
     searchExactUrl &&
     "https://www.google.com/search?q=" + encodeURIComponent(searchExactUrl);
 
-  console.log("Search Exact URL: " + searchExactUrl);
   return (
     <div
       className={classNames(

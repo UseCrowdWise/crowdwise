@@ -14,13 +14,13 @@ const proxyHostsSet = new Set(proxyHosts);
 
 export const unproxyUrl = (url: string) => {
   const urlObj = new URL(url);
-  console.log(urlObj);
+
   // ["dl-acm-org", "libproxy", "nus", "edu", "sg"]
   const urlHostComponents = urlObj.host.split(".");
-  console.log(urlHostComponents);
+
   // "libproxy.nus.edu.sg"
   const proxyUrlHost = urlHostComponents.slice(1).join(".");
-  console.log(proxyUrlHost);
+
   if (proxyHostsSet.has(proxyUrlHost)) {
     // This is a proxied url, we have to unproxy
     // "dl.acm.org"
